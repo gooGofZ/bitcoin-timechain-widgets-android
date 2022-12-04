@@ -1,6 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.BitcoinTimechainWidgets.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Theme.BitcoinTimechainWidgets.AppWidgetContainer">
@@ -17,10 +16,23 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/quoteText"
+                android:id="@+id/labelBlockHeight"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Total Nodes"
+                android:textSize="18sp" />
 
+            <TextView
+                android:id="@+id/textTotalNodes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/text_before_fetch"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -33,14 +45,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right" />
+                android:gravity="center"
+                android:text="Snapshot time"  />
+
+            <TextView
+                android:id="@+id/textSnapshotTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/text_before_fetch"
+                android:textStyle="bold" />
 
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="5dp"
             android:gravity="center">
 
             <TextView
@@ -65,7 +87,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:padding="0dp"
-                android:text="๐" />
+                android:text="🔄" />
 
         </LinearLayout>
     </LinearLayout>

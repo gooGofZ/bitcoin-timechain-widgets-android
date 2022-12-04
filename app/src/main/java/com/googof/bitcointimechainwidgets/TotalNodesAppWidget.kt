@@ -25,13 +25,7 @@ class BitnodesAppWidget : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        // There may be multiple widgets active, so update all of them
-        //val scope = CoroutineScope(newSingleThreadContext("name"))
-
         for (appWidgetId in appWidgetIds) {
-            // GlobalScope.launch { // Delicate API
-            // CoroutineScope(Dispatchers.IO).launch { // Work at add and manual refresh
-            // GlobalScope.launch(Dispatchers.Main) { // Work at add and manual refresh // Delicate API
             CoroutineScope(Dispatchers.Main).launch {
                 updateBitnodesAppWidget(context, appWidgetManager, appWidgetId)
             }
@@ -65,10 +59,10 @@ internal suspend fun updateBitnodesAppWidget(
 
     // Set response to object
     val snapshotTime = convertEpochtoDateTimeString(response.results[0].timestamp)
-    val totalNodes = response.results[0].total_nodes.toString()
+    val totalNodes = response.results[0].total_nodes
 
     // Construct the RemoteViews object
-    val views = RemoteViews(context.packageName, R.layout.bitnodes_app_widget)
+    val views = RemoteViews(context.packageName, R.layout.total_nodes_app_widget)
 
     // Set values to widget
     views.setTextViewText(R.id.textSnapshotTime, snapshotTime)
