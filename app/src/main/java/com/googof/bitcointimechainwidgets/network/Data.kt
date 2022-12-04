@@ -1,6 +1,5 @@
 package com.googof.bitcointimechainwidgets.network
 
-//Mempool Data
 data class Fees(
     //{
     //    fastestFee: 1,
@@ -24,25 +23,4 @@ data class Hashrate(
 
 data class UnconfirmedTX(
     val count: Int
-)
-
-//Bitnodes.io
-data class Snapshot(
-    val url: String,
-    val timestamp: Int,
-    val total_nodes: Int,
-    val latest_height: Int,
-)
-
-data class Nodes(
-    val count: Int,
-    val next: String,
-    val previous: String?,
-    val results: List<Snapshot>,
-)
-
-data class Quote(
-    val text: String,
-    val speaker: String,
-    val date: String,
 )
