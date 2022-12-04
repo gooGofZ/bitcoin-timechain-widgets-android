@@ -44,7 +44,7 @@
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:text="How to use:"
+                    android:text="How to How to use:"
                     android:textColor="@color/amber_700"
                     android:textStyle="bold" />
             </TableRow>
@@ -56,16 +56,6 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:text="Choose the widget from your home screen widget picker." />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:text="The widgets automatic update every 30 minutes." />
 
             </TableRow>
 
@@ -92,21 +82,12 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:text=" - bitnodes.io" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingBottom="20dp">
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:text=" - bitcoinexplorer.org" />
+                    android:text=" - bitnodes.io" />
             </TableRow>
 
             <TableRow
