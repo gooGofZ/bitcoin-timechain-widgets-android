@@ -31,7 +31,7 @@ class MempoolAppWidget : AppWidgetProvider() {
             // CoroutineScope(Dispatchers.IO).launch { // Work at add and manual refresh
             // GlobalScope.launch(Dispatchers.Main) { // Work at add and manual refresh // Delicate API
             CoroutineScope(Dispatchers.Main).launch {
-                updateMempoolAppWidget(context, appWidgetManager, appWidgetId)
+                updateAppWidget(context, appWidgetManager, appWidgetId)
             }
         }
     }
@@ -46,7 +46,7 @@ class MempoolAppWidget : AppWidgetProvider() {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-internal suspend fun updateMempoolAppWidget(
+internal suspend fun updateAppWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int

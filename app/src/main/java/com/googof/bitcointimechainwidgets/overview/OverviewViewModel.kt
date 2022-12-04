@@ -36,10 +36,7 @@ class OverviewViewModel : ViewModel() {
     private val _economyFee = MutableLiveData<String>()
     private val _minimumFee = MutableLiveData<String>()
     private val _recommendedFees = MutableLiveData<String>()
-    private val _totalNodes = MutableLiveData<String>()
-    private val _snapshotTime = MutableLiveData<String>()
 
-    val version = "Version : " + BuildConfig.VERSION_NAME
 
 // The external immutable LiveData for the request status
 //    val blockHeight: LiveData<String> = _blockHeight
@@ -62,6 +59,7 @@ class OverviewViewModel : ViewModel() {
 //            _blockHeight.value = blockHeight
 
         }
+
     }
 
 }

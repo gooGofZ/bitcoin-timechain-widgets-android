@@ -9,6 +9,11 @@ import retrofit2.http.GET
 private const val BASE_URL =
     "https://mempool.space/api/"
 
+//private val retrofit = Retrofit.Builder()
+//    .addConverterFactory(ScalarsConverterFactory.create())
+//    .baseUrl(BASE_URL)
+//    .build()
+
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
