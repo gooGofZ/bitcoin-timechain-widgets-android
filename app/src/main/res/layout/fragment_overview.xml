@@ -44,29 +44,7 @@
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.totalNodes}"
-                    android:textColor="@color/amber_700" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.snapshotTime}"
-                    android:textColor="@color/amber_700" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:text="How to How to use:"
+                    android:text="How to use:"
                     android:textColor="@color/amber_700"
                     android:textStyle="bold" />
             </TableRow>

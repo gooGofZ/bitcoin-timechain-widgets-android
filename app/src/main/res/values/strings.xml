@@ -20,5 +20,7 @@
     <string name="add_widget">Add widget</string>
     <string name="mempool_app_widget_description">Mempool Information</string>
     <string name="bitnodes_app_widget_description">Bitnodes Information</string>
+    <string name="quotes_app_widget_description">Bitcoin\'s Quotes</string>
+    <string name="quotes_transparent_app_widget_description">Bitcoin\'s Quotes (No background)</string>
     <string name="text_before_fetch">...</string>
 </resources>
