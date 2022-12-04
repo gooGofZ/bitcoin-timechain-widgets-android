@@ -16,17 +16,13 @@
 
 package com.googof.bitcointimechainwidgets.overview
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.googof.bitcointimechainwidgets.BuildConfig
-import com.googof.bitcointimechainwidgets.network.BitnodesApi
 import com.googof.bitcointimechainwidgets.network.MempoolApi
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * The [ViewModel] that is attached to the [OverviewFragment].
@@ -41,52 +37,45 @@ class OverviewViewModel : ViewModel() {
     private val _economyFee = MutableLiveData<String>()
     private val _minimumFee = MutableLiveData<String>()
     private val _recommendedFees = MutableLiveData<String>()
-    private val _totalNodes = MutableLiveData<String>()
-    private val _snapshotTime = MutableLiveData<String>()
-
-    val version = "Version : " + BuildConfig.VERSION_NAME
 
     // The external immutable LiveData for the request status
-    val blockHeight: LiveData<String> = _blockHeight
+    val blockHeight : LiveData<String> = _blockHeight
     val recommendedFees: LiveData<String> = _recommendedFees
     val fastestFee: LiveData<String> = _fastestFee
     val halfHourFee: LiveData<String> = _halfHourFee
     val hourFee: LiveData<String> = _hourFee
     val economyFee: LiveData<String> = _economyFee
     val minimumFee: LiveData<String> = _minimumFee
-    val totalNodes: LiveData<String> = _totalNodes
-    val snapshotTime: LiveData<String> = _snapshotTime
+
+    val version = "Version : " + BuildConfig.VERSION_NAME
+
 
     init {
         fetchDatafromApi()
     }
 
-    private fun convertEpochtoDateTimeString(epoch: Int): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm")
-        val netDate = Date(epoch.toLong() * 1000)
-        return sdf.format(netDate)
-    }
+//    {
+//        "fastestFee": 27,
+//        "halfHourFee": 1,
+//        "hourFee": 1,
+//        "economyFee": 1,
+//        "minimumFee": 1
+//    }
 
     private fun fetchDatafromApi() {
         viewModelScope.launch {
             val blockHeight = MempoolApi.retrofitService.getBlockTipHeight()
             _blockHeight.value = blockHeight
-
-            val totalNodes = BitnodesApi.retrofitService.getTotalNodes()
-            _totalNodes.value = totalNodes.results[0].total_nodes.toString()
-
-            val snapshotTime = convertEpochtoDateTimeString(totalNodes.results[0].timestamp)
-            _snapshotTime.value = snapshotTime
         }
 
-//        viewModelScope.launch {
-//            val recommendedFees = MempoolApi.retrofitService.getRecommendedFee()
-//            _fastestFee.value = recommendedFees.fastestFee
-//            _halfHourFee.value = recommendedFees.halfHourFee
-//            _hourFee.value =  recommendedFees.hourFee
-//            _economyFee.value =  recommendedFees.economyFee
-//            _minimumFee.value = recommendedFees.minimumFee
-//        }
+        viewModelScope.launch {
+            val recommendedFees = MempoolApi.retrofitService.getRecommendedFee()
+            _fastestFee.value = recommendedFees.fastestFee
+            _halfHourFee.value = recommendedFees.halfHourFee
+            _hourFee.value =  recommendedFees.hourFee
+            _economyFee.value =  recommendedFees.economyFee
+            _minimumFee.value = recommendedFees.minimumFee
+        }
     }
 
 }
