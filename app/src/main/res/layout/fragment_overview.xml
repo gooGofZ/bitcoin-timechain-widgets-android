@@ -44,7 +44,7 @@
 
                 <TextView
                     android:layout_height="wrap_content"
-                    android:text="How to How to use:"
+                    android:text="How to use:"
                     android:textColor="@color/amber_700"
                     android:textStyle="bold" />
             </TableRow>

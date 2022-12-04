@@ -21,7 +21,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.googof.bitcointimechainwidgets.BuildConfig
-import com.googof.bitcointimechainwidgets.network.MempoolApi
 import kotlinx.coroutines.launch
 
 /**
@@ -38,44 +37,29 @@ class OverviewViewModel : ViewModel() {
     private val _minimumFee = MutableLiveData<String>()
     private val _recommendedFees = MutableLiveData<String>()
 
-    // The external immutable LiveData for the request status
-    val blockHeight : LiveData<String> = _blockHeight
-    val recommendedFees: LiveData<String> = _recommendedFees
-    val fastestFee: LiveData<String> = _fastestFee
-    val halfHourFee: LiveData<String> = _halfHourFee
-    val hourFee: LiveData<String> = _hourFee
-    val economyFee: LiveData<String> = _economyFee
-    val minimumFee: LiveData<String> = _minimumFee
 
-    val version = "Version : " + BuildConfig.VERSION_NAME
-
+// The external immutable LiveData for the request status
+//    val blockHeight: LiveData<String> = _blockHeight
+//    val recommendedFees: LiveData<String> = _recommendedFees
+//    val fastestFee: LiveData<String> = _fastestFee
+//    val halfHourFee: LiveData<String> = _halfHourFee
+//    val hourFee: LiveData<String> = _hourFee
+//    val economyFee: LiveData<String> = _economyFee
+//    val minimumFee: LiveData<String> = _minimumFee
+//    val totalNodes: LiveData<String> = _totalNodes
+//    val snapshotTime: LiveData<String> = _snapshotTime
 
     init {
-        fetchDatafromApi()
+        //fetchDatafromApi()
     }
-
-//    {
-//        "fastestFee": 27,
-//        "halfHourFee": 1,
-//        "hourFee": 1,
-//        "economyFee": 1,
-//        "minimumFee": 1
-//    }
 
     private fun fetchDatafromApi() {
         viewModelScope.launch {
-            val blockHeight = MempoolApi.retrofitService.getBlockTipHeight()
-            _blockHeight.value = blockHeight
+//            val blockHeight = MempoolApi.retrofitService.getBlockTipHeight()
+//            _blockHeight.value = blockHeight
+
         }
 
-        viewModelScope.launch {
-            val recommendedFees = MempoolApi.retrofitService.getRecommendedFee()
-            _fastestFee.value = recommendedFees.fastestFee
-            _halfHourFee.value = recommendedFees.halfHourFee
-            _hourFee.value =  recommendedFees.hourFee
-            _economyFee.value =  recommendedFees.economyFee
-            _minimumFee.value = recommendedFees.minimumFee
-        }
     }
 
 }

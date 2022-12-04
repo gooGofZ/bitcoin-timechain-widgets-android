@@ -8,3 +8,6 @@
 /build
 /captures
 .externalNativeBuild
+/app/release/release/app-release.apk
+/app/release/BitcoinTimechainWidgets-1.0.0-signed.apk
+/app/release/release/output-metadata.json

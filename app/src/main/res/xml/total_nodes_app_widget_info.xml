@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+android:description="@string/bitnodes_app_widget_description"
+android:initialKeyguardLayout="@layout/total_nodes_app_widget"
+android:initialLayout="@layout/total_nodes_app_widget"
+android:minWidth="200dp"
+android:minHeight="20dp"
+android:previewImage="@drawable/example_appwidget_preview"
+android:previewLayout="@layout/total_nodes_app_widget"
+android:resizeMode="horizontal|vertical"
+android:targetCellWidth="4"
+android:targetCellHeight="1"
+android:updatePeriodMillis="1800000"
+android:widgetCategory="home_screen" />

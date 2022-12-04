@@ -24,6 +24,42 @@
                 android:resource="@xml/mempool_app_widget_info" />
         </receiver>
 
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.BitnodesAppWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/total_nodes_app_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.QuotesAppWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quotes_app_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.QuotesTransparentAppWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quotes_transparent_app_widget_info" />
+        </receiver>
+
         <activity
             android:name="com.googof.bitcointimechainwidgets.MainActivity"
             android:exported="true">
