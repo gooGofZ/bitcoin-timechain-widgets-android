@@ -2,6 +2,7 @@
     style="@style/Widget.BitcoinTimechainWidgets.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/layoutTotalNodesWidget"
     android:theme="@style/Theme.BitcoinTimechainWidgets.AppWidgetContainer">
 
     <LinearLayout
@@ -80,14 +81,14 @@
                 android:textSize="12sp"
                 android:textStyle="italic" />
 
-            <Button
-                android:id="@+id/buttonRefresh"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:padding="0dp"
-                android:text="🔄" />
+<!--            <Button-->
+<!--                android:id="@+id/buttonRefresh"-->
+<!--                android:layout_width="30dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:background="@android:color/transparent"-->
+<!--                android:gravity="center"-->
+<!--                android:padding="0dp"-->
+<!--                android:text="🔄" />-->
 
         </LinearLayout>
     </LinearLayout>

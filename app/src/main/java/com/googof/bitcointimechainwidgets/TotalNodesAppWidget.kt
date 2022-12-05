@@ -88,7 +88,7 @@ internal suspend fun updateBitnodesAppWidget(
         PendingIntent.FLAG_IMMUTABLE
     )
 
-    views.setOnClickPendingIntent(R.id.buttonRefresh, pendingUpdate)
+    views.setOnClickPendingIntent(R.id.layoutTotalNodesWidget, pendingUpdate)
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
