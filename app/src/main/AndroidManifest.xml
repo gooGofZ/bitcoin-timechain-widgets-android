@@ -10,7 +10,8 @@
         android:label="Bitcoin Timechain Widgets"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BitcoinTimechainWidgets">
+        android:theme="@style/Theme.BitcoinTimechainWidgets"
+        >
         <receiver
             android:name="com.googof.bitcointimechainwidgets.MempoolAppWidget"
             android:exported="false">
