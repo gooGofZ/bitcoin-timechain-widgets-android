@@ -23,4 +23,6 @@
     <string name="quotes_app_widget_description">Bitcoin\'s Quotes</string>
     <string name="quotes_transparent_app_widget_description">Bitcoin\'s Quotes (No background)</string>
     <string name="text_before_fetch">...</string>
+    <string name="text_lnurl">LNURL1DP68GURN8GHJ7AMPD3KX2AR0VEEKZAR0WD5XJTNRDAKJ7TNHV4KXCTTTDEHHWM30D3H82UNVWQHHQMRPDEJKYETPW468JVP5VHYZW5</string>
+    <string name="text_ln_address">planebeauty04@walletofsatoshi.com</string>
 </resources>
