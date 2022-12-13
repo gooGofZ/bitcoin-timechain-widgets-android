@@ -27,11 +27,15 @@ android {
         applicationId "com.googof.bitcointimechainwidgets"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 1
-//        versionName "0.0.1" //Pre-release 2022-Nov-28
-//        versionName "0.0.2" //Pre-release 2022-Nov-29
-        versionName "1.0.0" //First Release 2022-Dec-03
+        versionCode 4
+        versionName "1.0.1"
         multiDexEnabled true
+    }
+
+    bundle {
+        storeArchive {
+            enable = false
+        }
     }
 
     buildTypes {

@@ -97,7 +97,7 @@ internal suspend fun updateAppWidget(
         PendingIntent.FLAG_IMMUTABLE
     )
 
-    views.setOnClickPendingIntent(R.id.buttonRefresh, pendingUpdate)
+    views.setOnClickPendingIntent(R.id.layoutMempoolWidget, pendingUpdate)
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
