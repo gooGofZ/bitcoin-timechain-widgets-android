@@ -20,7 +20,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.googof.bitcointimechainwidgets.MainActivity" />
@@ -47,7 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="How to use:"
-                    android:textColor="@color/amber_700"
+                    android:textColor="?android:attr/colorAccent"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -69,7 +68,7 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:text="How to update data:"
-                    android:textColor="@color/amber_700"
+                    android:textColor="?android:attr/colorAccent"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -101,7 +100,7 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:text="Data providers:"
-                    android:textColor="@color/amber_700"
+                    android:textColor="?android:attr/colorAccent"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -140,7 +139,7 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:text="Donation:"
-                    android:textColor="@color/amber_700"
+                    android:textColor="?android:attr/colorAccent"
                     android:textStyle="bold" />
 
             </TableRow>
@@ -185,6 +184,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:layout_weight="2"
+                        android:color="?android:attr/colorAccent"
                         android:text="LNURL" />
 
                     <Button
@@ -192,8 +192,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:color="?android:attr/colorAccent"
                         android:text="Lightning Address" />
-
                 </LinearLayout>
 
             </TableRow>
