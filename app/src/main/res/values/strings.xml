@@ -25,4 +25,6 @@
     <string name="text_before_fetch">...</string>
     <string name="text_lnurl">LNURL1DP68GURN8GHJ7AMPD3KX2AR0VEEKZAR0WD5XJTNRDAKJ7TNHV4KXCTTTDEHHWM30D3H82UNVWQHHQMRPDEJKYETPW468JVP5VHYZW5</string>
     <string name="text_ln_address">planebeauty04@walletofsatoshi.com</string>
+
+    <string name="mostly_cloudy">Mostly cloudy</string>
 </resources>

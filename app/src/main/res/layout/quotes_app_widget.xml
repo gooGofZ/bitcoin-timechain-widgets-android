@@ -22,7 +22,7 @@
                 android:id="@+id/quoteText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Quote Text..." />
+                android:text="The Times 03/Jan/2009 Chancellor on brink of second bailout for banks." />
 
         </LinearLayout>
 
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="Speaker : Date"
+                android:text="Satoshi : 2009-01-03"
                 android:textSize="12sp"
                 android:textStyle="italic" />
 

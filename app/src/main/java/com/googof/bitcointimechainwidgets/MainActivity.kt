@@ -40,9 +40,9 @@ class MainActivity : AppCompatActivity() {
 
         // Donation
         // LNURL & Lightning Address
-        var lnUrl =
+        val lnUrl =
             "LNURL1DP68GURN8GHJ7AMPD3KX2AR0VEEKZAR0WD5XJTNRDAKJ7TNHV4KXCTTTDEHHWM30D3H82UNVWQHHQMRPDEJKYETPW468JVP5VHYZW5"
-        var lnAddress = "planebeauty04@walletofsatoshi.com"
+        val lnAddress = "planebeauty04@walletofsatoshi.com"
 
         val textLNURL = findViewById<TextView>(R.id.textLNURL)
         textLNURL.text = lnUrl
@@ -55,8 +55,8 @@ class MainActivity : AppCompatActivity() {
 
         // set on-click listener
         btnLNURL.setOnClickListener {
-            var myClipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            var myClip = ClipData.newPlainText("text", lnUrl)
+            val myClipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val myClip = ClipData.newPlainText("text", lnUrl)
             myClipboard.setPrimaryClip(myClip)
 
             // your code to perform when the user clicks on the button
@@ -65,12 +65,12 @@ class MainActivity : AppCompatActivity() {
 
         // set on-click listener
         btnLightningAddress.setOnClickListener {
-            var myClipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            var myClip = ClipData.newPlainText("text", lnAddress)
+            val myClipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val myClip = ClipData.newPlainText("text", lnAddress)
             myClipboard.setPrimaryClip(myClip)
 
             // your code to perform when the user clicks on the button
-            Toast.makeText(this@MainActivity, "Copied Ligthning Address", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, "Copied Lightning Address", Toast.LENGTH_SHORT).show()
         }
 
     }
