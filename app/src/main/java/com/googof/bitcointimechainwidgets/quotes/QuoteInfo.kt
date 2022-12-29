@@ -25,3 +25,10 @@ data class Quote(
     val speaker: String,
     val date: String,
 )
+
+data class SatoshiQuote(
+    val text: String,
+    val category: String,
+    val medium: String,
+    val date: String,
+)

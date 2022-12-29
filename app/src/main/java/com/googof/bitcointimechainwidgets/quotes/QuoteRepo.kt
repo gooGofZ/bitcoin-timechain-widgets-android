@@ -6,6 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 
+
 private const val BASE_URL = "https://bitcoinexplorer.org/api/"
 
 private val moshi = Moshi.Builder()
@@ -22,15 +23,15 @@ interface QuoteApiService {
     suspend fun getRandomQuote(): Quote
 }
 
-object QuoteRepo {
+object QuoteRepo{
 
     private val retrofitService: QuoteApiService by lazy {
         retrofit.create(QuoteApiService::class.java)
     }
 
     suspend fun getQuoteInfo(): QuoteInfo {
-        val quote = retrofitService.getRandomQuote()
 
+        val quote = retrofitService.getRandomQuote()
         return QuoteInfo.Available(
             date = quote.date,
             speaker = quote.speaker,
