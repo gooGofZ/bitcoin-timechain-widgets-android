@@ -3,6 +3,8 @@
     package="com.googof.bitcointimechainwidgets">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -12,8 +14,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BitcoinTimechainWidgets"
         >
+<!--        <receiver-->
+<!--            android:name="com.googof.bitcointimechainwidgets.MempoolAppWidget"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
+<!--            </intent-filter>-->
+
+<!--            <meta-data-->
+<!--                android:name="android.appwidget.provider"-->
+<!--                android:resource="@xml/mempool_app_widget_info" />-->
+<!--        </receiver>-->
         <receiver
-            android:name="com.googof.bitcointimechainwidgets.MempoolAppWidget"
+            android:name="com.googof.bitcointimechainwidgets.mempool.MempoolGlanceWidgetReceiver"
+            android:label="Mempool Glance"
+            android:enabled="@bool/glance_appwidget_available"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -21,15 +36,92 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/mempool_app_widget_info" />
+                android:resource="@xml/mempool_app_widget_info_glance" />
         </receiver>
+
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.quotes.QuoteInfoGlanceWidgetReceiver"
+            android:label="Bitcoin Quotes Glance"
+            android:enabled="@bool/glance_appwidget_available"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quote_app_widget_info_glance" />
+        </receiver>
+
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.satoshiquotes.SatoshiQuoteGlanceWidgetReceiver"
+            android:label="Satoshi's  Quote Glance"
+            android:enabled="@bool/glance_appwidget_available"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/satoshi_quote_glance" />
+        </receiver>
+
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.quotes.QuoteInfoTransparentGlanceWidgetReceiver"
+            android:label="Bitcoin Quotes Glance (No background)"
+            android:enabled="@bool/glance_appwidget_available"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quote_app_widget_info_glance" />
+        </receiver>
+
+<!--        <receiver-->
+<!--            android:name="com.googof.bitcointimechainwidgets.BitnodesAppWidget"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
+<!--            </intent-filter>-->
+
+<!--            <meta-data-->
+<!--                android:name="android.appwidget.provider"-->
+<!--                android:resource="@xml/total_nodes_app_widget_info" />-->
+<!--        </receiver>-->
+
+<!--        <receiver-->
+<!--            android:name="com.googof.bitcointimechainwidgets.QuotesAppWidget"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
+<!--            </intent-filter>-->
+
+<!--            <meta-data-->
+<!--                android:name="android.appwidget.provider"-->
+<!--                android:resource="@xml/quotes_app_widget_info" />-->
+<!--        </receiver>-->
+
+<!--        <receiver-->
+<!--            android:name="com.googof.bitcointimechainwidgets.QuotesTransparentAppWidget"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
+<!--            </intent-filter>-->
+
+<!--            <meta-data-->
+<!--                android:name="android.appwidget.provider"-->
+<!--                android:resource="@xml/quotes_transparent_app_widget_info" />-->
+<!--        </receiver>-->
 
         <activity
             android:name="com.googof.bitcointimechainwidgets.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

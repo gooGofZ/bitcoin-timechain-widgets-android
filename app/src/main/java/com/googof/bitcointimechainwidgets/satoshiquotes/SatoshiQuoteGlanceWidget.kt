@@ -26,7 +26,7 @@ class SatoshiQuoteGlanceWidget : GlanceAppWidget() {
     override fun Content() {
         val satoshiQuoteInfo = currentState<SatoshiQuoteInfo>()
 
-        GlanceTheme {
+        GlanceTheme() {
             when (satoshiQuoteInfo) {
                 SatoshiQuoteInfo.Loading -> {
                     AppWidgetBox(
@@ -62,10 +62,11 @@ class SatoshiQuoteGlanceWidget : GlanceAppWidget() {
 @Composable
 fun SatoshiQuoteCompose(satoshiQuote: SatoshiQuoteInfo.Available) {
     Column(
-//        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = GlanceModifier.fillMaxSize()
             .clickable(actionRunCallback<UpdateSatoshiQuoteAction>()),
     ) {
+
         Text(
             text = "Satoshi's Quote",
             style = TextStyle(
@@ -75,66 +76,23 @@ fun SatoshiQuoteCompose(satoshiQuote: SatoshiQuoteInfo.Available) {
             ),
             modifier = GlanceModifier.clickable(actionRunCallback<UpdateSatoshiQuoteAction>())
         )
-        LazyColumn {
-            item {
-                Text(
-                    text = "Category: ${satoshiQuote.category}",
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        color = ColorProvider(R.color.widget_text_color_secondary),
-                        textAlign = TextAlign.Left
-                    ),
-                    modifier = GlanceModifier.fillMaxWidth()
-                )
-            }
-            item {
-                Text(
-                    text = "Date: ${satoshiQuote.date} via ${satoshiQuote.medium}",
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        color = ColorProvider(R.color.widget_text_color_secondary),
-                        textAlign = TextAlign.Left
-                    ),
-                    modifier = GlanceModifier.fillMaxWidth()
-                )
-            }
-            item {
-                Text(
-                    text = "\t" + satoshiQuote.text,
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
-                    ),
-                    modifier = GlanceModifier.clickable(actionRunCallback<UpdateSatoshiQuoteAction>())
-                )
-            }
-        }
-//
-//        Text(
-//            text = "Satoshi's Quote",
-//            style = TextStyle(
-//                color = ColorProvider(R.color.widget_text_color),
-//                fontSize = 16.sp,
-//                fontWeight = FontWeight.Bold
-//            ),
-//            modifier = GlanceModifier.clickable(actionRunCallback<UpdateSatoshiQuoteAction>())
-//        )
-//        Text(
-//            text = satoshiQuote.text,
-//            style = TextStyle(
-//                color = ColorProvider(R.color.widget_text_color),
-//            ),
-//            modifier = GlanceModifier.clickable(actionRunCallback<UpdateSatoshiQuoteAction>())
-//        )
-//        Text(
-//            text = "${satoshiQuote.category} : ${satoshiQuote.date}",
-//            style = TextStyle(
-//                fontSize = 12.sp,
-//                color = ColorProvider(R.color.widget_text_color),
-//                fontStyle = FontStyle.Italic,
-//                textAlign = TextAlign.Right
-//            ),
-//            modifier = GlanceModifier.fillMaxWidth()
-//        )
+        Text(
+            text = satoshiQuote.text,
+            style = TextStyle(
+                color = ColorProvider(R.color.widget_text_color),
+            ),
+            modifier = GlanceModifier.clickable(actionRunCallback<UpdateSatoshiQuoteAction>())
+        )
+        Text(
+            text = "${satoshiQuote.category} : ${satoshiQuote.date}",
+            style = TextStyle(
+                fontSize = 12.sp,
+                color = ColorProvider(R.color.widget_text_color),
+                fontStyle = FontStyle.Italic,
+                textAlign = TextAlign.Right
+            ),
+            modifier = GlanceModifier.fillMaxWidth()
+        )
     }
 }
 

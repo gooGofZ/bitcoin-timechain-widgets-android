@@ -18,8 +18,14 @@
     <string name="app_name">Bitcoin Timechain Widgets</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
-    <string name="app_widget_description">Mempool Information</string>
+    <string name="mempool_app_widget_description">Mempool Information</string>
+    <string name="bitnodes_app_widget_description">Bitnodes Information</string>
+    <string name="quotes_app_widget_description">Bitcoin\'s Quotes</string>
+    <string name="satoshi_quote_app_widget_description">Satoshi\'s Quote</string>
+    <string name="quotes_transparent_app_widget_description">Bitcoin\'s Quotes (No background)</string>
     <string name="text_before_fetch">...</string>
     <string name="text_lnurl">LNURL1DP68GURN8GHJ7AMPD3KX2AR0VEEKZAR0WD5XJTNRDAKJ7TNHV4KXCTTTDEHHWM30D3H82UNVWQHHQMRPDEJKYETPW468JVP5VHYZW5</string>
     <string name="text_ln_address">planebeauty04@walletofsatoshi.com</string>
+
+    <string name="mostly_cloudy">Mostly cloudy</string>
 </resources>
