@@ -49,7 +49,7 @@ fun AppWidgetColumn(
 @Composable
 fun appWidgetBackgroundModifier() = GlanceModifier
     .fillMaxSize()
-    .padding(8.dp)
+    .padding(10.dp)
     .appWidgetBackground()
     .background(GlanceTheme.colors.background)
     .appWidgetBackgroundCornerRadius()
@@ -63,3 +63,11 @@ fun GlanceModifier.appWidgetBackgroundCornerRadius(): GlanceModifier {
     return this
 }
 
+fun GlanceModifier.appWidgetInnerCornerRadius(): GlanceModifier {
+    if (Build.VERSION.SDK_INT >= 31) {
+        cornerRadius(android.R.dimen.system_app_widget_inner_radius)
+    } else {
+        cornerRadius(8.dp)
+    }
+    return this
+}
