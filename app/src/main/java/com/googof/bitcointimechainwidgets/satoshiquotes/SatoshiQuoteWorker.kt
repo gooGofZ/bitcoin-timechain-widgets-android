@@ -1,4 +1,4 @@
-package com.googof.bitcointimechainwidgets.quotes
+package com.googof.bitcointimechainwidgets.satoshiquotes
 
 import android.content.Context
 import androidx.glance.GlanceId
@@ -8,18 +8,17 @@ import androidx.glance.appwidget.updateAll
 import androidx.work.*
 import java.time.Duration
 
-class QuoteInfoTransparentWorker(
-    private val context: Context,
-    workerParameters: WorkerParameters
+class SatoshiQuoteWorker(
+    private val context: Context, workerParameters: WorkerParameters
 ) : CoroutineWorker(context, workerParameters) {
 
     companion object {
 
-        private val uniqueWorkName = QuoteInfoTransparentWorker::class.java.simpleName
+        private val uniqueWorkName = SatoshiQuoteWorker::class.java.simpleName
 
         fun enqueue(context: Context, force: Boolean = false) {
             val manager = WorkManager.getInstance(context)
-            val requestBuilder = PeriodicWorkRequestBuilder<QuoteInfoTransparentWorker>(
+            val requestBuilder = PeriodicWorkRequestBuilder<SatoshiQuoteWorker>(
                 Duration.ofMinutes(15)
             )
             var workPolicy = ExistingPeriodicWorkPolicy.KEEP
@@ -30,29 +29,31 @@ class QuoteInfoTransparentWorker(
             }
 
             manager.enqueueUniquePeriodicWork(
-                uniqueWorkName,
-                workPolicy,
-                requestBuilder.build()
+                uniqueWorkName, workPolicy, requestBuilder.build()
             )
         }
 
+        /**
+         * Cancel any ongoing worker
+         */
+        fun cancel(context: Context) {
+            WorkManager.getInstance(context).cancelUniqueWork(uniqueWorkName)
+        }
     }
 
     override suspend fun doWork(): Result {
         val manager = GlanceAppWidgetManager(context)
-        val glanceIds = manager.getGlanceIds(QuoteInfoTransparentGlanceWidget::class.java)
+        val glanceIds = manager.getGlanceIds(SatoshiQuoteGlanceWidget::class.java)
         return try {
             // Update state to indicate loading
-            setWidgetState(glanceIds, QuoteInfo.Loading)
+            setWidgetState(glanceIds, SatoshiQuoteInfo.Loading)
             // Update state with new data
-            setWidgetState(glanceIds, QuoteRepo.getQuoteInfo())
+            setWidgetState(glanceIds, SatoshiQuoteRepo.getRandomSatoshiQuote())
 
             Result.success()
         } catch (e: Exception) {
-            setWidgetState(glanceIds, QuoteInfo.Unavailable(e.message.orEmpty()))
+            setWidgetState(glanceIds, SatoshiQuoteInfo.Unavailable(e.message.orEmpty()))
             if (runAttemptCount < 10) {
-                // Exponential backoff strategy will avoid the request to repeat
-                // too fast in case of failures.
                 Result.retry()
             } else {
                 Result.failure()
@@ -60,18 +61,13 @@ class QuoteInfoTransparentWorker(
         }
     }
 
-    /**
-     * Update the state of all widgets and then force update UI
-     */
-    private suspend fun setWidgetState(glanceIds: List<GlanceId>, newState: QuoteInfo) {
+    private suspend fun setWidgetState(glanceIds: List<GlanceId>, newState: SatoshiQuoteInfo) {
         glanceIds.forEach { glanceId ->
-            updateAppWidgetState(
-                context = context,
-                definition = QuoteInfoStateDefinition,
+            updateAppWidgetState(context = context,
+                definition = SatoshiQuoteStateDefinition,
                 glanceId = glanceId,
-                updateState = { newState }
-            )
+                updateState = { newState })
         }
-        QuoteInfoTransparentGlanceWidget().updateAll(context)
+        SatoshiQuoteGlanceWidget().updateAll(context)
     }
 }

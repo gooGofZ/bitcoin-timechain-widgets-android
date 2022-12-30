@@ -380,7 +380,7 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                     style = TextStyle(
                         color = ColorProvider(R.color.widget_text_color),
-                        fontSize = 12.sp
+                        fontSize = 10.sp
                     ),
                     modifier = GlanceModifier.clickable(actionRunCallback<UpdateMempoolAction>())
                 )

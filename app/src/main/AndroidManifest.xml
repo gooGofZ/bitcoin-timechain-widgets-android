@@ -54,6 +54,20 @@
         </receiver>
 
         <receiver
+            android:name="com.googof.bitcointimechainwidgets.satoshiquotes.SatoshiQuoteGlanceWidgetReceiver"
+            android:label="Satoshi's  Quote Glance"
+            android:enabled="@bool/glance_appwidget_available"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/satoshi_quote_glance" />
+        </receiver>
+
+        <receiver
             android:name="com.googof.bitcointimechainwidgets.quotes.QuoteInfoTransparentGlanceWidgetReceiver"
             android:label="Bitcoin Quotes Glance (No background)"
             android:enabled="@bool/glance_appwidget_available"
