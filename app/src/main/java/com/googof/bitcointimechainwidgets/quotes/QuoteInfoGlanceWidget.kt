@@ -11,6 +11,7 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.appWidgetBackground
+import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.layout.*
 import androidx.glance.text.*
 import androidx.glance.unit.*
@@ -67,23 +68,29 @@ fun QuoteCompose(quoteInfo: QuoteInfo.Available) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = GlanceModifier.fillMaxSize().clickable(actionRunCallback<UpdateQuoteAction>()),
     ) {
-        Text(
-            text = quoteInfo.text,
-            style = TextStyle(
-                color = ColorProvider(R.color.widget_text_color),
-            ),
-            modifier = GlanceModifier.clickable(actionRunCallback<UpdateQuoteAction>())
-        )
-        Text(
-            text = "${quoteInfo.speaker} : ${quoteInfo.date}",
-            style = TextStyle(
-                fontSize = 12.sp,
-                color = ColorProvider(R.color.widget_text_color),
-                fontStyle = FontStyle.Italic,
-                textAlign = TextAlign.Right
-            ),
-            modifier = GlanceModifier.fillMaxWidth()
-        )
+        LazyColumn {
+            item {
+                Text(
+                    text = quoteInfo.text,
+                    style = TextStyle(
+                        color = ColorProvider(R.color.widget_text_color),
+                    ),
+                    modifier = GlanceModifier.clickable(actionRunCallback<UpdateQuoteAction>())
+                )
+            }
+            item {
+                Text(
+                    text = "${quoteInfo.speaker} : ${quoteInfo.date}",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        color = ColorProvider(R.color.widget_text_color),
+                        fontStyle = FontStyle.Italic,
+                        textAlign = TextAlign.Right
+                    ),
+                    modifier = GlanceModifier.fillMaxWidth()
+                )
+            }
+        }
     }
 }
 

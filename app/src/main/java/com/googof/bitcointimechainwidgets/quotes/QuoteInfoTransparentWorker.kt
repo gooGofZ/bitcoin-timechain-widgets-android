@@ -36,12 +36,6 @@ class QuoteInfoTransparentWorker(
             )
         }
 
-        /**
-         * Cancel any ongoing worker
-         */
-        fun cancel(context: Context) {
-            WorkManager.getInstance(context).cancelUniqueWork(uniqueWorkName)
-        }
     }
 
     override suspend fun doWork(): Result {
