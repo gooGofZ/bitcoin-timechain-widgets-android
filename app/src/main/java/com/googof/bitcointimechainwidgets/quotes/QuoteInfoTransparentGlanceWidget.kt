@@ -3,18 +3,26 @@ package com.googof.bitcointimechainwidgets.quotes
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.sp
-import androidx.glance.*
+import androidx.glance.Button
+import androidx.glance.GlanceId
+import androidx.glance.GlanceModifier
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
-import androidx.glance.appwidget.appWidgetBackground
-import androidx.glance.layout.*
-import androidx.glance.text.*
-import androidx.glance.unit.*
-import com.googof.bitcointimechainwidgets.*
+import androidx.glance.currentState
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.Column
+import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.fillMaxWidth
+import androidx.glance.text.FontStyle
+import androidx.glance.text.Text
+import androidx.glance.text.TextAlign
+import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
+import com.googof.bitcointimechainwidgets.GlanceTheme
 import com.googof.bitcointimechainwidgets.R
 
 class QuoteInfoTransparentGlanceWidget : GlanceAppWidget() {
@@ -38,8 +46,7 @@ class QuoteInfoTransparentGlanceWidget : GlanceAppWidget() {
                     }
                 }
                 is QuoteInfo.Available -> {
-                    Column(
-                    ) {
+                    Column {
                         QuoteTransparentCompose(quoteInfo)
                     }
                 }
