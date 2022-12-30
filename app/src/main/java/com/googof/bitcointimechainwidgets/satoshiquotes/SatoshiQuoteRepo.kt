@@ -1,7 +1,5 @@
 package com.googof.bitcointimechainwidgets.satoshiquotes
 
-import com.googof.bitcointimechainwidgets.quotes.QuoteApiService
-import com.googof.bitcointimechainwidgets.quotes.QuoteInfo
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
