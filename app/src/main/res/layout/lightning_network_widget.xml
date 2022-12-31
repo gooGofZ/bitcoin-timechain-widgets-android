@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutMempoolWidget"
     style="@style/Widget.BitcoinTimechainWidgets.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/layoutTotalNodesWidget"
     android:theme="@style/Theme.BitcoinTimechainWidgets.AppWidgetContainer">
 
     <LinearLayout
@@ -17,22 +17,33 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/labelBlockHeight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Total Nodes"
-                android:textSize="18sp" />
+                android:text="Lightning Network ⚡" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textTotalNodes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/text_before_fetch"
-                android:textSize="20sp"
+                android:text="Capacity" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="5,000 ₿"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -40,22 +51,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Snapshot time"  />
+                android:text="Channels" />
 
             <TextView
-                android:id="@+id/textSnapshotTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/text_before_fetch"
+                android:text="70,000"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -63,34 +74,26 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="5dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Last updated: "
-                android:textSize="12sp" />
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Nodes" />
 
             <TextView
-                android:id="@+id/textLastUpdated"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="@string/text_before_fetch"
-                android:textSize="12sp"
-                android:textStyle="italic" />
-
-<!--            <Button-->
-<!--                android:id="@+id/buttonRefresh"-->
-<!--                android:layout_width="30dp"-->
-<!--                android:layout_height="30dp"-->
-<!--                android:background="@android:color/transparent"-->
-<!--                android:gravity="center"-->
-<!--                android:padding="0dp"-->
-<!--                android:text="🔄" />-->
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="15,000"
+                android:textStyle="bold" />
 
         </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>
