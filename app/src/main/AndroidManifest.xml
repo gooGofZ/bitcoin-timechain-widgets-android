@@ -14,17 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BitcoinTimechainWidgets"
         >
-<!--        <receiver-->
-<!--            android:name="com.googof.bitcointimechainwidgets.MempoolAppWidget"-->
-<!--            android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
-<!--            </intent-filter>-->
 
-<!--            <meta-data-->
-<!--                android:name="android.appwidget.provider"-->
-<!--                android:resource="@xml/mempool_app_widget_info" />-->
-<!--        </receiver>-->
         <receiver
             android:name="com.googof.bitcointimechainwidgets.mempool.MempoolGlanceWidgetReceiver"
             android:label="Mempool Glance"
@@ -38,6 +28,36 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/mempool_app_widget_info_glance" />
         </receiver>
+
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.mempool.transactionfees.TransactionFeesGlanceWidgetReceiver"
+            android:label="Transaction Fees"
+            android:enabled="@bool/glance_appwidget_available"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/transaction_fees_widget_info_glance" />
+        </receiver>
+
+
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.mempool.blockheight.BlockHeightGlanceWidgetReceiver"
+            android:label="Block Height"
+            android:enabled="@bool/glance_appwidget_available"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/block_height_widget_glance" />
+        </receiver>
+
 
         <receiver
             android:name="com.googof.bitcointimechainwidgets.quotes.QuoteInfoGlanceWidgetReceiver"
