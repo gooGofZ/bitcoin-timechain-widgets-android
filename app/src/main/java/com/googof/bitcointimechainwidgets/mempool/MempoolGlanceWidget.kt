@@ -240,7 +240,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                     text = "Low Priority",
                     style = TextStyle(
                         color = ColorProvider(R.color.widget_text_color),
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center
                     )
                 )
             }
@@ -253,7 +254,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                     text = "Medium Priority",
                     style = TextStyle(
                         color = ColorProvider(R.color.widget_text_color),
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center
                     )
                 )
             }
@@ -267,7 +269,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                     text = "High Priority",
                     style = TextStyle(
                         color = ColorProvider(R.color.widget_text_color),
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center
                     )
                 )
             }
