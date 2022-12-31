@@ -20,6 +20,8 @@
     <string name="add_widget">Add widget</string>
     <string name="mempool_app_widget_description">Mempool Information</string>
     <string name="bitnodes_app_widget_description">Bitnodes Information</string>
+    <string name="transaction_fees_widget_description">Transaction Fees</string>
+    <string name="block_height_widget_description">Block Height</string>
     <string name="quotes_app_widget_description">Bitcoin\'s Quotes</string>
     <string name="satoshi_quote_app_widget_description">Satoshi\'s Quote</string>
     <string name="quotes_transparent_app_widget_description">Bitcoin\'s Quotes (No background)</string>
