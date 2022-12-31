@@ -19,6 +19,11 @@ sealed interface MempoolInfo {
         val count: Int,
         val blockHeight: String,
         val totalNode: Int,
+
+        val ln_channel_count: Long,
+        val ln_node_count: Long,
+        val ln_total_capacity: Long,
+
     ) : MempoolInfo
 
     @Serializable
@@ -44,6 +49,17 @@ data class UnconfirmedTX(
     val count: Int
 )
 
+//Lightning Network
+data class LightningNetworkData(
+    val channel_count: Long,
+    val node_count: Long,
+    val total_capacity: Long,
+    val tor_nodes: Long,
+)
+
+data class LightningNetwork(
+    val latest: LightningNetworkData
+)
 
 //Bitnodes.io Data
 data class Snapshot(

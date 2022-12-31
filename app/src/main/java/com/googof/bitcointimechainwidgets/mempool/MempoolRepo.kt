@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 
-private const val BASE_URL_MEMPOOL= "https://mempool.space/api/"
+private const val BASE_URL_MEMPOOL = "https://mempool.space/api/"
 private const val BASE_URL_BITNODES_IO = "https://bitnodes.io/"
 
 private val moshi = Moshi.Builder()
@@ -35,6 +35,9 @@ interface MempoolApiService {
 
     @GET("mempool")
     suspend fun getUncomfirmedTX(): UnconfirmedTX
+
+    @GET("v1/lightning/statistics/latest")
+    suspend fun getLightningNetwork(): LightningNetwork
 }
 
 interface BitnodesApiService {
@@ -58,7 +61,9 @@ object MempoolRepo {
         val hashRate = retrofitService.getHashrate()
         val unconfirmedTX = retrofitService.getUncomfirmedTX()
         val nodes = retrofitBitnodesService.getSnapshots()
+        val lightningNetwork = retrofitService.getLightningNetwork()
 
+        println(lightningNetwork.latest)
         return MempoolInfo.Available(
             fastestFee = fees.fastestFee,
             halfHourFee = fees.halfHourFee,
@@ -70,8 +75,11 @@ object MempoolRepo {
             count = unconfirmedTX.count,
             blockHeight = blockHeight,
 
-            totalNode = nodes.count
+            totalNode = nodes.count,
 
+            ln_channel_count = lightningNetwork.latest.channel_count,
+            ln_node_count = lightningNetwork.latest.node_count,
+            ln_total_capacity = lightningNetwork.latest.total_capacity / 100000000
         )
     }
 }

@@ -30,4 +30,5 @@
     <string name="text_ln_address">planebeauty04@walletofsatoshi.com</string>
 
     <string name="mostly_cloudy">Mostly cloudy</string>
+    <string name="lightning_network_widget_description">Lightning Network Statistics</string>
 </resources>
