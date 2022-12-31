@@ -76,24 +76,24 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
     ) {
 
         //Header
-//        Row(
-//            modifier = GlanceModifier.wrapContentHeight().fillMaxWidth(),
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            Column(
-//                modifier = GlanceModifier.defaultWeight(),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Text(
-//                    text = "Transaction Fees Priority",
-//                    style = TextStyle(
-//                        color = ColorProvider(R.color.widget_text_color),
-//                    ),
-//                    modifier = GlanceModifier.clickable(actionRunCallback<UpdateTransactionFeesAction>())
-//                )
-//            }
-//        }
+        Row(
+            modifier = GlanceModifier.wrapContentHeight().fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Column(
+                modifier = GlanceModifier.defaultWeight(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Transaction Fees Priority",
+                    style = TextStyle(
+                        color = ColorProvider(R.color.widget_text_color),
+                    ),
+                    modifier = GlanceModifier.clickable(actionRunCallback<UpdateTransactionFeesAction>())
+                )
+            }
+        }
         //Fees
         Row(
             modifier = GlanceModifier.wrapContentHeight().fillMaxWidth().padding(top = 2.dp)
@@ -109,7 +109,6 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                     text = "Low",
                     style = TextStyle(
                         color = ColorProvider(R.color.widget_text_color),
-                        fontSize = 12.sp
                     )
                 )
             }
@@ -122,7 +121,6 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                     text = "Medium",
                     style = TextStyle(
                         color = ColorProvider(R.color.widget_text_color),
-                        fontSize = 12.sp
                     )
                 )
             }
@@ -135,8 +133,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 Text(
                     text = "High",
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
-                        fontSize = 12.sp
+                        color = ColorProvider(R.color.widget_text_color)
                     )
                 )
             }
