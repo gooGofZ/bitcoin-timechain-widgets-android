@@ -61,8 +61,6 @@ class MempoolGlanceWidget : GlanceAppWidget() {
                 }
                 is MempoolInfo.Available -> {
                     AppWidgetColumn(
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
                     ) {
                         MempoolCompose(mempoolInfo)
                     }
