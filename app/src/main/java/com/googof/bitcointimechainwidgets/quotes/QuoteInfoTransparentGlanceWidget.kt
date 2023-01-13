@@ -42,7 +42,7 @@ class QuoteInfoTransparentGlanceWidget : GlanceAppWidget() {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        CircularProgressIndicator(color = ColorProvider(R.color.white))
+                        CircularProgressIndicator()
                     }
                 }
                 is QuoteInfo.Available -> {
@@ -57,7 +57,7 @@ class QuoteInfoTransparentGlanceWidget : GlanceAppWidget() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text("Data not available")
-                        Button("Refresh", actionRunCallback<UpdateQuoteAction>())
+                        Button("Refresh", actionRunCallback<UpdateQuoteTransparentAction>())
                     }
                 }
             }
@@ -69,20 +69,21 @@ class QuoteInfoTransparentGlanceWidget : GlanceAppWidget() {
 fun QuoteTransparentCompose(quoteInfo: QuoteInfo.Available) {
     Column(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = GlanceModifier.fillMaxSize().clickable(actionRunCallback<UpdateQuoteTransparentAction>()),
+        modifier = GlanceModifier.fillMaxSize()
+            .clickable(actionRunCallback<UpdateQuoteTransparentAction>()),
     ) {
         Text(
             text = quoteInfo.text,
             style = TextStyle(
-                color = ColorProvider(R.color.widget_text_color),
+                color = GlanceTheme.colors.textColorPrimary,
             ),
             modifier = GlanceModifier.clickable(actionRunCallback<UpdateQuoteTransparentAction>())
         )
         Text(
             text = "${quoteInfo.speaker} : ${quoteInfo.date}",
             style = TextStyle(
+                color = GlanceTheme.colors.textColorPrimary,
                 fontSize = 12.sp,
-                color = ColorProvider(R.color.widget_text_color),
                 fontStyle = FontStyle.Italic,
                 textAlign = TextAlign.Right
             ),

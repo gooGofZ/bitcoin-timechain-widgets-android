@@ -31,16 +31,12 @@ class SatoshiQuoteGlanceWidget : GlanceAppWidget() {
                 SatoshiQuoteInfo.Loading -> {
                     AppWidgetBox(
                         contentAlignment = Alignment.Center,
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
                     ) {
                         CircularProgressIndicator(color = ColorProvider(R.color.white))
                     }
                 }
                 is SatoshiQuoteInfo.Available -> {
                     AppWidgetColumn(
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
                     ) {
                         SatoshiQuoteCompose(satoshiQuoteInfo)
                     }
@@ -69,7 +65,7 @@ fun SatoshiQuoteCompose(satoshiQuote: SatoshiQuoteInfo.Available) {
         Text(
             text = "Satoshi's Quote",
             style = TextStyle(
-                color = ColorProvider(R.color.widget_text_color),
+                color = GlanceTheme.colors.primary,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             ),
@@ -80,8 +76,8 @@ fun SatoshiQuoteCompose(satoshiQuote: SatoshiQuoteInfo.Available) {
                 Text(
                     text = "Category: ${satoshiQuote.category}",
                     style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary,
                         fontSize = 12.sp,
-                        color = ColorProvider(R.color.widget_text_color_secondary),
                         textAlign = TextAlign.Left
                     ),
                     modifier = GlanceModifier.fillMaxWidth()
@@ -91,18 +87,18 @@ fun SatoshiQuoteCompose(satoshiQuote: SatoshiQuoteInfo.Available) {
                 Text(
                     text = "Date: ${satoshiQuote.date} via ${satoshiQuote.medium}",
                     style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary,
                         fontSize = 12.sp,
-                        color = ColorProvider(R.color.widget_text_color_secondary),
                         textAlign = TextAlign.Left
                     ),
                     modifier = GlanceModifier.fillMaxWidth()
                 )
             }
             item {
-                Text(
+                Text( //Long quote text
                     text = "\t" + satoshiQuote.text,
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.textColorPrimary,
                     ),
                     modifier = GlanceModifier.clickable(actionRunCallback<UpdateSatoshiQuoteAction>())
                 )

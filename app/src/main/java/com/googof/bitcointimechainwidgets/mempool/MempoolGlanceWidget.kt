@@ -13,7 +13,6 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
-import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.layout.*
 import androidx.glance.text.*
 import androidx.glance.unit.*
@@ -51,19 +50,12 @@ class MempoolGlanceWidget : GlanceAppWidget() {
         GlanceTheme {
             when (mempoolInfo) {
                 MempoolInfo.Loading -> {
-                    AppWidgetBox(
-                        contentAlignment = Alignment.Center,
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
-                    ) {
-                        CircularProgressIndicator(color = ColorProvider(R.color.white))//color color = ColorProvider(R.color.widget_text_color))
+                    AppWidgetBox(contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
                     }
                 }
                 is MempoolInfo.Available -> {
-                    AppWidgetColumn(
-                    ) {
-                        MempoolCompose(mempoolInfo)
-                    }
+                    MempoolCompose(mempoolInfo)
                 }
 
                 is MempoolInfo.Unavailable -> {
@@ -82,14 +74,14 @@ class MempoolGlanceWidget : GlanceAppWidget() {
 
 @Composable
 fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
-    Column(
+    AppWidgetColumn(
         verticalAlignment = Alignment.CenterVertically,
         modifier = GlanceModifier.fillMaxSize().clickable(actionRunCallback<UpdateMempoolAction>()),
     ) {
+
         //Block Height
         Row(
-            modifier = GlanceModifier.wrapContentHeight()
-                .fillMaxWidth()
+            modifier = GlanceModifier.wrapContentHeight().fillMaxWidth()
                 .clickable(actionRunCallback<UpdateMempoolAction>()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -102,7 +94,7 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 Text(
                     text = "Block Height ",
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.textColorPrimary,
                     ),
                 )
             }
@@ -111,13 +103,11 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = mempoolInfo.blockHeight,
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                Text(//Block Height Text
+                    text = mempoolInfo.blockHeight, style = TextStyle(
+                        color = GlanceTheme.colors.primary,
                         fontWeight = FontWeight.Bold
-                    ),
-                    modifier = GlanceModifier.clickable(actionRunCallback<UpdateMempoolAction>())
+                    ), modifier = GlanceModifier.clickable(actionRunCallback<UpdateMempoolAction>())
                 )
             }
         }
@@ -133,9 +123,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Hash Rate",
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                    text = "Hash Rate", style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary,
                     )
                 )
             }
@@ -144,10 +133,10 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
+                Text( //Hash Rate Text
                     text = "${(mempoolInfo.currentHashrate / 1000000000000000000).toInt()} EH/s",
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.primary,
                         fontWeight = FontWeight.Bold
                     ),
                     modifier = GlanceModifier.clickable(actionRunCallback<UpdateMempoolAction>())
@@ -167,9 +156,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Total Node",
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                    text = "Total Node", style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary,
                     )
                 )
             }
@@ -178,13 +166,11 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "%,d".format(mempoolInfo.totalNode),
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                Text( //Total Node Text
+                    text = "%,d".format(mempoolInfo.totalNode), style = TextStyle(
+                        color = GlanceTheme.colors.primary,
                         fontWeight = FontWeight.Bold
-                    ),
-                    modifier = GlanceModifier.clickable(actionRunCallback<UpdateMempoolAction>())
+                    ), modifier = GlanceModifier.clickable(actionRunCallback<UpdateMempoolAction>())
                 )
             }
         }
@@ -201,9 +187,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Unconfirmed",
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                    text = "Unconfirmed", style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary,
                     )
                 )
             }
@@ -212,13 +197,11 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "%,d".format(mempoolInfo.count) + " TXs",
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                Text( //Unconfirmed
+                    text = "%,d".format(mempoolInfo.count) + " TXs", style = TextStyle(
+                        color = GlanceTheme.colors.primary,
                         fontWeight = FontWeight.Bold
-                    ),
-                    modifier = GlanceModifier.clickable(actionRunCallback<UpdateMempoolAction>())
+                    ), modifier = GlanceModifier.clickable(actionRunCallback<UpdateMempoolAction>())
                 )
             }
         }
@@ -235,9 +218,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Low Priority",
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                    text = "Low Priority", style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary,
                         fontSize = 12.sp,
                         textAlign = TextAlign.Center
                     )
@@ -249,9 +231,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Medium Priority",
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                    text = "Medium Priority", style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary,
                         fontSize = 12.sp,
                         textAlign = TextAlign.Center
                     )
@@ -264,9 +245,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "High Priority",
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                    text = "High Priority", style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary,
                         fontSize = 12.sp,
                         textAlign = TextAlign.Center
                     )
@@ -283,10 +263,9 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = mempoolInfo.hourFee,
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                Text( //Low
+                    text = mempoolInfo.hourFee, style = TextStyle(
+                        color = GlanceTheme.colors.primary,
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -296,10 +275,9 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = mempoolInfo.halfHourFee,
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                Text( //Medium
+                    text = mempoolInfo.halfHourFee, style = TextStyle(
+                        color = GlanceTheme.colors.primary,
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -310,10 +288,9 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = mempoolInfo.fastestFee,
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                Text( //High
+                    text = mempoolInfo.fastestFee, style = TextStyle(
+                        color = GlanceTheme.colors.primary,
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -331,10 +308,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "sat/VB",
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
-                        fontSize = 12.sp
+                    text = "sat/VB", style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary, fontSize = 12.sp
                     )
                 )
             }
@@ -344,10 +319,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "sat/VB",
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
-                        fontSize = 12.sp
+                    text = "sat/VB", style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary, fontSize = 12.sp
                     )
                 )
             }
@@ -358,10 +331,8 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "sat/VB",
-                    style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
-                        fontSize = 12.sp
+                    text = "sat/VB", style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary, fontSize = 12.sp
                     )
                 )
             }
@@ -380,8 +351,7 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                     text = "Updated: " + LocalDateTime.now()
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
-                        fontSize = 10.sp
+                        color = GlanceTheme.colors.textColorPrimary, fontSize = 10.sp
                     ),
                     modifier = GlanceModifier.clickable(actionRunCallback<UpdateMempoolAction>())
                 )
@@ -395,9 +365,7 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
  */
 class UpdateMempoolAction : ActionCallback {
     override suspend fun onAction(
-        context: Context,
-        glanceId: GlanceId,
-        parameters: ActionParameters
+        context: Context, glanceId: GlanceId, parameters: ActionParameters
     ) {
         // Force the worker to refresh
         MempoolWorker.enqueue(context = context, force = true)

@@ -36,16 +36,12 @@ class LightningNetworkGlanceWidget : GlanceAppWidget() {
                 MempoolInfo.Loading -> {
                     AppWidgetBox(
                         contentAlignment = Alignment.Center,
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
                     ) {
                         CircularProgressIndicator(color = ColorProvider(R.color.white))
                     }
                 }
                 is MempoolInfo.Available -> {
                     AppWidgetColumn(
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
                     ) {
                         LightningNetworkCompose(mempoolInfo)
                     }
@@ -70,18 +66,26 @@ class LightningNetworkGlanceWidget : GlanceAppWidget() {
 fun LightningNetworkCompose(mempoolInfo: MempoolInfo.Available) {
     Column(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = GlanceModifier.fillMaxWidth()
+        modifier = GlanceModifier.fillMaxSize()
             .clickable(actionRunCallback<UpdateBlockHeightAction>()),
     ) {
-        Text(
-            text = "Lightning Network ⚡",
-            style = TextStyle(
-                color = ColorProvider(R.color.widget_text_color),
-            ),
-            modifier = GlanceModifier.defaultWeight()
-                .clickable(actionRunCallback<UpdateLightningNetworkAction>())
-        )
+        //Header
+        Row(
+            modifier = GlanceModifier.wrapContentHeight()
+                .fillMaxWidth()
+                .clickable(actionRunCallback<UpdateMempoolAction>()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Lightning Network ⚡",
+                style = TextStyle(
+                    color = GlanceTheme.colors.textColorPrimary,
+                    textAlign = TextAlign.Center
+                ),
+                modifier = GlanceModifier.defaultWeight()
+                    .clickable(actionRunCallback<UpdateLightningNetworkAction>())
+            )
+        }
         //Capacity
         Row(
             modifier = GlanceModifier.wrapContentHeight()
@@ -92,7 +96,7 @@ fun LightningNetworkCompose(mempoolInfo: MempoolInfo.Available) {
             Text(
                 text = "Capacity",
                 style = TextStyle(
-                    color = ColorProvider(R.color.widget_text_color),
+                    color = GlanceTheme.colors.textColorPrimary,
                     textAlign = TextAlign.Center
                 ),
                 modifier = GlanceModifier.defaultWeight()
@@ -102,7 +106,7 @@ fun LightningNetworkCompose(mempoolInfo: MempoolInfo.Available) {
             Text(
                 text = "%,d".format(mempoolInfo.ln_total_capacity) + " ₿",
                 style = TextStyle(
-                    color = ColorProvider(R.color.widget_text_color),
+                    color = GlanceTheme.colors.primary,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
@@ -121,7 +125,7 @@ fun LightningNetworkCompose(mempoolInfo: MempoolInfo.Available) {
             Text(
                 text = "Channels",
                 style = TextStyle(
-                    color = ColorProvider(R.color.widget_text_color),
+                    color = GlanceTheme.colors.textColorPrimary,
                     textAlign = TextAlign.Center,
                 ),
                 modifier = GlanceModifier.defaultWeight()
@@ -131,7 +135,7 @@ fun LightningNetworkCompose(mempoolInfo: MempoolInfo.Available) {
             Text(
                 text = "%,d".format(mempoolInfo.ln_channel_count),
                 style = TextStyle(
-                    color = ColorProvider(R.color.widget_text_color),
+                    color = GlanceTheme.colors.primary,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
@@ -150,7 +154,7 @@ fun LightningNetworkCompose(mempoolInfo: MempoolInfo.Available) {
             Text(
                 text = "Nodes",
                 style = TextStyle(
-                    color = ColorProvider(R.color.widget_text_color),
+                    color = GlanceTheme.colors.textColorPrimary,
                     textAlign = TextAlign.Center,
                 ),
                 modifier = GlanceModifier.defaultWeight()
@@ -160,7 +164,7 @@ fun LightningNetworkCompose(mempoolInfo: MempoolInfo.Available) {
             Text(
                 text = "%,d".format(mempoolInfo.ln_node_count),
                 style = TextStyle(
-                    color = ColorProvider(R.color.widget_text_color),
+                    color = GlanceTheme.colors.primary,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,

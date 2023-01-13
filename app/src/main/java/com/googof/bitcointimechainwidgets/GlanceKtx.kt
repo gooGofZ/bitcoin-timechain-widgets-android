@@ -14,6 +14,10 @@ import androidx.glance.layout.ColumnScope
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 
+/**
+ * Provide a Box composable using the system parameters for app widgets background with rounded
+ * corners and background color.
+ */
 @Composable
 fun AppWidgetBox(
     modifier: GlanceModifier = GlanceModifier,
@@ -63,3 +67,11 @@ fun GlanceModifier.appWidgetBackgroundCornerRadius(): GlanceModifier {
     return this
 }
 
+fun GlanceModifier.appWidgetInnerCornerRadius(): GlanceModifier {
+    if (Build.VERSION.SDK_INT >= 31) {
+        cornerRadius(android.R.dimen.system_app_widget_inner_radius)
+    } else {
+        cornerRadius(8.dp)
+    }
+    return this
+}
