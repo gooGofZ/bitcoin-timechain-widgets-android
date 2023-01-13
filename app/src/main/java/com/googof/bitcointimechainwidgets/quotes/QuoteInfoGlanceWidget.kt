@@ -10,13 +10,10 @@ import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
-import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.layout.*
 import androidx.glance.text.*
-import androidx.glance.unit.*
 import com.googof.bitcointimechainwidgets.*
-import com.googof.bitcointimechainwidgets.R
 
 class QuoteInfoGlanceWidget : GlanceAppWidget() {
 
@@ -33,16 +30,12 @@ class QuoteInfoGlanceWidget : GlanceAppWidget() {
                 QuoteInfo.Loading -> {
                     AppWidgetBox(
                         contentAlignment = Alignment.Center,
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
                     ) {
-                        CircularProgressIndicator(color = ColorProvider(R.color.white))
+                        CircularProgressIndicator()
                     }
                 }
                 is QuoteInfo.Available -> {
                     AppWidgetColumn(
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
                     ) {
                         QuoteCompose(quoteInfo)
                     }
@@ -73,7 +66,7 @@ fun QuoteCompose(quoteInfo: QuoteInfo.Available) {
                 Text(
                     text = quoteInfo.text,
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.textColorPrimary,
                     ),
                     modifier = GlanceModifier.clickable(actionRunCallback<UpdateQuoteAction>())
                 )
@@ -82,8 +75,8 @@ fun QuoteCompose(quoteInfo: QuoteInfo.Available) {
                 Text(
                     text = "${quoteInfo.speaker} : ${quoteInfo.date}",
                     style = TextStyle(
+                        color = GlanceTheme.colors.textColorPrimary,
                         fontSize = 12.sp,
-                        color = ColorProvider(R.color.widget_text_color),
                         fontStyle = FontStyle.Italic,
                         textAlign = TextAlign.Right
                     ),

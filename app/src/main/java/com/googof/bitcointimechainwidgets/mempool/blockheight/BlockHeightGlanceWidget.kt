@@ -39,16 +39,12 @@ class BlockHeightGlanceWidget : GlanceAppWidget() {
                 MempoolInfo.Loading -> {
                     AppWidgetBox(
                         contentAlignment = Alignment.Center,
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
                     ) {
-                        CircularProgressIndicator(color = ColorProvider(R.color.white))
+                        CircularProgressIndicator()
                     }
                 }
                 is MempoolInfo.Available -> {
                     AppWidgetColumn(
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
                     ) {
                         BlockHeightCompose(mempoolInfo)
                     }
@@ -81,7 +77,7 @@ fun BlockHeightCompose(mempoolInfo: MempoolInfo.Available) {
         Text(
             text = "Block Height",
             style = TextStyle(
-                color = ColorProvider(R.color.widget_text_color),
+                color = GlanceTheme.colors.textColorPrimary,
             ),
             modifier = GlanceModifier.clickable(actionRunCallback<UpdateBlockHeightAction>())
         )
@@ -89,7 +85,7 @@ fun BlockHeightCompose(mempoolInfo: MempoolInfo.Available) {
         Text(
             text = mempoolInfo.blockHeight,
             style = TextStyle(
-                color = ColorProvider(R.color.widget_text_color),
+                color = GlanceTheme.colors.primary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
             ),

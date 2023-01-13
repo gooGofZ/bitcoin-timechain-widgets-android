@@ -38,16 +38,12 @@ class TransactionFeesGlanceWidget : GlanceAppWidget() {
                 MempoolInfo.Loading -> {
                     AppWidgetBox(
                         contentAlignment = Alignment.Center,
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
                     ) {
                         CircularProgressIndicator(color = ColorProvider(R.color.white))
                     }
                 }
                 is MempoolInfo.Available -> {
                     AppWidgetColumn(
-                        modifier = GlanceModifier.appWidgetBackground()
-                            .background(R.color.widget_background_color)
                     ) {
                         TransactionFeesCompose(mempoolInfo)
                     }
@@ -72,28 +68,10 @@ class TransactionFeesGlanceWidget : GlanceAppWidget() {
 fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
     Column(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = GlanceModifier.fillMaxSize().clickable(actionRunCallback<UpdateMempoolAction>()),
+        modifier = GlanceModifier.fillMaxSize()
+            .clickable(actionRunCallback<UpdateMempoolAction>()),
     ) {
 
-        //Header
-//        Row(
-//            modifier = GlanceModifier.wrapContentHeight().fillMaxWidth(),
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            Column(
-//                modifier = GlanceModifier.defaultWeight(),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Text(
-//                    text = "Transaction Fees Priority",
-//                    style = TextStyle(
-//                        color = ColorProvider(R.color.widget_text_color),
-//                    ),
-//                    modifier = GlanceModifier.clickable(actionRunCallback<UpdateTransactionFeesAction>())
-//                )
-//            }
-//        }
         //Fees
         Row(
             modifier = GlanceModifier.wrapContentHeight().fillMaxWidth().padding(top = 2.dp)
@@ -108,7 +86,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 Text(
                     text = "Low",
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.textColorPrimary,
                         fontSize = 12.sp
                     )
                 )
@@ -121,7 +99,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 Text(
                     text = "Medium",
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.textColorPrimary,
                         fontSize = 12.sp
                     )
                 )
@@ -135,7 +113,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 Text(
                     text = "High",
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.textColorPrimary,
                         fontSize = 12.sp
                     )
                 )
@@ -154,7 +132,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 Text(
                     text = mempoolInfo.hourFee,
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.primary,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
@@ -168,7 +146,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 Text(
                     text = mempoolInfo.halfHourFee,
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.primary,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
@@ -183,7 +161,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 Text(
                     text = mempoolInfo.fastestFee,
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.primary,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
@@ -204,7 +182,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 Text(
                     text = "sat/VB",
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.textColorSecondary,
                         fontSize = 12.sp
                     )
                 )
@@ -217,7 +195,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 Text(
                     text = "sat/VB",
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.textColorSecondary,
                         fontSize = 12.sp
                     )
                 )
@@ -231,7 +209,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 Text(
                     text = "sat/VB",
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.textColorSecondary,
                         fontSize = 12.sp
                     )
                 )
@@ -251,7 +229,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                     text = "Updated: " + LocalDateTime.now()
                         .format(DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm:ss")),
                     style = TextStyle(
-                        color = ColorProvider(R.color.widget_text_color),
+                        color = GlanceTheme.colors.textColorSecondary,
                         fontSize = 10.sp
                     ),
                     modifier = GlanceModifier.clickable(actionRunCallback<UpdateTransactionFeesAction>())

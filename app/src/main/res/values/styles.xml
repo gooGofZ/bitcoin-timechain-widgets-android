@@ -18,9 +18,4 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Widget.BitcoinTimechainWidgets.TextView.CurrentTemperature" parent="android:Widget.TextView">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textSize">48sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
 </resources>
