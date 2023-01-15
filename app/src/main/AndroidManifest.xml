@@ -113,6 +113,19 @@
                 android:resource="@xml/quote_app_widget_info_glance" />
         </receiver>
 
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.mempool.blocks.BlocksGlanceWidgetReceiver"
+            android:enabled="@bool/glance_appwidget_available"
+            android:exported="false"
+            android:label="Blocks">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/blocks_widget_glance" />
+        </receiver>
         <activity
             android:name="com.googof.bitcointimechainwidgets.MainActivity"
             android:exported="true">

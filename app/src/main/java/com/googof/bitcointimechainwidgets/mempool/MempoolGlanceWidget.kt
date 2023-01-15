@@ -22,22 +22,9 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class MempoolGlanceWidget : GlanceAppWidget() {
-    companion object {
-        private val thinMode = DpSize(120.dp, 120.dp)
-        private val smallMode = DpSize(184.dp, 184.dp)
-        private val mediumMode = DpSize(260.dp, 200.dp)
-        private val largeMode = DpSize(260.dp, 280.dp)
-    }
 
     // Override the state definition to use our custom one using Kotlin serialization
     override val stateDefinition = MempoolInfoStateDefinition
-
-    // Define the supported sizes for this widget.
-    // The system will decide which one fits better based on the available space
-    override val sizeMode: SizeMode = SizeMode.Responsive(
-        setOf(thinMode, smallMode, mediumMode, largeMode)
-    )
-
 
     @Composable
     override fun Content() {
@@ -349,7 +336,7 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
             ) {
                 Text(
                     text = "Updated: " + LocalDateTime.now()
-                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                        .format(DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm:ss")),
                     style = TextStyle(
                         color = GlanceTheme.colors.textColorPrimary, fontSize = 10.sp
                     ),
