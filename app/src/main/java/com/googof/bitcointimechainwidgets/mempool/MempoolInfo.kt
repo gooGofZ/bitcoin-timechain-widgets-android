@@ -2,6 +2,7 @@ package com.googof.bitcointimechainwidgets.mempool
 
 import kotlinx.serialization.Serializable
 
+
 @Serializable
 sealed interface MempoolInfo {
     @Serializable
@@ -19,10 +20,10 @@ sealed interface MempoolInfo {
         val count: Int,
         val blockHeight: String,
         val totalNode: Int,
-
         val ln_channel_count: Long,
         val ln_node_count: Long,
         val ln_total_capacity: Long,
+        val blocks: List<Block>
 
     ) : MempoolInfo
 
@@ -47,6 +48,20 @@ data class Hashrate(
 
 data class UnconfirmedTX(
     val count: Int
+)
+
+@Serializable
+data class Block(
+    val height: String,
+    val size: Int,
+    val weight: Int,
+    val timestamp: Long,
+    val extras: Extras
+)
+
+@Serializable
+data class Extras(
+    val reward: Int,
 )
 
 //Lightning Network
@@ -75,3 +90,4 @@ data class Nodes(
     val previous: String?,
     val results: List<Snapshot>,
 )
+
