@@ -17,7 +17,7 @@
             android:name="com.googof.bitcointimechainwidgets.mempool.MempoolGlanceWidgetReceiver"
             android:enabled="@bool/glance_appwidget_available"
             android:exported="false"
-            android:label="Mempool Glance">
+            android:label="@string/mempool_app_widget_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -31,7 +31,7 @@
             android:name="com.googof.bitcointimechainwidgets.mempool.lightning.LightningNetworkGlanceWidgetReceiver"
             android:enabled="@bool/glance_appwidget_available"
             android:exported="false"
-            android:label="Lightning Network Statistics">
+            android:label="@string/lightning_network_widget_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -42,10 +42,24 @@
         </receiver>
 
         <receiver
+            android:name="com.googof.bitcointimechainwidgets.mempool.halving.NextHalvingGlanceWidgetReceiver"
+            android:enabled="@bool/glance_appwidget_available"
+            android:exported="false"
+            android:label="@string/next_halving_widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/next_halving_widget_info_glance" />
+        </receiver>
+
+        <receiver
             android:name="com.googof.bitcointimechainwidgets.mempool.transactionfees.TransactionFeesGlanceWidgetReceiver"
             android:enabled="@bool/glance_appwidget_available"
             android:exported="false"
-            android:label="Transaction Fees">
+            android:label="@string/transaction_fees_widget_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -60,7 +74,7 @@
             android:name="com.googof.bitcointimechainwidgets.mempool.blockheight.BlockHeightGlanceWidgetReceiver"
             android:enabled="@bool/glance_appwidget_available"
             android:exported="false"
-            android:label="Block Height">
+            android:label="@string/block_height_widget_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -74,8 +88,7 @@
         <receiver
             android:name="com.googof.bitcointimechainwidgets.quotes.QuoteInfoGlanceWidgetReceiver"
             android:enabled="@bool/glance_appwidget_available"
-            android:exported="false"
-            android:label="Bitcoin Quotes Glance">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -88,8 +101,7 @@
         <receiver
             android:name="com.googof.bitcointimechainwidgets.satoshiquotes.SatoshiQuoteGlanceWidgetReceiver"
             android:enabled="@bool/glance_appwidget_available"
-            android:exported="false"
-            android:label="Satoshi's  Quote Glance">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -103,7 +115,7 @@
             android:name="com.googof.bitcointimechainwidgets.quotes.QuoteInfoTransparentGlanceWidgetReceiver"
             android:enabled="@bool/glance_appwidget_available"
             android:exported="false"
-            android:label="Bitcoin Quotes Glance (No background)">
+            android:label="No background">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -117,7 +129,7 @@
             android:name="com.googof.bitcointimechainwidgets.mempool.blocks.BlocksGlanceWidgetReceiver"
             android:enabled="@bool/glance_appwidget_available"
             android:exported="false"
-            android:label="Blocks">
+            android:label="@string/blocks_widget_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
