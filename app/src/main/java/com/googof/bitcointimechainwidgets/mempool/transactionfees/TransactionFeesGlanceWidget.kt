@@ -180,7 +180,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "sat/VB",
+                    text = "sat/vB",
                     style = TextStyle(
                         color = GlanceTheme.colors.textColorSecondary,
                         fontSize = 12.sp
@@ -193,7 +193,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "sat/VB",
+                    text = "sat/vB",
                     style = TextStyle(
                         color = GlanceTheme.colors.textColorSecondary,
                         fontSize = 12.sp
@@ -207,7 +207,7 @@ fun TransactionFeesCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "sat/VB",
+                    text = "sat/vB",
                     style = TextStyle(
                         color = GlanceTheme.colors.textColorSecondary,
                         fontSize = 12.sp

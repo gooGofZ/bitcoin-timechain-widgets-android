@@ -131,36 +131,36 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
             }
         }
 
-        //Total Node
-        Row(
-            modifier = GlanceModifier.wrapContentHeight().fillMaxWidth()
-                .clickable(actionRunCallback<UpdateMempoolAction>()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Column(
-                modifier = GlanceModifier.defaultWeight(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Total Node", style = TextStyle(
-                        color = GlanceTheme.colors.textColorPrimary,
-                    )
-                )
-            }
-            Column(
-                modifier = GlanceModifier.defaultWeight(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text( //Total Node Text
-                    text = "%,d".format(mempoolInfo.totalNode), style = TextStyle(
-                        color = GlanceTheme.colors.primary,
-                        fontWeight = FontWeight.Bold
-                    ), modifier = GlanceModifier.clickable(actionRunCallback<UpdateMempoolAction>())
-                )
-            }
-        }
+//        //Total Node
+//        Row(
+//            modifier = GlanceModifier.wrapContentHeight().fillMaxWidth()
+//                .clickable(actionRunCallback<UpdateMempoolAction>()),
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            Column(
+//                modifier = GlanceModifier.defaultWeight(),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                Text(
+//                    text = "Total Node", style = TextStyle(
+//                        color = GlanceTheme.colors.textColorPrimary,
+//                    )
+//                )
+//            }
+//            Column(
+//                modifier = GlanceModifier.defaultWeight(),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                Text( //Total Node Text
+//                    text = "%,d".format(mempoolInfo.totalNode), style = TextStyle(
+//                        color = GlanceTheme.colors.primary,
+//                        fontWeight = FontWeight.Bold
+//                    ), modifier = GlanceModifier.clickable(actionRunCallback<UpdateMempoolAction>())
+//                )
+//            }
+//        }
 
         //Unconfirmed TX
         Row(
@@ -295,7 +295,7 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "sat/VB", style = TextStyle(
+                    text = "sat/vB", style = TextStyle(
                         color = GlanceTheme.colors.textColorPrimary, fontSize = 12.sp
                     )
                 )
@@ -306,7 +306,7 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "sat/VB", style = TextStyle(
+                    text = "sat/vB", style = TextStyle(
                         color = GlanceTheme.colors.textColorPrimary, fontSize = 12.sp
                     )
                 )
@@ -318,7 +318,7 @@ fun MempoolCompose(mempoolInfo: MempoolInfo.Available) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "sat/VB", style = TextStyle(
+                    text = "sat/vB", style = TextStyle(
                         color = GlanceTheme.colors.textColorPrimary, fontSize = 12.sp
                     )
                 )
