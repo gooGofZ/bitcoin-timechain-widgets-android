@@ -22,7 +22,9 @@
 
 ![image](https://user-images.githubusercontent.com/1241147/212461701-b9792590-449d-4a31-9bb3-0fa86e4baab7.png)
 
-* APK via [Github release section](https://github.com/gooGofZ/BitcoinTimechainWidgets/releases)
+* Download the latest APK via [Github release section](https://github.com/gooGofZ/BitcoinTimechainWidgets/releases/latest)
+
+* Add [IzzyOnDroid repo](https://apt.izzysoft.de/fdroid/) to your [F-Droid](https://f-droid.org/) client, the app is available [there](https://apt.izzysoft.de/fdroid/index/apk/com.googof.bitcointimechainwidgets)
 
 #### How to use
 * Select the widget from home screen widget selector.

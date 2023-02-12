@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -7,145 +8,82 @@
 
     <application
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="Bitcoin Timechain Widgets"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BitcoinTimechainWidgets">
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.mempool.MempoolGlanceWidgetReceiver"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false"
-            android:label="@string/mempool_app_widget_label">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/mempool_app_widget_info_glance" />
-        </receiver>
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.mempool.lightning.LightningNetworkGlanceWidgetReceiver"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false"
-            android:label="@string/lightning_network_widget_label">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/lightning_network_widget_info_glance" />
-        </receiver>
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.mempool.halving.NextHalvingGlanceWidgetReceiver"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false"
-            android:label="@string/next_halving_widget_label">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/next_halving_widget_info_glance" />
-        </receiver>
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.mempool.transactionfees.TransactionFeesGlanceWidgetReceiver"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false"
-            android:label="@string/transaction_fees_widget_label">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/transaction_fees_widget_info_glance" />
-        </receiver>
-
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.mempool.blockheight.BlockHeightGlanceWidgetReceiver"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false"
-            android:label="@string/block_height_widget_label">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/block_height_widget_glance" />
-        </receiver>
-
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.quotes.QuoteInfoGlanceWidgetReceiver"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/quote_app_widget_info_glance" />
-        </receiver>
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.satoshiquotes.SatoshiQuoteGlanceWidgetReceiver"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/satoshi_quote_glance" />
-        </receiver>
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.quotes.QuoteInfoTransparentGlanceWidgetReceiver"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false"
-            android:label="No background">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/quote_app_widget_info_glance" />
-        </receiver>
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.mempool.blocks.BlocksGlanceWidgetReceiver"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false"
-            android:label="@string/blocks_widget_label">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/blocks_widget_glance" />
-        </receiver>
+        android:theme="@style/Theme.BitcoinTimechainWidgets"
+        tools:targetApi="34">
         <activity
-            android:name="com.googof.bitcointimechainwidgets.MainActivity"
-            android:exported="true">
+            android:name="MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.BitcoinTimechainWidgets">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.widgets.timechain.blockheight.BlockHeightWidgetReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:label="Block Height">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_block_height" />
+        </receiver>
+
+
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.widgets.timechain.summary.SummaryWidgetReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:label="Summary Timechain">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_summary" />
+        </receiver>
+
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.widgets.timechain.halving.NextHalvingWidgetReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:label="Next Halving">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_next_halving" />
+        </receiver>
+
+        <receiver
+            android:name="com.googof.bitcointimechainwidgets.widgets.timechain.moscow.MoscowTimeWidgetReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:label="Moscow Time">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_moscow_time" />
+        </receiver>
+
+
+    </application>
 </manifest>

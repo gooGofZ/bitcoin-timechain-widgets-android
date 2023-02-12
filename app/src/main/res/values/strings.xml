@@ -1,42 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2021 The Android Open Source Project.
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
 <resources>
-    <string name="app_name">Bitcoin Timechain Widgets</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-    <string name="mempool_app_widget_label">Mempool Glance</string>
-    <string name="mempool_app_widget_description">Mempool statistics</string>
-    <string name="bitnodes_app_widget_description">Bitnodes Information</string>
-    <string name="transaction_fees_widget_label">Recommended transaction fees</string>
-    <string name="transaction_fees_widget_description">Transaction Fees</string>
-    <string name="block_height_widget_label">Block Height</string>
-    <string name="block_height_widget_description">Current block height</string>
-    <string name="blocks_widget_label">Past 15 mined blocks</string>
-    <string name="blocks_widget_description">Block height, timestamp, Reward, block weight</string>
-    <string name="quotes_app_widget_description">Bitcoin\'s Quotes</string>
-    <string name="satoshi_quote_app_widget_description">Satoshi\'s Quote</string>
-    <string name="quotes_transparent_app_widget_description">Bitcoin\'s Quotes (No background)</string>
-    <string name="text_before_fetch">...</string>
-
-    <string name="lightning_network_widget_description">Capacity, Channels and Total Node</string>
-    <string name="lightning_network_widget_label">Lightning Network Statistics</string>
-    <string name="next_halving_widget_description">Blocks remain, Days remain, Est. Date</string>
-    <string name="next_halving_widget_label">Next Halving</string>
-
-    <string name="text_lnurl">LNURL1DP68GURN8GHJ7AMPD3KX2AR0VEEKZAR0WD5XJTNRDAKJ7TNHV4KXCTTTDEHHWM30D3H82UNVWQHHQMRPDEJKYETPW468JVP5VHYZW5</string>
-    <string name="text_ln_address">planebeauty04@walletofsatoshi.com</string>
+    <string name="app_name">Bitcoin Timechain Widgets </string>
+    <string name="app_lnurl">LNURL1DP68GURN8GHJ7AMPD3KX2AR0VEEKZAR0WD5XJTNRDAKJ7TNHV4KXCTTTDEHHWM30D3H82UNVWQHHQMRPDEJKYETPW468JVP5VHYZW5</string>
+    <string name="app_ln_address">planebeauty04@walletofsatoshi.com</string>
+    <string name="app_widget_description">Widget Description</string>
 </resources>
