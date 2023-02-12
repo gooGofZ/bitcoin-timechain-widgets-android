@@ -1,5 +1,6 @@
 package com.googof.bitcointimechainwidgets.common
 
+import java.text.NumberFormat
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
@@ -73,4 +74,12 @@ fun nextBlockHalving(currentBlockHeight: Int): String {
 
 fun getBlockWeightUsageFloat(weight: Int): Float {
     return weight.toFloat() / BLOCK_WEIGHT_SIZE.toFloat()
+}
+fun formatMoscowTime(time: Int): String {
+    val hours = time / 100
+    val minutes = time % 100
+    return String.format("%02d:%02d", hours, minutes)
+}
+fun formatNumberWithCommas(number: Int): String {
+    return NumberFormat.getNumberInstance(Locale.US).format(number)
 }
