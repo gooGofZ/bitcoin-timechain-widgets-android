@@ -1,77 +1,138 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.googof.bitcointimechainwidgets
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.googof.bitcointimechainwidgets.ui.theme.BitcoinTimechainWidgetsTheme
 
-/**
- * MainActivity sets the content view activity_main, a fragment container that contains
- * overviewFragment.
- */
-
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContent {
+            BitcoinTimechainWidgetsTheme {
+                Home()
+            }
 
-        // App Version
-        val textVersion = findViewById<TextView>(R.id.textVersion)
-        textVersion.text = "Version : " + BuildConfig.VERSION_NAME
+        }
+    }
+}
 
-        // Donation
-        // LNURL & Lightning Address
-        val lnUrl =
-            "LNURL1DP68GURN8GHJ7AMPD3KX2AR0VEEKZAR0WD5XJTNRDAKJ7TNHV4KXCTTTDEHHWM30D3H82UNVWQHHQMRPDEJKYETPW468JVP5VHYZW5"
-        val lnAddress = "planebeauty04@walletofsatoshi.com"
+@Composable
+fun Home(modifier: Modifier = Modifier) {
+    // Context is required to show a toast message and to access the clipboard service
+    val context = LocalContext.current
+    val lnAddress = stringResource(R.string.app_ln_address)
+    val lnUrl = stringResource(R.string.app_lnurl)
 
-        val textLNURL = findViewById<TextView>(R.id.textLNURL)
-        textLNURL.text = lnUrl
+    // Attempting to get the app version name using PackageManager
+    val appVersion = try {
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        packageInfo.versionName
+    } catch (e: PackageManager.NameNotFoundException) {
+        " "
+    }
+    Column(
+        modifier = modifier
+            .padding(16.dp)
+    ) {
+        // App Version as Header
+        Text(
+            text = stringResource(R.string.app_name) + " " + appVersion,
+            style = TextStyle(
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        )
 
-        val textLightningAddress = findViewById<TextView>(R.id.textLightningAddress)
-        textLightningAddress.text = lnAddress
+        Text(text = "How to use:", fontWeight = FontWeight.Bold)
+        Text(text = "Choose the widget from your home screen widget picker.")
 
-        val btnLNURL = findViewById<Button>(R.id.btnLNURL)
-        val btnLightningAddress = findViewById<Button>(R.id.btnLightningAddress)
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // set on-click listener
-        btnLNURL.setOnClickListener {
-            val myClipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val myClip = ClipData.newPlainText("text", lnUrl)
-            myClipboard.setPrimaryClip(myClip)
+        Text(text = "How to update data:", fontWeight = FontWeight.Bold)
+        Text(text = "Tap on the widget")
+        Text(
+            text = "The widgets automatic update every 15 minutes.",
+            style = TextStyle(fontStyle = FontStyle.Italic)
+        )
 
-            // your code to perform when the user clicks on the button
-            Toast.makeText(this@MainActivity, "Copied LNURL", Toast.LENGTH_SHORT).show()
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(text = "Data providers:", fontWeight = FontWeight.Bold)
+        Text(text = "- mempool.space")
+        Text(text = "- bitnodes.io")
+        Text(text = "- bitcoinexplorer.org")
+        Text(text = "- satoshi.nakamotoinstitute.org")
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(text = "Donation:", fontWeight = FontWeight.Bold)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+
+        Text(text = "LN Address: $lnAddress")
+        Spacer(modifier = Modifier.height(8.dp)) // Add some space between the buttons
+
+        Text(text = "LN URL: $lnUrl")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row {
+
+            Button(modifier = Modifier.weight(1.0F), onClick = {
+                // Showing a toast message
+                Toast.makeText(context, "LN Address Copied! $lnAddress", Toast.LENGTH_SHORT).show()
+                // Accessing the clipboard service
+                val clipboardManager =
+                    context.getSystemService(CLIPBOARD_SERVICE) as? ClipboardManager
+                val clipData = ClipData.newPlainText("text", lnAddress)
+                clipboardManager?.setPrimaryClip(clipData)
+            }) {
+                Text("Copy LN Address")
+            }
+
+            Spacer(modifier = Modifier.padding(8.dp))
+
+            Button(modifier = Modifier.weight(1.0F), onClick = {
+                // Showing a toast message for lnUrl
+                Toast.makeText(context, "LNURL Copied! $lnUrl", Toast.LENGTH_SHORT).show()
+                // Accessing the clipboard service for lnUrl
+                val clipboardManager =
+                    context.getSystemService(CLIPBOARD_SERVICE) as? ClipboardManager
+                val clipDataUrl = ClipData.newPlainText("text", lnUrl)
+                clipboardManager?.setPrimaryClip(clipDataUrl)
+            }) {
+                Text("Copy LN URL")
+            }
         }
 
-        // set on-click listener
-        btnLightningAddress.setOnClickListener {
-            val myClipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val myClip = ClipData.newPlainText("text", lnAddress)
-            myClipboard.setPrimaryClip(myClip)
-
-            // your code to perform when the user clicks on the button
-            Toast.makeText(this@MainActivity, "Copied Lightning Address", Toast.LENGTH_SHORT).show()
-        }
-
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Stay humble and stack sats",
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
     }
 }
