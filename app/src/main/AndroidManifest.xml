@@ -1,164 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.googof.bitcointimechainwidgets">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="Bitcoin Timechain Widgets"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BitcoinTimechainWidgets"
-        >
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.mempool.MempoolGlanceWidgetReceiver"
-            android:label="Mempool Glance"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/mempool_app_widget_info_glance" />
-        </receiver>
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.mempool.lightning.LightningNetworkGlanceWidgetReceiver"
-            android:label="Lightning Network Statistics"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/lightning_network_widget_info_glance" />
-        </receiver>
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.mempool.transactionfees.TransactionFeesGlanceWidgetReceiver"
-            android:label="Transaction Fees"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/transaction_fees_widget_info_glance" />
-        </receiver>
-
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.mempool.blockheight.BlockHeightGlanceWidgetReceiver"
-            android:label="Block Height"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/block_height_widget_glance" />
-        </receiver>
-
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.quotes.QuoteInfoGlanceWidgetReceiver"
-            android:label="Bitcoin Quotes Glance"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/quote_app_widget_info_glance" />
-        </receiver>
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.satoshiquotes.SatoshiQuoteGlanceWidgetReceiver"
-            android:label="Satoshi's  Quote Glance"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/satoshi_quote_glance" />
-        </receiver>
-
-        <receiver
-            android:name="com.googof.bitcointimechainwidgets.quotes.QuoteInfoTransparentGlanceWidgetReceiver"
-            android:label="Bitcoin Quotes Glance (No background)"
-            android:enabled="@bool/glance_appwidget_available"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/quote_app_widget_info_glance" />
-        </receiver>
-
-<!--        <receiver-->
-<!--            android:name="com.googof.bitcointimechainwidgets.BitnodesAppWidget"-->
-<!--            android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
-<!--            </intent-filter>-->
-
-<!--            <meta-data-->
-<!--                android:name="android.appwidget.provider"-->
-<!--                android:resource="@xml/total_nodes_app_widget_info" />-->
-<!--        </receiver>-->
-
-<!--        <receiver-->
-<!--            android:name="com.googof.bitcointimechainwidgets.QuotesAppWidget"-->
-<!--            android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
-<!--            </intent-filter>-->
-
-<!--            <meta-data-->
-<!--                android:name="android.appwidget.provider"-->
-<!--                android:resource="@xml/quotes_app_widget_info" />-->
-<!--        </receiver>-->
-
-<!--        <receiver-->
-<!--            android:name="com.googof.bitcointimechainwidgets.QuotesTransparentAppWidget"-->
-<!--            android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
-<!--            </intent-filter>-->
-
-<!--            <meta-data-->
-<!--                android:name="android.appwidget.provider"-->
-<!--                android:resource="@xml/quotes_transparent_app_widget_info" />-->
-<!--        </receiver>-->
-
+        tools:targetApi="31">
         <activity
-            android:name="com.googof.bitcointimechainwidgets.MainActivity"
-            android:exported="true">
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.BitcoinTimechainWidgets">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".receiver.BitcoinWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/bitcoin_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".receiver.BitcoinPriceWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/bitcoin_price_widget_info" />
+        </receiver>
+
     </application>
 
 </manifest>
