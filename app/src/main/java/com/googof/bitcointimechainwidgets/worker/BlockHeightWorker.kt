@@ -7,7 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.googof.bitcointimechainwidgets.data.WidgetStateDefinition
 import com.googof.bitcointimechainwidgets.data.blockHeightPreference
-import com.googof.bitcointimechainwidgets.network.MempoolApi
+import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 import com.googof.bitcointimechainwidgets.widget.BlockHeightWidget
 
 // BitcoinWidgetWorker.kt
@@ -18,7 +18,7 @@ class BlockHeightWorker(
 
     override suspend fun doWork(): Result {
         return try {
-            val blockHeight = MempoolApi.create().getBlockHeight()
+            val blockHeight = BitcoinExplorerApi.create().getLatestBlock().height
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
                 .getGlanceIds(BlockHeightWidget::class.java)
@@ -51,7 +51,7 @@ class BlockHeightWorker(
             }
 
             Result.success()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Result.retry()
         }
     }

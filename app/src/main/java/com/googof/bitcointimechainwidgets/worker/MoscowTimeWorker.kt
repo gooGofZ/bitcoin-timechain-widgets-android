@@ -7,7 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.googof.bitcointimechainwidgets.data.WidgetStateDefinition
 import com.googof.bitcointimechainwidgets.data.priceUsdPreference
-import com.googof.bitcointimechainwidgets.network.MempoolApi
+import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 import com.googof.bitcointimechainwidgets.widget.MoscowTimeWidget
 
 // MoscowTimeWidget.kt
@@ -19,7 +19,7 @@ class MoscowTimeWorker(
     override suspend fun doWork(): Result {
         return try {
 
-            val prices = MempoolApi.create().getPrices()
+            val prices = BitcoinExplorerApi.create().getPrice()
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
                 .getGlanceIds(MoscowTimeWidget::class.java)
@@ -33,7 +33,7 @@ class MoscowTimeWorker(
 
                 dataStore.updateData { prefs ->
                     prefs.toMutablePreferences().apply {
-                        this[priceUsdPreference] = prices.USD
+                        this[priceUsdPreference] = prices.usd.toInt()
                     }
                 }
 
@@ -41,14 +41,14 @@ class MoscowTimeWorker(
                     context = applicationContext,
                     glanceId = it
                 ) { prefs ->
-                    prefs[priceUsdPreference] = prices.USD
+                    prefs[priceUsdPreference] = prices.usd.toInt()
                 }
 
                 MoscowTimeWidget().update(applicationContext, it)
             }
 
             Result.success()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Result.retry()
         }
     }

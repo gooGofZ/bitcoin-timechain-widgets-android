@@ -21,35 +21,33 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.priceUsdPreference
-import com.googof.bitcointimechainwidgets.network.MempoolApi
+import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 import java.text.NumberFormat
 import java.util.*
 
 class PriceUSDWidget : GlanceAppWidget() {
-    class RefreshPriceAction : ActionCallback {
+    class RefreshAction : ActionCallback {
         override suspend fun onAction(
             context: Context,
             glanceId: GlanceId,
             parameters: ActionParameters
         ) {
             try {
-                val prices = MempoolApi.create().getPrices()
+                val prices = BitcoinExplorerApi.create().getPrice()
                 updateAppWidgetState(context, glanceId) { prefs ->
-                    prefs[priceUsdPreference] = prices.USD
+                    prefs[priceUsdPreference] = prices.usd.toInt()
                 }
                 PriceUSDWidget().update(context, glanceId)
-            } catch (e: Exception) {
-                // Handle error
-                println(e)
+            } catch (_: Exception) {
             }
         }
     }
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         try {
-            val prices = MempoolApi.create().getPrices()
+            val prices = BitcoinExplorerApi.create().getPrice()
             updateAppWidgetState(context, id) { prefs ->
-                prefs[priceUsdPreference] = prices.USD
+                prefs[priceUsdPreference] = prices.usd.toInt()
             }
         } catch (_: Exception) {
             updateAppWidgetState(context, id) { prefs ->
@@ -71,7 +69,7 @@ class PriceUSDWidget : GlanceAppWidget() {
                         .fillMaxSize()
                         .background(GlanceTheme.colors.surface)
                         .padding(16.dp)
-                        .clickable { actionRunCallback<RefreshPriceAction>() },
+                        .clickable { actionRunCallback<RefreshAction>() },
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {
@@ -79,7 +77,11 @@ class PriceUSDWidget : GlanceAppWidget() {
                         text = usdFormat.format(priceUsd),
                         style = TextStyle(
                             color = GlanceTheme.colors.primary,
-                            fontSize = 24.sp,
+                            fontSize = when {
+                                priceUsd > 1000000 -> 18.sp
+                                priceUsd > 100000 -> 24.sp
+                                else -> 18.sp
+                            },
                             fontWeight = FontWeight.Bold
                         )
                     )
