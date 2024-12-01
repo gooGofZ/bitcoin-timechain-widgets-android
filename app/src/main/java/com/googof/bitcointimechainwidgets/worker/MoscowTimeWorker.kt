@@ -5,49 +5,46 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.googof.bitcointimechainwidgets.data.BitcoinWidgetStateDefinition
+import com.googof.bitcointimechainwidgets.data.WidgetStateDefinition
+import com.googof.bitcointimechainwidgets.data.priceUsdPreference
 import com.googof.bitcointimechainwidgets.network.MempoolApi
-import com.googof.bitcointimechainwidgets.widget.BitcoinBlockHeightWidget
-import com.googof.bitcointimechainwidgets.widget.blockHeightPreference
+import com.googof.bitcointimechainwidgets.widget.MoscowTimeWidget
 
-// BitcoinWidgetWorker.kt
-class BitcoinWidgetWorker(
+// MoscowTimeWidget.kt
+class MoscowTimeWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
         return try {
-            val blockHeight = MempoolApi.create().getBlockHeight()
+
+            val prices = MempoolApi.create().getPrices()
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
-                .getGlanceIds(BitcoinBlockHeightWidget::class.java)
+                .getGlanceIds(MoscowTimeWidget::class.java)
                 .firstOrNull()
 
             glanceId?.let {
-                // Get the DataStore using BitcoinWidgetStateDefinition
-                val dataStore = BitcoinWidgetStateDefinition.getDataStore(
+                val dataStore = WidgetStateDefinition.getDataStore(
                     applicationContext,
-                    "bitcoin_widget_prefs"
+                    "moscow_time_widget_prefs"
                 )
 
-                // Update preferences in the DataStore
                 dataStore.updateData { prefs ->
                     prefs.toMutablePreferences().apply {
-                        this[blockHeightPreference] = blockHeight
+                        this[priceUsdPreference] = prices.USD
                     }
                 }
 
-                // Update the widget state
                 updateAppWidgetState(
                     context = applicationContext,
                     glanceId = it
                 ) { prefs ->
-                    prefs[blockHeightPreference] = blockHeight
+                    prefs[priceUsdPreference] = prices.USD
                 }
 
-                // Refresh the widget UI
-                BitcoinBlockHeightWidget().update(applicationContext, it)
+                MoscowTimeWidget().update(applicationContext, it)
             }
 
             Result.success()

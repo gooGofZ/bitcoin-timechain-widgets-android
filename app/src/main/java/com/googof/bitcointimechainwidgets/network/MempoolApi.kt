@@ -1,5 +1,7 @@
 package com.googof.bitcointimechainwidgets.network
 
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -9,7 +11,7 @@ interface MempoolApi {
     @GET("blocks/tip/height")
     suspend fun getBlockHeight(): Int
 
-    @GET("prices")
+    @GET("v1/prices")
     suspend fun getPrices(): PricesResponse
 
     companion object {

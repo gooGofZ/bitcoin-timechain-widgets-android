@@ -27,25 +27,36 @@
         </activity>
 
         <receiver
-            android:name=".receiver.BitcoinWidgetReceiver"
+            android:name=".receiver.BlockHeightWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/bitcoin_widget_info" />
+                android:resource="@xml/block_height_widget" />
         </receiver>
 
         <receiver
-            android:name=".receiver.BitcoinPriceWidgetReceiver"
+            android:name=".receiver.PriceUSDWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/bitcoin_price_widget_info" />
+                android:resource="@xml/usd_price_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".receiver.MoscowTimeWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/moscow_widget" />
         </receiver>
 
     </application>
