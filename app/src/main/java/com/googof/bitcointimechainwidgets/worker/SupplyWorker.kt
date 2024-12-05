@@ -1,50 +1,56 @@
 package com.googof.bitcointimechainwidgets.worker
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.googof.bitcointimechainwidgets.data.WidgetStateDefinition
-import com.googof.bitcointimechainwidgets.data.priceUsdPreference
+import com.googof.bitcointimechainwidgets.data.supplyPreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
-import com.googof.bitcointimechainwidgets.widget.MoscowTimeWidget
+import com.googof.bitcointimechainwidgets.widget.SupplyWidget
 
-// MoscowTimeWidget.kt
-class MoscowTimeWorker(
+// SupplyWorker.kt
+class SupplyWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
+    @SuppressLint("DefaultLocale")
     override suspend fun doWork(): Result {
         return try {
+            val supply = BitcoinExplorerApi.create().getSupply().supply
 
-            val prices = BitcoinExplorerApi.create().getPrice()
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
-                .getGlanceIds(MoscowTimeWidget::class.java)
+                .getGlanceIds(SupplyWidget::class.java)
                 .firstOrNull()
 
             glanceId?.let {
+                // Get the DataStore using BitcoinWidgetStateDefinition
                 val dataStore = WidgetStateDefinition.getDataStore(
                     applicationContext,
-                    "moscow_time_widget_prefs"
+                    "supply_widget_prefs"
                 )
 
+                // Update preferences in the DataStore
                 dataStore.updateData { prefs ->
                     prefs.toMutablePreferences().apply {
-                        this[priceUsdPreference] = prices.usd.toDouble()
+                        this[supplyPreferences] = supply
                     }
                 }
 
+                // Update the widget state
                 updateAppWidgetState(
                     context = applicationContext,
                     glanceId = it
                 ) { prefs ->
-                    prefs[priceUsdPreference] = prices.usd.toDouble()
+                    prefs[supplyPreferences] = supply
                 }
 
-                MoscowTimeWidget().update(applicationContext, it)
+                // Refresh the widget UI
+                SupplyWidget().update(applicationContext, it)
             }
 
             Result.success()

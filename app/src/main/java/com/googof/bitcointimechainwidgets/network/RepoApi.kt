@@ -21,6 +21,9 @@ interface BitcoinExplorerApi {
     @GET("mempool/fees")
     suspend fun getMempoolFees(): MempoolFeesResponse
 
+    @GET("blockchain/next-halving")
+    suspend fun getNextHalving(): NextHalvingResponse
+
     companion object {
         fun create(): BitcoinExplorerApi {
             return Retrofit.Builder()
@@ -68,4 +71,13 @@ data class MempoolFeesResponse(
     @SerializedName("30min") val thirtyMin: Int,
     @SerializedName("60min") val sixtyMin: Int,
     @SerializedName("1day") val oneDay: Int
+)
+
+data class NextHalvingResponse(
+    val nextHalvingIndex: Int,
+    val nextHalvingBlock: Int,
+    val nextHalvingSubsidy: String,
+    val blocksUntilNextHalving: Int,
+    val timeUntilNextHalving: String,
+    val nextHalvingEstimatedDate: String
 )

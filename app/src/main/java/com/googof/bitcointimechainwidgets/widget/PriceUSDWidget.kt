@@ -1,9 +1,11 @@
 package com.googof.bitcointimechainwidgets.widget
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -24,39 +26,55 @@ import com.googof.bitcointimechainwidgets.data.priceUsdPreference
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 import java.text.NumberFormat
 import java.util.*
+import kotlin.text.toDoubleOrNull
 
-class PriceUSDWidget : GlanceAppWidget() {
-    class RefreshAction : ActionCallback {
-        override suspend fun onAction(
-            context: Context,
-            glanceId: GlanceId,
-            parameters: ActionParameters
-        ) {
-            try {
-                val prices = BitcoinExplorerApi.create().getPrice()
-                updateAppWidgetState(context, glanceId) { prefs ->
-                    prefs[priceUsdPreference] = prices.usd.toInt()
-                }
-                PriceUSDWidget().update(context, glanceId)
-            } catch (_: Exception) {
+private val isLoadingPreference = booleanPreferencesKey("is_loading")
+
+class RefreshActionPriceUSD : ActionCallback {
+    override suspend fun onAction(
+        context: Context,
+        glanceId: GlanceId,
+        parameters: ActionParameters
+    ) {
+        Log.d("PriceUSDWidget", "RefreshAction triggered")
+        try {
+            updateAppWidgetState(context, glanceId) { prefs ->
+                prefs[isLoadingPreference] = true
             }
+            PriceUSDWidget().update(context, glanceId)
+
+            val prices = BitcoinExplorerApi.create().getPrice()
+            Log.d("PriceUSDWidget", "Prices: $prices")
+
+            updateAppWidgetState(context, glanceId) { prefs ->
+                prefs[priceUsdPreference] = prices.usd.toDouble()
+            }
+        } catch (e: Exception) {
+            Log.e("PriceUSDWidget", "Error during refresh", e)
+        } finally {
+            updateAppWidgetState(context, glanceId) { prefs ->
+                prefs[isLoadingPreference] = false
+            }
+            PriceUSDWidget().update(context, glanceId)
         }
     }
+}
 
+class PriceUSDWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         try {
             val prices = BitcoinExplorerApi.create().getPrice()
             updateAppWidgetState(context, id) { prefs ->
-                prefs[priceUsdPreference] = prices.usd.toInt()
+                prefs[priceUsdPreference] = prices.usd.toDouble()
             }
         } catch (_: Exception) {
             updateAppWidgetState(context, id) { prefs ->
-                prefs[priceUsdPreference] = 0
+                prefs[priceUsdPreference] = 0.0
             }
         }
         provideContent {
             val prefs = currentState<Preferences>()
-            val priceUsd = prefs[priceUsdPreference] ?: 0
+            val priceUsd = prefs[priceUsdPreference] ?: 0.0
 
             val usdFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
                 maximumFractionDigits = 0
@@ -68,8 +86,8 @@ class PriceUSDWidget : GlanceAppWidget() {
                     modifier = GlanceModifier
                         .fillMaxSize()
                         .background(GlanceTheme.colors.surface)
-                        .padding(16.dp)
-                        .clickable { actionRunCallback<RefreshAction>() },
+                        .padding(8.dp)
+                        .clickable(actionRunCallback<RefreshActionPriceUSD>()),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {

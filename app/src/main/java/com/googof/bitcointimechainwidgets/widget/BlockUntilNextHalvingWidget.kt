@@ -25,56 +25,59 @@ import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import com.googof.bitcointimechainwidgets.data.blockHeightPreference
+import com.googof.bitcointimechainwidgets.data.blockUntilNextHalvingPreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import java.text.NumberFormat
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
-class RefreshActionBlockHeight : ActionCallback {
+class RefreshActionBlockUntilNextHalvingWidget : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("BlockHeightWidget", "RefreshAction triggered")
+        Log.d("BlockUntilNextHalvingWidget", "RefreshAction triggered")
         try {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = true
             }
-            BlockHeightWidget().update(context, glanceId)
+            BlockUntilNextHalvingWidget().update(context, glanceId)
 
-            val blockHeight = BitcoinExplorerApi.create().getLatestBlock().height
-            Log.d("BlockHeightWidget", "blockHeight: $blockHeight")
+            val blocksUntilNextHalving =
+                BitcoinExplorerApi.create().getNextHalving().blocksUntilNextHalving
+            Log.d("BlockUntilNextHalvingWidget", "blocksUntilNextHalving: $blocksUntilNextHalving")
 
             updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[blockHeightPreference] = blockHeight
+                prefs[blockUntilNextHalvingPreferences] = blocksUntilNextHalving
             }
         } catch (e: Exception) {
-            Log.e("SupplyWidget", "Error during refresh", e)
+            Log.e("BlockUntilNextHalvingWidget", "Error during refresh", e)
         } finally {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = false
             }
-            BlockHeightWidget().update(context, glanceId)
+            BlockUntilNextHalvingWidget().update(context, glanceId)
         }
     }
 }
 
-// BlockHeightWidget.kt
-class BlockHeightWidget : GlanceAppWidget() {
+// BlockUntilNextHalvingWidget.kt
+class BlockUntilNextHalvingWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         try {
-            val blockHeight = BitcoinExplorerApi.create().getLatestBlock().height
+            val blocksUntilNextHalving =
+                BitcoinExplorerApi.create().getNextHalving().blocksUntilNextHalving
 
             updateAppWidgetState(context, id) { prefs ->
-                prefs[blockHeightPreference] = blockHeight
+                prefs[blockUntilNextHalvingPreferences] = blocksUntilNextHalving
             }
         } catch (_: Exception) {
         }
 
         provideContent {
             val prefs = currentState<Preferences>()
-            var blockHeight = prefs[blockHeightPreference] ?: 0
+            var blocksUntilNextHalving = prefs[blockUntilNextHalvingPreferences] ?: 0
 
             GlanceTheme {
                 Column(
@@ -82,26 +85,25 @@ class BlockHeightWidget : GlanceAppWidget() {
                         .fillMaxSize()
                         .background(GlanceTheme.colors.surface)
                         .padding(8.dp)
-                        .clickable(actionRunCallback<RefreshActionBlockHeight>()),
+                        .clickable(actionRunCallback<RefreshActionBlockUntilNextHalvingWidget>()),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {
                     Text(
-                        text = blockHeight.toString(),
+                        text = NumberFormat.getInstance().format(blocksUntilNextHalving),
                         style = TextStyle(
                             color = GlanceTheme.colors.primary,
                             fontSize = when {
-                                blockHeight > 1000000 -> 22.sp
+                                blocksUntilNextHalving > 1_000_000 -> 22.sp
                                 else -> 24.sp
                             },
                             fontWeight = FontWeight.Bold
                         )
                     )
                     Text(
-                        text = "Block Height",
+                        text = "Block Until Halving",
                         style = TextStyle(
                             color = GlanceTheme.colors.primary,
-//                            fontSize = 16.sp,
                         )
                     )
                 }

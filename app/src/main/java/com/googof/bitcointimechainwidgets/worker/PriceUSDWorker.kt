@@ -33,7 +33,7 @@ class PriceUSDWorker(
 
                 dataStore.updateData { prefs ->
                     prefs.toMutablePreferences().apply {
-                        this[priceUsdPreference] = prices.usd.toInt()
+                        this[priceUsdPreference] = prices.usd.toDouble()
                     }
                 }
 
@@ -41,7 +41,7 @@ class PriceUSDWorker(
                     context = applicationContext,
                     glanceId = it
                 ) { prefs ->
-                    prefs[priceUsdPreference] = prices.usd.toInt()
+                    prefs[priceUsdPreference] = prices.usd.toDouble()
                 }
 
                 PriceUSDWidget().update(applicationContext, it)

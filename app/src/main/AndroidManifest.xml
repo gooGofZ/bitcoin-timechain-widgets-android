@@ -59,6 +59,28 @@
                 android:resource="@xml/moscow_widget" />
         </receiver>
 
+        <receiver
+            android:name=".receiver.SupplyWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/supply_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".receiver.BlockUntilNextHalvingWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/block_until_next_halving_widget" />
+        </receiver>
+
     </application>
 
 </manifest>

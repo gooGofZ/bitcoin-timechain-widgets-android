@@ -2,6 +2,8 @@ package com.googof.bitcointimechainwidgets.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
@@ -22,58 +24,59 @@ import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.priceUsdPreference
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 
-class MoscowTimeWidget : GlanceAppWidget() {
-    companion object {
-        private val isLoadingPreference = booleanPreferencesKey("is_loading")
-    }
+private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
-    class RefreshAction : ActionCallback {
-        override suspend fun onAction(
-            context: Context,
-            glanceId: GlanceId,
-            parameters: ActionParameters
-        ) {
-            try {
-                updateAppWidgetState(context, glanceId) { prefs ->
-                    prefs[isLoadingPreference] = true
-                }
-                MoscowTimeWidget().update(context, glanceId)
-
-                val prices = BitcoinExplorerApi.create().getPrice()
-                updateAppWidgetState(context, glanceId) { prefs ->
-                    prefs[priceUsdPreference] = prices.usd.toInt()
-                    prefs[isLoadingPreference] = false
-                }
-                MoscowTimeWidget().update(context, glanceId)
-            } catch (_: Exception) {
-                updateAppWidgetState(context, glanceId) { prefs ->
-                    prefs[isLoadingPreference] = false
-                }
-                MoscowTimeWidget().update(context, glanceId)
+class RefreshActionMoscowTime : ActionCallback {
+    override suspend fun onAction(
+        context: Context,
+        glanceId: GlanceId,
+        parameters: ActionParameters
+    ) {
+        Log.d("MoscowTimeWidget", "RefreshAction triggered")
+        try {
+            updateAppWidgetState(context, glanceId) { prefs ->
+                prefs[isLoadingPreference] = true
             }
+            MoscowTimeWidget().update(context, glanceId)
+
+            val prices = BitcoinExplorerApi.create().getPrice()
+            Log.d("MoscowTimeWidget", "Prices: $prices")
+
+            updateAppWidgetState(context, glanceId) { prefs ->
+                prefs[priceUsdPreference] = prices.usd.toDouble()
+            }
+        } catch (e: Exception) {
+            Log.e("MoscowTimeWidget", "Error during refresh", e)
+        } finally {
+            updateAppWidgetState(context, glanceId) { prefs ->
+                prefs[isLoadingPreference] = false
+            }
+            MoscowTimeWidget().update(context, glanceId)
         }
     }
+}
 
+class MoscowTimeWidget : GlanceAppWidget() {
     @SuppressLint("DefaultLocale")
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
+    override suspend fun provideGlance(context: Context, glanceId: GlanceId) {
         try {
             val prices = BitcoinExplorerApi.create().getPrice()
-            updateAppWidgetState(context, id) { prefs ->
-                prefs[priceUsdPreference] = prices.usd.toInt()
+            updateAppWidgetState(context, glanceId) { prefs ->
+                prefs[priceUsdPreference] = prices.usd.toDouble()
                 prefs[isLoadingPreference] = false
             }
         } catch (_: Exception) {
-            updateAppWidgetState(context, id) { prefs ->
+            updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = false
             }
         }
 
         provideContent {
             val prefs = currentState<Preferences>()
-            val priceUsd = prefs[priceUsdPreference] ?: 0
+            val priceUsd = prefs[priceUsdPreference] ?: 0.0
             val isLoading = prefs[isLoadingPreference] == true
 
-            val satoshisPerUsd = if (priceUsd > 0) {
+            val satoshisPerUsd = if (priceUsd > 0.0) {
                 (100_000_000.0 / priceUsd).toInt()
             } else 0
 
@@ -86,8 +89,8 @@ class MoscowTimeWidget : GlanceAppWidget() {
                     modifier = GlanceModifier
                         .fillMaxSize()
                         .background(GlanceTheme.colors.surface)
-                        .padding(16.dp)
-                        .clickable { actionRunCallback<RefreshAction>() },
+                        .padding(8.dp)
+                        .clickable(actionRunCallback<RefreshActionMoscowTime>()),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {

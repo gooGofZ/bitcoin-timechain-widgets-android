@@ -4,8 +4,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStoreFile
+import java.math.BigDecimal
 
 // BitcoinWidgetStateDefinition.kt
 object WidgetStateDefinition {
@@ -16,5 +19,8 @@ object WidgetStateDefinition {
     }
 }
 
-val priceUsdPreference = intPreferencesKey("price_usd")
+val priceUsdPreference = doublePreferencesKey("price_usd")
 val blockHeightPreference = intPreferencesKey("block_height")
+val supplyPreferences = stringPreferencesKey("supply")
+val nextHalvingIndexPreferences = intPreferencesKey("next_halving_index")
+val blockUntilNextHalvingPreferences = intPreferencesKey("block_until_next_halving")

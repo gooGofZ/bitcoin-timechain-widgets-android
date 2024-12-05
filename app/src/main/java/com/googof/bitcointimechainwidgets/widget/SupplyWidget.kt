@@ -1,5 +1,6 @@
 package com.googof.bitcointimechainwidgets.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.ui.unit.dp
@@ -25,29 +26,31 @@ import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import com.googof.bitcointimechainwidgets.data.blockHeightPreference
+import com.googof.bitcointimechainwidgets.data.supplyPreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
-class RefreshActionBlockHeight : ActionCallback {
+class RefreshActionSupply : ActionCallback {
+    @SuppressLint("DefaultLocale")
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("BlockHeightWidget", "RefreshAction triggered")
+        Log.d("SupplyWidget", "RefreshAction triggered")
         try {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = true
             }
-            BlockHeightWidget().update(context, glanceId)
+            SupplyWidget().update(context, glanceId)
 
-            val blockHeight = BitcoinExplorerApi.create().getLatestBlock().height
-            Log.d("BlockHeightWidget", "blockHeight: $blockHeight")
+            val supply = BitcoinExplorerApi.create().getSupply().supply
+
+            Log.d("SupplyWidget", "supply: $supply")
 
             updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[blockHeightPreference] = blockHeight
+                prefs[supplyPreferences] = supply
             }
         } catch (e: Exception) {
             Log.e("SupplyWidget", "Error during refresh", e)
@@ -55,26 +58,27 @@ class RefreshActionBlockHeight : ActionCallback {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = false
             }
-            BlockHeightWidget().update(context, glanceId)
+            SupplyWidget().update(context, glanceId)
         }
     }
 }
 
-// BlockHeightWidget.kt
-class BlockHeightWidget : GlanceAppWidget() {
+// SupplyWidget.kt
+class SupplyWidget : GlanceAppWidget() {
+    @SuppressLint("DefaultLocale")
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         try {
-            val blockHeight = BitcoinExplorerApi.create().getLatestBlock().height
+            val supply = BitcoinExplorerApi.create().getSupply().supply
 
             updateAppWidgetState(context, id) { prefs ->
-                prefs[blockHeightPreference] = blockHeight
+                prefs[supplyPreferences] = supply
             }
         } catch (_: Exception) {
         }
 
         provideContent {
             val prefs = currentState<Preferences>()
-            var blockHeight = prefs[blockHeightPreference] ?: 0
+            var supply = prefs[supplyPreferences] ?: "..."
 
             GlanceTheme {
                 Column(
@@ -82,26 +86,33 @@ class BlockHeightWidget : GlanceAppWidget() {
                         .fillMaxSize()
                         .background(GlanceTheme.colors.surface)
                         .padding(8.dp)
-                        .clickable(actionRunCallback<RefreshActionBlockHeight>()),
+                        .clickable(actionRunCallback<RefreshActionSupply>()),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {
+
                     Text(
-                        text = blockHeight.toString(),
+                        text = String.format("%,.2f", supply.toBigDecimal()),
                         style = TextStyle(
                             color = GlanceTheme.colors.primary,
-                            fontSize = when {
-                                blockHeight > 1000000 -> 22.sp
-                                else -> 24.sp
-                            },
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
                     )
                     Text(
-                        text = "Block Height",
+                        text = (String.format(
+                            "%,.2f",
+                            supply.toBigDecimal() / 21000000.toBigDecimal() * 100.toBigDecimal()
+                        )).toString() + "%",
                         style = TextStyle(
                             color = GlanceTheme.colors.primary,
-//                            fontSize = 16.sp,
+                            fontSize = 16.sp,
+                        )
+                    )
+                    Text(
+                        text = "Supply Coins",
+                        style = TextStyle(
+                            color = GlanceTheme.colors.primary,
                         )
                     )
                 }
