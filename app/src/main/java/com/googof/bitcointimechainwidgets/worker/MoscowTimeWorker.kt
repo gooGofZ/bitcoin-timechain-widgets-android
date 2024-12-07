@@ -16,11 +16,12 @@ class MoscowTimeWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        Log.d("MoscowTimeWorker", "Worker running")
 
         return try {
             val prices = BitcoinExplorerApi.create().getPrice()
 
+            Log.d("MoscowTimeWorker", "$prices")
+            
             val glanceId = GlanceAppWidgetManager(applicationContext)
                 .getGlanceIds(MoscowTimeWidget::class.java)
                 .firstOrNull()

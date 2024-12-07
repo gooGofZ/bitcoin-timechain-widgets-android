@@ -16,10 +16,11 @@ class MarketCapWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        Log.d("MarketCapWorker", "Worker running")
 
         return try {
             val marketCap = BitcoinExplorerApi.create().getMarketCap().usd
+
+            Log.d("MarketCapWorker", "$marketCap")
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
                 .getGlanceIds(MarketCapWidget::class.java)

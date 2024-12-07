@@ -16,10 +16,11 @@ class PriceUSDWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        Log.d("PriceUSDWorker", "Worker running")
         return try {
 
             val prices = BitcoinExplorerApi.create().getPrice()
+
+            Log.d("PriceUSDWorker", "$prices")
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
                 .getGlanceIds(PriceUSDWidget::class.java)

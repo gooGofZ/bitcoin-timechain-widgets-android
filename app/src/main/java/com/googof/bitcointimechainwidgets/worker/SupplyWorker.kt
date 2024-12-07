@@ -18,10 +18,11 @@ class SupplyWorker(
 
     @SuppressLint("DefaultLocale")
     override suspend fun doWork(): Result {
-        Log.d("SupplyWorker", "Worker running")
 
         return try {
             val supply = BitcoinExplorerApi.create().getSupply().supply
+
+            Log.d("SupplyWorker", supply)
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
                 .getGlanceIds(SupplyWidget::class.java)

@@ -16,10 +16,11 @@ class BlockHeightWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        Log.d("BlockHeightWorker", "Worker running")
 
         return try {
             val blockHeight = BitcoinExplorerApi.create().getLatestBlock().height
+
+            Log.d("BlockHeightWorker", "$blockHeight")
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
                 .getGlanceIds(BlockHeightWidget::class.java)

@@ -18,10 +18,10 @@ class FeePriorityWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        Log.d("FeePriorityWorker", "Worker running")
-
+        
         return try {
             val fees = BitcoinExplorerApi.create().getMempoolFees()
+            Log.d("FeePriorityWorker", fees.toString())
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
                 .getGlanceIds(FeePriorityWidget::class.java)

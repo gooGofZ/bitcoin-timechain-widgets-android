@@ -16,11 +16,12 @@ class BlockUntilNextHalvingWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        Log.d("BlockUntilNextHalvingWorker", "Worker running")
 
         return try {
             val blocksUntilNextHalving =
                 BitcoinExplorerApi.create().getNextHalving().blocksUntilNextHalving
+
+            Log.d("BlockUntilNextHalvingWorker", "$blocksUntilNextHalving")
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
                 .getGlanceIds(BlockUntilNextHalvingWidget::class.java)

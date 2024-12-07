@@ -125,7 +125,7 @@ class FeePriorityWidget : GlanceAppWidget() {
                                         text = "High",
                                         style = TextStyle(
                                             color = GlanceTheme.colors.primary,
-                                            fontSize = calculateFontSize(feeHigh)
+                                            fontSize = 12.sp,
                                         )
                                     )
                                 }
@@ -137,7 +137,7 @@ class FeePriorityWidget : GlanceAppWidget() {
                                         text = "Medium",
                                         style = TextStyle(
                                             color = GlanceTheme.colors.primary,
-                                            fontSize = calculateFontSize(feeHigh)
+                                            fontSize = 12.sp,
                                         ),
                                         maxLines = 1
                                     )
@@ -150,7 +150,7 @@ class FeePriorityWidget : GlanceAppWidget() {
                                         text = "Low",
                                         style = TextStyle(
                                             color = GlanceTheme.colors.primary,
-                                            fontSize = calculateFontSize(feeHigh)
+                                            fontSize = 12.sp,
                                         )
                                     )
                                 }
