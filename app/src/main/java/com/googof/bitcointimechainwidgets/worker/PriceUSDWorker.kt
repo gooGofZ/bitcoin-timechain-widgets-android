@@ -1,22 +1,22 @@
 package com.googof.bitcointimechainwidgets.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.googof.bitcointimechainwidgets.data.WidgetStateDefinition
 import com.googof.bitcointimechainwidgets.data.priceUsdPreference
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 import com.googof.bitcointimechainwidgets.widget.PriceUSDWidget
 
-// BitcoinPriceWorker.kt
 class PriceUSDWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
+        Log.d("PriceUSDWorker", "Worker running")
         return try {
 
             val prices = BitcoinExplorerApi.create().getPrice()
@@ -26,20 +26,8 @@ class PriceUSDWorker(
                 .firstOrNull()
 
             glanceId?.let {
-                val dataStore = WidgetStateDefinition.getDataStore(
-                    applicationContext,
-                    "price_usd_widget_prefs"
-                )
-
-                dataStore.updateData { prefs ->
-                    prefs.toMutablePreferences().apply {
-                        this[priceUsdPreference] = prices.usd.toDouble()
-                    }
-                }
-
                 updateAppWidgetState(
-                    context = applicationContext,
-                    glanceId = it
+                    applicationContext, it
                 ) { prefs ->
                     prefs[priceUsdPreference] = prices.usd.toDouble()
                 }
@@ -49,7 +37,7 @@ class PriceUSDWorker(
 
             Result.success()
         } catch (e: Exception) {
-            println(e)
+            Log.e("PriceUSDWorker", "Error during doWork", e)
             Result.retry()
         }
     }

@@ -1,22 +1,23 @@
 package com.googof.bitcointimechainwidgets.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.googof.bitcointimechainwidgets.data.WidgetStateDefinition
 import com.googof.bitcointimechainwidgets.data.blockHeightPreference
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 import com.googof.bitcointimechainwidgets.widget.BlockHeightWidget
 
-// BitcoinWidgetWorker.kt
 class BlockHeightWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
+        Log.d("BlockHeightWorker", "Worker running")
+
         return try {
             val blockHeight = BitcoinExplorerApi.create().getLatestBlock().height
 
@@ -25,33 +26,18 @@ class BlockHeightWorker(
                 .firstOrNull()
 
             glanceId?.let {
-                // Get the DataStore using BitcoinWidgetStateDefinition
-                val dataStore = WidgetStateDefinition.getDataStore(
-                    applicationContext,
-                    "block_height_widget_prefs"
-                )
-
-                // Update preferences in the DataStore
-                dataStore.updateData { prefs ->
-                    prefs.toMutablePreferences().apply {
-                        this[blockHeightPreference] = blockHeight
-                    }
-                }
-
-                // Update the widget state
                 updateAppWidgetState(
-                    context = applicationContext,
-                    glanceId = it
+                    applicationContext, it
                 ) { prefs ->
                     prefs[blockHeightPreference] = blockHeight
                 }
 
-                // Refresh the widget UI
                 BlockHeightWidget().update(applicationContext, it)
             }
 
             Result.success()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.e("BlockHeightWorker", "Error updating widget", e)
             Result.retry()
         }
     }
