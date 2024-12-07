@@ -28,7 +28,7 @@ class BlockHeightWidgetReceiver : GlanceAppWidgetReceiver() {
         WorkManager.getInstance(context)
             .enqueueUniquePeriodicWork(
                 "block_height_update",
-                ExistingPeriodicWorkPolicy.UPDATE,
+                ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
             )
     }

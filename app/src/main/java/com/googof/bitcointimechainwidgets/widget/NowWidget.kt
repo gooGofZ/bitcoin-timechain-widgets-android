@@ -1,6 +1,5 @@
 package com.googof.bitcointimechainwidgets.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.ui.unit.dp
@@ -25,53 +24,48 @@ import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
-import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import com.googof.bitcointimechainwidgets.data.supplyPreferences
-import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import com.googof.bitcointimechainwidgets.data.nowPreferences
+import java.time.LocalDateTime
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
-class RefreshActionSupply : ActionCallback {
-    @SuppressLint("DefaultLocale")
+class RefreshActionNowWidget : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("SupplyWidget", "RefreshAction triggered")
+        Log.d("NowWidget", "RefreshAction triggered")
         try {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = true
             }
-            SupplyWidget().update(context, glanceId)
+            NowWidget().update(context, glanceId)
 
-            val supply = BitcoinExplorerApi.create().getSupply().supply
-
-            Log.d("SupplyWidget", "supply: $supply")
+            Log.d("NowWidget", "Now: ${LocalDateTime.now()}")
 
             updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[supplyPreferences] = supply
+                prefs[nowPreferences] = LocalDateTime.now().toString()
             }
         } catch (e: Exception) {
-            Log.e("SupplyWidget", "Error during refresh", e)
+            Log.e("NowWidget", "Error during refresh", e)
         } finally {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = false
             }
-            SupplyWidget().update(context, glanceId)
+            NowWidget().update(context, glanceId)
         }
     }
 }
 
-// SupplyWidget.kt
-class SupplyWidget : GlanceAppWidget() {
-    @SuppressLint("DefaultLocale")
+// NowWidget.kt
+class NowWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val prefs = currentState<Preferences>()
-            val supply = prefs[supplyPreferences] ?: "..."
+            val now = prefs[nowPreferences] ?: "..."
             val isLoading = prefs[isLoadingPreference] == true
 
             GlanceTheme {
@@ -80,7 +74,7 @@ class SupplyWidget : GlanceAppWidget() {
                         .fillMaxSize()
                         .background(GlanceTheme.colors.surface)
                         .padding(8.dp)
-                        .clickable(actionRunCallback<RefreshActionSupply>()),
+                        .clickable(actionRunCallback<RefreshActionNowWidget>()),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {
@@ -91,27 +85,10 @@ class SupplyWidget : GlanceAppWidget() {
                         )
                     } else {
                         Text(
-                            text = String.format("%,.2f", supply.toBigDecimal()),
+                            text = now,
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                        Text(
-                            text = (String.format(
-                                "%,.2f",
-                                supply.toBigDecimal() / 21000000.toBigDecimal() * 100.toBigDecimal()
-                            )).toString() + "%",
-                            style = TextStyle(
-                                color = GlanceTheme.colors.primary,
-                                fontSize = 16.sp,
-                            )
-                        )
-                        Text(
-                            text = "Supply Coins",
-                            style = TextStyle(
-                                color = GlanceTheme.colors.primary,
+                                fontSize = 12.sp
                             )
                         )
                     }

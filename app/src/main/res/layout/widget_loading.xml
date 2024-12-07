@@ -16,14 +16,14 @@
         <ProgressBar
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:indeterminateTint="?android:attr/colorPrimary"/>
+            android:indeterminateTint="?android:attr/colorPrimary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Loading..."
+            android:text="@string/loading"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
 </FrameLayout>

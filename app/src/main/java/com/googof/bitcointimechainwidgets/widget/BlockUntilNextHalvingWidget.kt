@@ -11,6 +11,7 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.clickable
+import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
@@ -22,12 +23,12 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
+import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.blockUntilNextHalvingPreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
-import java.text.NumberFormat
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -65,19 +66,10 @@ class RefreshActionBlockUntilNextHalvingWidget : ActionCallback {
 // BlockUntilNextHalvingWidget.kt
 class BlockUntilNextHalvingWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        try {
-            val blocksUntilNextHalving =
-                BitcoinExplorerApi.create().getNextHalving().blocksUntilNextHalving
-
-            updateAppWidgetState(context, id) { prefs ->
-                prefs[blockUntilNextHalvingPreferences] = blocksUntilNextHalving
-            }
-        } catch (_: Exception) {
-        }
-
         provideContent {
             val prefs = currentState<Preferences>()
-            var blocksUntilNextHalving = prefs[blockUntilNextHalvingPreferences] ?: 0
+            val blocksUntilNextHalving = prefs[blockUntilNextHalvingPreferences] ?: 0
+            val isLoading = prefs[isLoadingPreference] == true
 
             GlanceTheme {
                 Column(
@@ -89,23 +81,30 @@ class BlockUntilNextHalvingWidget : GlanceAppWidget() {
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {
-                    Text(
-                        text = NumberFormat.getInstance().format(blocksUntilNextHalving),
-                        style = TextStyle(
-                            color = GlanceTheme.colors.primary,
-                            fontSize = when {
-                                blocksUntilNextHalving > 1_000_000 -> 22.sp
-                                else -> 24.sp
-                            },
-                            fontWeight = FontWeight.Bold
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = GlanceModifier.size(24.dp),
+                            color = GlanceTheme.colors.primary
                         )
-                    )
-                    Text(
-                        text = "Block Until Halving",
-                        style = TextStyle(
-                            color = GlanceTheme.colors.primary,
+                    } else {
+                        Text(
+                            text = blocksUntilNextHalving.toString(),
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
+                                fontSize = when {
+                                    blocksUntilNextHalving > 1_000_000 -> 22.sp
+                                    else -> 24.sp
+                                },
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                    )
+                        Text(
+                            text = "Block Until Halving",
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
+                            )
+                        )
+                    }
                 }
             }
         }

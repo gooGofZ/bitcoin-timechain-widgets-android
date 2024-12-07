@@ -1,6 +1,12 @@
 <resources>
-    <string name="app_name">Bitcoin Timechain Widgets</string>
-    <string name="widget_block_height">Block Height</string>
-    <string name="widget_price_usd">Price (USD)</string>
-    <string name="widget_moscow_time">Moscow Time</string>
+    <string name="app_name" translatable="false">Bitcoin Timechain Widgets</string>
+    <string name="widget_block_height" translatable="false">Block Height</string>
+    <string name="widget_block_until_next_halving" translatable="false">Block Until Next Halving</string>
+    <string name="widget_fee_priority" translatable="false">Fee Priority</string>
+    <string name="widget_market_cap" translatable="false">Market Cap</string>
+    <string name="widget_moscow_time" translatable="false">Moscow Time</string>
+    <string name="widget_now" translatable="false">Now</string>
+    <string name="widget_price_usd" translatable="false">Price (USD)</string>
+    <string name="widget_supply" translatable="false">Supply Coins</string>
+    <string name="loading" translatable="false">Loading…</string>
 </resources>

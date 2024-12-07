@@ -11,6 +11,7 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.clickable
+import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
@@ -22,6 +23,7 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
+import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -50,7 +52,7 @@ class RefreshActionBlockHeight : ActionCallback {
                 prefs[blockHeightPreference] = blockHeight
             }
         } catch (e: Exception) {
-            Log.e("SupplyWidget", "Error during refresh", e)
+            Log.e("BlockHeightWidget", "Error during refresh", e)
         } finally {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = false
@@ -63,18 +65,10 @@ class RefreshActionBlockHeight : ActionCallback {
 // BlockHeightWidget.kt
 class BlockHeightWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        try {
-            val blockHeight = BitcoinExplorerApi.create().getLatestBlock().height
-
-            updateAppWidgetState(context, id) { prefs ->
-                prefs[blockHeightPreference] = blockHeight
-            }
-        } catch (_: Exception) {
-        }
-
         provideContent {
             val prefs = currentState<Preferences>()
-            var blockHeight = prefs[blockHeightPreference] ?: 0
+            val blockHeight = prefs[blockHeightPreference] ?: 0
+            val isLoading = prefs[isLoadingPreference] == true
 
             GlanceTheme {
                 Column(
@@ -86,24 +80,30 @@ class BlockHeightWidget : GlanceAppWidget() {
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {
-                    Text(
-                        text = blockHeight.toString(),
-                        style = TextStyle(
-                            color = GlanceTheme.colors.primary,
-                            fontSize = when {
-                                blockHeight > 1000000 -> 22.sp
-                                else -> 24.sp
-                            },
-                            fontWeight = FontWeight.Bold
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = GlanceModifier.size(24.dp),
+                            color = GlanceTheme.colors.primary
                         )
-                    )
-                    Text(
-                        text = "Block Height",
-                        style = TextStyle(
-                            color = GlanceTheme.colors.primary,
-//                            fontSize = 16.sp,
+                    } else {
+                        Text(
+                            text = blockHeight.toString(),
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
+                                fontSize = when {
+                                    blockHeight > 1000000 -> 22.sp
+                                    else -> 24.sp
+                                },
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                    )
+                        Text(
+                            text = "Block Height",
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
+                            )
+                        )
+                    }
                 }
             }
         }

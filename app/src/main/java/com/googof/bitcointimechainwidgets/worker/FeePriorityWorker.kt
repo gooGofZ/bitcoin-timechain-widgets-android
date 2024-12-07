@@ -1,40 +1,44 @@
 package com.googof.bitcointimechainwidgets.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.googof.bitcointimechainwidgets.data.WidgetStateDefinition
-import com.googof.bitcointimechainwidgets.data.blockHeightPreference
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
-import com.googof.bitcointimechainwidgets.widget.BlockHeightWidget
+import com.googof.bitcointimechainwidgets.widget.FeePriorityWidget
+import com.googof.bitcointimechainwidgets.data.feeHighPreferences
+import com.googof.bitcointimechainwidgets.data.feeLowPreferences
+import com.googof.bitcointimechainwidgets.data.feeMedPreferences
 
-// BitcoinWidgetWorker.kt
-class BlockHeightWorker(
+class FeePriorityWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
         return try {
-            val blockHeight = BitcoinExplorerApi.create().getLatestBlock().height
+            val fees = BitcoinExplorerApi.create().getMempoolFees()
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
-                .getGlanceIds(BlockHeightWidget::class.java)
+                .getGlanceIds(FeePriorityWidget::class.java)
                 .firstOrNull()
 
             glanceId?.let {
                 // Get the DataStore using BitcoinWidgetStateDefinition
                 val dataStore = WidgetStateDefinition.getDataStore(
                     applicationContext,
-                    "block_height_widget_prefs"
+                    "fee_priority_widget_prefs"
                 )
 
                 // Update preferences in the DataStore
                 dataStore.updateData { prefs ->
                     prefs.toMutablePreferences().apply {
-                        this[blockHeightPreference] = blockHeight
+                        this[feeLowPreferences] = fees.oneDay
+                        this[feeMedPreferences] = fees.sixtyMin
+                        this[feeHighPreferences] = fees.thirtyMin
                     }
                 }
 
@@ -43,15 +47,18 @@ class BlockHeightWorker(
                     context = applicationContext,
                     glanceId = it
                 ) { prefs ->
-                    prefs[blockHeightPreference] = blockHeight
+                    prefs[feeLowPreferences] = fees.oneDay
+                    prefs[feeMedPreferences] = fees.sixtyMin
+                    prefs[feeHighPreferences] = fees.thirtyMin
                 }
 
                 // Refresh the widget UI
-                BlockHeightWidget().update(applicationContext, it)
+                FeePriorityWidget().update(applicationContext, it)
             }
 
             Result.success()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.e("FeePriorityWorker", "Error during doWork", e)
             Result.retry()
         }
     }

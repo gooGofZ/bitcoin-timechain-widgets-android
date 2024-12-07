@@ -8,7 +8,6 @@ import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStoreFile
-import java.math.BigDecimal
 
 // BitcoinWidgetStateDefinition.kt
 object WidgetStateDefinition {
@@ -24,3 +23,8 @@ val blockHeightPreference = intPreferencesKey("block_height")
 val supplyPreferences = stringPreferencesKey("supply")
 val nextHalvingIndexPreferences = intPreferencesKey("next_halving_index")
 val blockUntilNextHalvingPreferences = intPreferencesKey("block_until_next_halving")
+val nowPreferences = stringPreferencesKey("now")
+val feeLowPreferences = intPreferencesKey("fee_low")
+val feeMedPreferences = intPreferencesKey("fee_med")
+val feeHighPreferences = intPreferencesKey("fee_high")
+val marketCapPreferences = doublePreferencesKey("market_cap")

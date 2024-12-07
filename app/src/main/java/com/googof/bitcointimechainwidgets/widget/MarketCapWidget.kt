@@ -1,6 +1,5 @@
 package com.googof.bitcointimechainwidgets.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.ui.unit.dp
@@ -28,50 +27,50 @@ import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import com.googof.bitcointimechainwidgets.data.supplyPreferences
+import com.googof.bitcointimechainwidgets.data.marketCapPreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
-class RefreshActionSupply : ActionCallback {
-    @SuppressLint("DefaultLocale")
+fun Double.toTrillions(): String {
+    return "$ %.2fT".format(this / 1_000_000_000_000)
+}
+
+class RefreshActionMarketCap : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("SupplyWidget", "RefreshAction triggered")
+        Log.d("MarketCapWidget", "RefreshAction triggered")
         try {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = true
             }
-            SupplyWidget().update(context, glanceId)
+            MarketCapWidget().update(context, glanceId)
 
-            val supply = BitcoinExplorerApi.create().getSupply().supply
-
-            Log.d("SupplyWidget", "supply: $supply")
+            val marketCap = BitcoinExplorerApi.create().getMarketCap().usd
+            Log.d("MarketCapWidget", "marketCap: $marketCap")
 
             updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[supplyPreferences] = supply
+                prefs[marketCapPreferences] = marketCap
             }
         } catch (e: Exception) {
-            Log.e("SupplyWidget", "Error during refresh", e)
+            Log.e("MarketCapWidget", "Error during refresh", e)
         } finally {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = false
             }
-            SupplyWidget().update(context, glanceId)
+            MarketCapWidget().update(context, glanceId)
         }
     }
 }
 
-// SupplyWidget.kt
-class SupplyWidget : GlanceAppWidget() {
-    @SuppressLint("DefaultLocale")
+class MarketCapWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val prefs = currentState<Preferences>()
-            val supply = prefs[supplyPreferences] ?: "..."
+            val marketCap = prefs[marketCapPreferences] ?: 0.0
             val isLoading = prefs[isLoadingPreference] == true
 
             GlanceTheme {
@@ -80,7 +79,7 @@ class SupplyWidget : GlanceAppWidget() {
                         .fillMaxSize()
                         .background(GlanceTheme.colors.surface)
                         .padding(8.dp)
-                        .clickable(actionRunCallback<RefreshActionSupply>()),
+                        .clickable(actionRunCallback<RefreshActionMarketCap>()),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {
@@ -91,25 +90,15 @@ class SupplyWidget : GlanceAppWidget() {
                         )
                     } else {
                         Text(
-                            text = String.format("%,.2f", supply.toBigDecimal()),
+                            text = marketCap.toTrillions(),
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
-                                fontSize = 16.sp,
+                                fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         )
                         Text(
-                            text = (String.format(
-                                "%,.2f",
-                                supply.toBigDecimal() / 21000000.toBigDecimal() * 100.toBigDecimal()
-                            )).toString() + "%",
-                            style = TextStyle(
-                                color = GlanceTheme.colors.primary,
-                                fontSize = 16.sp,
-                            )
-                        )
-                        Text(
-                            text = "Supply Coins",
+                            text = "Market Cap",
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
                             )

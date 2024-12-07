@@ -35,7 +35,7 @@ interface BitcoinExplorerApi {
     }
 }
 
-
+// Data Models
 data class PriceResponse(
     val usd: String,
     val eur: String,

@@ -28,7 +28,7 @@ class PriceUSDWidgetReceiver : GlanceAppWidgetReceiver() {
         WorkManager.getInstance(context)
             .enqueueUniquePeriodicWork(
                 "price_usd_widget_update",
-                ExistingPeriodicWorkPolicy.UPDATE,
+                ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
             )
     }

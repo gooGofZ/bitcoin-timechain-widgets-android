@@ -11,6 +11,7 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.clickable
+import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
@@ -25,8 +26,7 @@ import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.priceUsdPreference
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 import java.text.NumberFormat
-import java.util.*
-import kotlin.text.toDoubleOrNull
+import java.util.Locale
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -60,21 +60,13 @@ class RefreshActionPriceUSD : ActionCallback {
     }
 }
 
+// PriceUSDWidget.kt
 class PriceUSDWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        try {
-            val prices = BitcoinExplorerApi.create().getPrice()
-            updateAppWidgetState(context, id) { prefs ->
-                prefs[priceUsdPreference] = prices.usd.toDouble()
-            }
-        } catch (_: Exception) {
-            updateAppWidgetState(context, id) { prefs ->
-                prefs[priceUsdPreference] = 0.0
-            }
-        }
         provideContent {
             val prefs = currentState<Preferences>()
             val priceUsd = prefs[priceUsdPreference] ?: 0.0
+            val isLoading = prefs[isLoadingPreference] == true
 
             val usdFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
                 maximumFractionDigits = 0
@@ -91,24 +83,31 @@ class PriceUSDWidget : GlanceAppWidget() {
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {
-                    Text(
-                        text = usdFormat.format(priceUsd),
-                        style = TextStyle(
-                            color = GlanceTheme.colors.primary,
-                            fontSize = when {
-                                priceUsd > 1000000 -> 18.sp
-                                priceUsd > 100000 -> 24.sp
-                                else -> 18.sp
-                            },
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                    Text(
-                        text = "USD Price",
-                        style = TextStyle(
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = GlanceModifier.size(24.dp),
                             color = GlanceTheme.colors.primary
                         )
-                    )
+                    } else {
+                        Text(
+                            text = usdFormat.format(priceUsd),
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
+                                fontSize = when {
+                                    priceUsd > 1000000 -> 20.sp
+                                    priceUsd > 100000 -> 22.sp
+                                    else -> 24.sp
+                                },
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                        Text(
+                            text = "USD Price",
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary
+                            )
+                        )
+                    }
                 }
             }
         }

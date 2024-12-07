@@ -7,12 +7,11 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.googof.bitcointimechainwidgets.widget.SupplyWidget
-import com.googof.bitcointimechainwidgets.worker.SupplyWorker
+import com.googof.bitcointimechainwidgets.widget.MarketCapWidget
+import com.googof.bitcointimechainwidgets.worker.MarketCapWorker
 
-// SupplyWidgetReceiver.kt
-class SupplyWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = SupplyWidget()
+class MarketCapWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = MarketCapWidget()
 
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
@@ -20,14 +19,14 @@ class SupplyWidgetReceiver : GlanceAppWidgetReceiver() {
     }
 
     private fun setupPeriodicUpdate(context: Context) {
-        val workRequest = PeriodicWorkRequestBuilder<SupplyWorker>(
+        val workRequest = PeriodicWorkRequestBuilder<MarketCapWorker>(
             15, TimeUnit.MINUTES,
             5, TimeUnit.MINUTES
         ).build()
 
         WorkManager.getInstance(context)
             .enqueueUniquePeriodicWork(
-                "supply_update",
+                "market_cap_update",
                 ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
             )

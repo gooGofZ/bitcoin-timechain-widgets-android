@@ -28,7 +28,7 @@ class BlockUntilNextHalvingWidgetReceiver : GlanceAppWidgetReceiver() {
         WorkManager.getInstance(context)
             .enqueueUniquePeriodicWork(
                 "block_until_next_halving_work",
-                ExistingPeriodicWorkPolicy.UPDATE,
+                ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
             )
     }

@@ -28,7 +28,7 @@ class MoscowTimeWidgetReceiver : GlanceAppWidgetReceiver() {
         WorkManager.getInstance(context)
             .enqueueUniquePeriodicWork(
                 "moscow_time_widget_update",
-                ExistingPeriodicWorkPolicy.UPDATE,
+                ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
             )
     }

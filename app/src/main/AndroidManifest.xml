@@ -45,7 +45,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/usd_price_widget" />
+                android:resource="@xml/price_usd_widget" />
         </receiver>
 
         <receiver
@@ -56,7 +56,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/moscow_widget" />
+                android:resource="@xml/moscow_time_widget" />
         </receiver>
 
         <receiver
@@ -79,6 +79,39 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/block_until_next_halving_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".receiver.NowWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/now_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".receiver.FeePriorityWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/fee_priority_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".receiver.MarketCapWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/market_cap_widget" />
         </receiver>
 
     </application>
