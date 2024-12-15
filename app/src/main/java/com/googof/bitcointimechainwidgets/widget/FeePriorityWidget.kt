@@ -77,7 +77,8 @@ private fun calculateFontSize(value: Int): TextUnit {
     return when {
         value > 1000 -> 12.sp
         value > 100 -> 14.sp
-        else -> 16.sp
+        value > 10 -> 18.sp
+        else -> 20.sp
     }
 }
 
@@ -122,48 +123,6 @@ class FeePriorityWidget : GlanceAppWidget() {
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = "High",
-                                        style = TextStyle(
-                                            color = GlanceTheme.colors.primary,
-                                            fontSize = 12.sp,
-                                        )
-                                    )
-                                }
-                                Box(
-                                    modifier = GlanceModifier.defaultWeight(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "Medium",
-                                        style = TextStyle(
-                                            color = GlanceTheme.colors.primary,
-                                            fontSize = 12.sp,
-                                        ),
-                                        maxLines = 1
-                                    )
-                                }
-                                Box(
-                                    modifier = GlanceModifier.defaultWeight(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "Low",
-                                        style = TextStyle(
-                                            color = GlanceTheme.colors.primary,
-                                            fontSize = 12.sp,
-                                        )
-                                    )
-                                }
-                            }
-                            Row(
-                                modifier = GlanceModifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.Horizontal.CenterHorizontally
-                            ) {
-                                Box(
-                                    modifier = GlanceModifier.defaultWeight(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
                                         text = feeHigh.toString(),
                                         style = TextStyle(
                                             color = GlanceTheme.colors.primary,
@@ -195,6 +154,48 @@ class FeePriorityWidget : GlanceAppWidget() {
                                             color = GlanceTheme.colors.primary,
                                             fontWeight = FontWeight.Bold,
                                             fontSize = calculateFontSize(feeHigh)
+                                        )
+                                    )
+                                }
+                            }
+                            Row(
+                                modifier = GlanceModifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.Horizontal.CenterHorizontally
+                            ) {
+                                Box(
+                                    modifier = GlanceModifier.defaultWeight(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "High",
+                                        style = TextStyle(
+                                            color = GlanceTheme.colors.primary,
+                                            fontSize = 12.sp,
+                                        )
+                                    )
+                                }
+                                Box(
+                                    modifier = GlanceModifier.defaultWeight(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Medium",
+                                        style = TextStyle(
+                                            color = GlanceTheme.colors.primary,
+                                            fontSize = 12.sp,
+                                        ),
+                                        maxLines = 1
+                                    )
+                                }
+                                Box(
+                                    modifier = GlanceModifier.defaultWeight(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Low",
+                                        style = TextStyle(
+                                            color = GlanceTheme.colors.primary,
+                                            fontSize = 12.sp,
                                         )
                                     )
                                 }

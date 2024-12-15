@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Bitcoin Timechain Widgets</string>
+    <string name="loading">Loading…</string>
     <string name="widget_block_height">Block Height</string>
     <string name="widget_block_until_next_halving">Block Until Next Halving</string>
     <string name="widget_fee_priority">Fee Priority</string>
@@ -8,5 +9,7 @@
     <string name="widget_now">Now</string>
     <string name="widget_price_usd">Price (USD)</string>
     <string name="widget_supply">Supply Coins</string>
-    <string name="loading">Loading…</string>
+    <string name="widget_halving_progress">Halving Progress</string>
+    <string name="widget_next_halving_date">Next Halving Date</string>
+    <string name="widget_days_until_next_halving">Day Until Halving</string>
 </resources>

@@ -105,7 +105,7 @@ class SupplyWidget : GlanceAppWidget() {
                             )).toString() + "%",
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
-                                fontSize = 16.sp,
+                                fontSize = 12.sp,
                             )
                         )
                         Text(

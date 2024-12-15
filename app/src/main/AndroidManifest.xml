@@ -114,6 +114,39 @@
                 android:resource="@xml/market_cap_widget" />
         </receiver>
 
+        <receiver
+            android:name=".receiver.HalvingProgressWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/halving_progress_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".receiver.NextHalvingDateWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/next_halving_date_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".receiver.DayUntilNextHalvingWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/day_until_next_halving_widget" />
+        </receiver>
+
     </application>
 
 </manifest>

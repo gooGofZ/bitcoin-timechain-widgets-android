@@ -27,57 +27,71 @@ import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import com.googof.bitcointimechainwidgets.data.blockUntilNextHalvingPreferences
+import com.googof.bitcointimechainwidgets.data.convertToLocalDateTime
+import com.googof.bitcointimechainwidgets.data.nextHalvingDatePreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import java.time.format.DateTimeFormatter
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
-class RefreshActionBlockUntilNextHalvingWidget : ActionCallback {
+class RefreshActionHalvingProgress : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("BlockUntilNextHalvingWidget", "RefreshAction triggered")
+        Log.d("NextHalvingDateWidget", "RefreshAction triggered")
         try {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = true
             }
-            BlockUntilNextHalvingWidget().update(context, glanceId)
+            NextHalvingDateWidget().update(context, glanceId)
 
-            val blocksUntilNextHalving =
-                BitcoinExplorerApi.create().getNextHalving().blocksUntilNextHalving
-            Log.d("BlockUntilNextHalvingWidget", "blocksUntilNextHalving: $blocksUntilNextHalving")
+            val nextHalvingEstimatedDate =
+                BitcoinExplorerApi.create().getNextHalving().nextHalvingEstimatedDate
+
+            Log.d(
+                "NextHalvingDateWidget", nextHalvingEstimatedDate
+            )
 
             updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[blockUntilNextHalvingPreferences] = blocksUntilNextHalving
+                prefs[nextHalvingDatePreferences] =
+                    nextHalvingEstimatedDate
             }
         } catch (e: Exception) {
-            Log.e("BlockUntilNextHalvingWidget", "Error during refresh", e)
+            Log.e("NextHalvingDateWidget", "Error during refresh", e)
         } finally {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = false
             }
-            BlockUntilNextHalvingWidget().update(context, glanceId)
+            NextHalvingDateWidget().update(context, glanceId)
         }
     }
 }
 
-// BlockUntilNextHalvingWidget.kt
-class BlockUntilNextHalvingWidget : GlanceAppWidget() {
+class NextHalvingDateWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val prefs = currentState<Preferences>()
-            val blocksUntilNextHalving = prefs[blockUntilNextHalvingPreferences] ?: 0
             val isLoading = prefs[isLoadingPreference] == true
 
+            var nextHalvingDate = prefs[nextHalvingDatePreferences] ?: "..."
+            var nextHalvingTime = "..."
+
+            if (nextHalvingDate != "...") {
+                val nextHalvingLocalDate = convertToLocalDateTime(nextHalvingDate)
+                val formatterYM = DateTimeFormatter.ofPattern("dd MMM yyyy")
+                val formatterDT = DateTimeFormatter.ofPattern("HH:mm")
+                nextHalvingDate = nextHalvingLocalDate.format(formatterYM)
+                nextHalvingTime = nextHalvingLocalDate.format(formatterDT)
+            }
             GlanceTheme {
                 Column(
                     modifier = GlanceModifier
                         .fillMaxSize()
                         .background(GlanceTheme.colors.surface)
-                        .padding(4.dp)
-                        .clickable(actionRunCallback<RefreshActionBlockUntilNextHalvingWidget>()),
+                        .padding(8.dp)
+                        .clickable(actionRunCallback<RefreshActionHalvingProgress>()),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {
@@ -88,21 +102,25 @@ class BlockUntilNextHalvingWidget : GlanceAppWidget() {
                         )
                     } else {
                         Text(
-                            text = blocksUntilNextHalving.toString(),
+                            text = nextHalvingDate,
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
-                                fontSize = when {
-                                    blocksUntilNextHalving > 1_000_000 -> 22.sp
-                                    else -> 24.sp
-                                },
+                                fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         )
                         Text(
-                            text = "Block Until Halving",
+                            text = nextHalvingTime,
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
-//                                fontSize = 18.sp
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                        Text(
+                            text = "Next Halving Date",
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
                             )
                         )
                     }
