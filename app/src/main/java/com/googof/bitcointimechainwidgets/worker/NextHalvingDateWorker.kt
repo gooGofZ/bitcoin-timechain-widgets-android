@@ -6,7 +6,6 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.googof.bitcointimechainwidgets.data.convertToLocalDateTime
 import com.googof.bitcointimechainwidgets.data.nextHalvingDatePreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 import com.googof.bitcointimechainwidgets.widget.NextHalvingDateWidget

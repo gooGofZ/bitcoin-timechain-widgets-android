@@ -1,32 +1,17 @@
 package com.googof.bitcointimechainwidgets.data
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStoreFile
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
-// BitcoinWidgetStateDefinition.kt
-//object WidgetStateDefinition {
-//    fun getDataStore(context: Context, fileKey: String): DataStore<Preferences> {
-//        return PreferenceDataStoreFactory.create(
-//            produceFile = { context.preferencesDataStoreFile(fileKey) }
-//        )
-//    }
-//}
-
 var BLOCKS_PER_HALVING = 210_000
 val priceUsdPreference = doublePreferencesKey("price_usd")
 val blockHeightPreference = intPreferencesKey("block_height")
 val supplyPreferences = stringPreferencesKey("supply")
-val nextHalvingIndexPreferences = intPreferencesKey("next_halving_index")
 val blockUntilNextHalvingPreferences = intPreferencesKey("block_until_next_halving")
 val nowPreferences = stringPreferencesKey("now")
 val feeLowPreferences = intPreferencesKey("fee_low")
@@ -43,7 +28,6 @@ fun calculateHalvingProgress(blocksUntilNextHalving: Int): Double {
     // Calculate percentage
     return (blocksCompleted.toDouble() / BLOCKS_PER_HALVING) * 100
 }
-
 
 fun convertToLocalDateTime(utcDateString: String): LocalDateTime {
 

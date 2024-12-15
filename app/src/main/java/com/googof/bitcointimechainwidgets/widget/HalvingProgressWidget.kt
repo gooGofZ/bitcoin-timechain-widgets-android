@@ -81,7 +81,7 @@ class HalvingProgressWidget : GlanceAppWidget() {
                         .fillMaxSize()
                         .background(GlanceTheme.colors.surface)
                         .padding(8.dp)
-                        .clickable(actionRunCallback<RefreshActionHalvingProgress>()),
+                        .clickable(actionRunCallback<RefreshActionNextHalvingDate>()),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {
