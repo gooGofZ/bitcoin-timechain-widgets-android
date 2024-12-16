@@ -12,4 +12,7 @@
     <string name="widget_halving_progress">Halving Progress</string>
     <string name="widget_next_halving_date">Next Halving Date</string>
     <string name="widget_days_until_next_halving">Day Until Halving</string>
+    <string name="widget_hashrate">Hashrate</string>
+    <string name="widget_total_nodes">Total Nodes</string>
+    <string name="widget_quote">Quote</string>
 </resources>

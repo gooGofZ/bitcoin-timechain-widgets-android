@@ -20,6 +20,11 @@ val feeHighPreferences = intPreferencesKey("fee_high")
 val marketCapPreferences = doublePreferencesKey("market_cap")
 val halvingProgressPreferences = doublePreferencesKey("halving_progress")
 val nextHalvingDatePreferences = stringPreferencesKey("next_halving_date")
+val hashRatePreference = stringPreferencesKey("hashrate")
+val totalNodesPreference = intPreferencesKey("total_nodes")
+val quoteTextPreference = stringPreferencesKey("quote_text")
+val quoteSpeakerPreferences = stringPreferencesKey("quote_speaker")
+val quoteDatePreference = stringPreferencesKey("quote_date")
 
 fun calculateHalvingProgress(blocksUntilNextHalving: Int): Double {
     // Calculate completed blocks

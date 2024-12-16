@@ -147,6 +147,39 @@
                 android:resource="@xml/day_until_next_halving_widget" />
         </receiver>
 
+        <receiver
+            android:name=".receiver.HashRateWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/hashrate_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".receiver.TotalNodesWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/total_nodes_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".receiver.QuoteWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quote_widget" />
+        </receiver>
+
     </application>
 
 </manifest>
