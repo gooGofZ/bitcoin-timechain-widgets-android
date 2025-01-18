@@ -6,11 +6,12 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.googof.bitcointimechainwidgets.data.blockUntilNextHalvingPreferences
-import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
-import com.googof.bitcointimechainwidgets.widget.BlockUntilNextHalvingWidget
+import com.googof.bitcointimechainwidgets.data.priceThbPreference
+import com.googof.bitcointimechainwidgets.network.CoinGeckoApi
+import com.googof.bitcointimechainwidgets.widget.MoscowTimeWidget
+import com.googof.bitcointimechainwidgets.widget.SiamTimeWidget
 
-class BlockUntilNextHalvingWorker(
+class SiamTimeWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
@@ -18,28 +19,27 @@ class BlockUntilNextHalvingWorker(
     override suspend fun doWork(): Result {
 
         return try {
-            val blocksUntilNextHalving =
-                BitcoinExplorerApi.create().getNextHalving().blocksUntilNextHalving
+            val priceThb = CoinGeckoApi.create().getTHBPrice().bitcoin.thb
 
-            Log.d("BlockUntilNextHalvingWorker", "$blocksUntilNextHalving")
+            Log.d("SiamTimeWorker", "$priceThb")
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
-                .getGlanceIds(BlockUntilNextHalvingWidget::class.java)
+                .getGlanceIds(SiamTimeWidget::class.java)
                 .firstOrNull()
 
             glanceId?.let {
                 updateAppWidgetState(
                     applicationContext, it
                 ) { prefs ->
-                    prefs[blockUntilNextHalvingPreferences] = blocksUntilNextHalving
+                    prefs[priceThbPreference] = priceThb
                 }
 
-                BlockUntilNextHalvingWidget().update(applicationContext, it)
+                SiamTimeWidget().update(applicationContext, it)
             }
 
             Result.success()
         } catch (e: Exception) {
-            Log.e("BlockUntilNextHalvingWorker", "Error updating widget", e)
+            Log.e("SiamTimeWorker", "Error during doWork", e)
             Result.retry()
         }
     }

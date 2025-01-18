@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:description="@string/widget_price_usd"
     android:minWidth="90dp"
     android:minHeight="25dp"
     android:updatePeriodMillis="1800000"

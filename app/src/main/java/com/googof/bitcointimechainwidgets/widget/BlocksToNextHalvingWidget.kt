@@ -27,48 +27,48 @@ import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import com.googof.bitcointimechainwidgets.data.blockUntilNextHalvingPreferences
+import com.googof.bitcointimechainwidgets.data.blocksToNextHalvingPreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
-class RefreshActionBlockUntilNextHalvingWidget : ActionCallback {
+class RefreshActionBlocksToNextHalvingWidget : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("BlockUntilNextHalvingWidget", "RefreshAction triggered")
+        Log.d("BlocksToNextHalvingWidget", "RefreshAction triggered")
         try {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = true
             }
-            BlockUntilNextHalvingWidget().update(context, glanceId)
+            BlocksToNextHalvingWidget().update(context, glanceId)
 
             val blocksUntilNextHalving =
                 BitcoinExplorerApi.create().getNextHalving().blocksUntilNextHalving
-            Log.d("BlockUntilNextHalvingWidget", "blocksUntilNextHalving: $blocksUntilNextHalving")
+            Log.d("BlocksToNextHalvingWidget", "blocksUntilNextHalving: $blocksUntilNextHalving")
 
             updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[blockUntilNextHalvingPreferences] = blocksUntilNextHalving
+                prefs[blocksToNextHalvingPreferences] = blocksUntilNextHalving
             }
         } catch (e: Exception) {
-            Log.e("BlockUntilNextHalvingWidget", "Error during refresh", e)
+            Log.e("BlocksToNextHalvingWidget", "Error during refresh", e)
         } finally {
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[isLoadingPreference] = false
             }
-            BlockUntilNextHalvingWidget().update(context, glanceId)
+            BlocksToNextHalvingWidget().update(context, glanceId)
         }
     }
 }
 
-// BlockUntilNextHalvingWidget.kt
-class BlockUntilNextHalvingWidget : GlanceAppWidget() {
+// BlocksToNextHalvingWidget.kt
+class BlocksToNextHalvingWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val prefs = currentState<Preferences>()
-            val blocksUntilNextHalving = prefs[blockUntilNextHalvingPreferences] ?: 0
+            val blocksUntilNextHalving = prefs[blocksToNextHalvingPreferences] ?: 0
             val isLoading = prefs[isLoadingPreference] == true
 
             GlanceTheme {
@@ -77,7 +77,7 @@ class BlockUntilNextHalvingWidget : GlanceAppWidget() {
                         .fillMaxSize()
                         .background(GlanceTheme.colors.surface)
                         .padding(4.dp)
-                        .clickable(actionRunCallback<RefreshActionBlockUntilNextHalvingWidget>()),
+                        .clickable(actionRunCallback<RefreshActionBlocksToNextHalvingWidget>()),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                     horizontalAlignment = Alignment.Horizontal.CenterHorizontally
                 ) {
@@ -99,7 +99,7 @@ class BlockUntilNextHalvingWidget : GlanceAppWidget() {
                             )
                         )
                         Text(
-                            text = "Block Until Halving",
+                            text = "Blocks To Halving",
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
 //                                fontSize = 18.sp

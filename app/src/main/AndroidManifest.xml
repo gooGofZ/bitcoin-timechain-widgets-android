@@ -9,7 +9,7 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/widget_background"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -21,13 +21,13 @@
             android:theme="@style/Theme.BitcoinTimechainWidgets">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <receiver
             android:name=".receiver.BlockHeightWidgetReceiver"
+            android:label="@string/widget_block_height"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -39,6 +39,7 @@
 
         <receiver
             android:name=".receiver.PriceUSDWidgetReceiver"
+            android:label="@string/widget_price_usd"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -50,6 +51,7 @@
 
         <receiver
             android:name=".receiver.MoscowTimeWidgetReceiver"
+            android:label="@string/widget_moscow_time"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -61,6 +63,7 @@
 
         <receiver
             android:name=".receiver.SupplyWidgetReceiver"
+            android:label="@string/widget_supply"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -71,18 +74,20 @@
         </receiver>
 
         <receiver
-            android:name=".receiver.BlockUntilNextHalvingWidgetReceiver"
+            android:name=".receiver.BlocksToNextHalvingWidgetReceiver"
+            android:label="@string/widget_blocks_to_next_halving"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/block_until_next_halving_widget" />
+                android:resource="@xml/blocks_to_next_halving_widget" />
         </receiver>
 
         <receiver
             android:name=".receiver.NowWidgetReceiver"
+            android:label="Now"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -94,6 +99,7 @@
 
         <receiver
             android:name=".receiver.FeePriorityWidgetReceiver"
+            android:label="@string/widget_fee_priority"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -105,6 +111,7 @@
 
         <receiver
             android:name=".receiver.MarketCapWidgetReceiver"
+            android:label="@string/widget_market_cap"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -116,6 +123,7 @@
 
         <receiver
             android:name=".receiver.HalvingProgressWidgetReceiver"
+            android:label="@string/widget_halving_progress"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -127,6 +135,7 @@
 
         <receiver
             android:name=".receiver.NextHalvingDateWidgetReceiver"
+            android:label="@string/widget_next_halving_date"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -138,6 +147,7 @@
 
         <receiver
             android:name=".receiver.DayUntilNextHalvingWidgetReceiver"
+            android:label="@string/widget_days_until_next_halving"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -149,6 +159,7 @@
 
         <receiver
             android:name=".receiver.HashRateWidgetReceiver"
+            android:label="@string/widget_hashrate"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -158,16 +169,16 @@
                 android:resource="@xml/hashrate_widget" />
         </receiver>
 
-        <receiver
-            android:name=".receiver.TotalNodesWidgetReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/total_nodes_widget" />
-        </receiver>
+        <!--        <receiver-->
+        <!--            android:name=".receiver.TotalNodesWidgetReceiver"-->
+        <!--            android:exported="true">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
+        <!--            </intent-filter>-->
+        <!--            <meta-data-->
+        <!--                android:name="android.appwidget.provider"-->
+        <!--                android:resource="@xml/total_nodes_widget" />-->
+        <!--        </receiver>-->
 
         <receiver
             android:name=".receiver.QuoteWidgetReceiver"
@@ -179,6 +190,17 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/quote_widget" />
         </receiver>
+
+        <!--        <receiver-->
+        <!--            android:name=".receiver.SiamTimeWidgetReceiver"-->
+        <!--            android:exported="true">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
+        <!--            </intent-filter>-->
+        <!--            <meta-data-->
+        <!--                android:name="android.appwidget.provider"-->
+        <!--                android:resource="@xml/siam_time_widget" />-->
+        <!--        </receiver>-->
 
     </application>
 

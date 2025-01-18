@@ -109,8 +109,7 @@ class QuoteWidget : GlanceAppWidget() {
                                 Text(
                                     text = prefs[quoteSpeakerPreferences].toString() + " : " + prefs[quoteDatePreference].toString(),
                                     style = TextStyle(
-                                        color = GlanceTheme.colors.primary,
-                                        fontStyle = FontStyle.Italic
+                                        color = GlanceTheme.colors.primary
                                     )
                                 )
                             }

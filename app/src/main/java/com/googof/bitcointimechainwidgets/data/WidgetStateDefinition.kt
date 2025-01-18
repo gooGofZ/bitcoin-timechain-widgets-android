@@ -10,9 +10,10 @@ import java.time.temporal.ChronoUnit
 
 var BLOCKS_PER_HALVING = 210_000
 val priceUsdPreference = doublePreferencesKey("price_usd")
+val priceThbPreference = doublePreferencesKey("price_thb")
 val blockHeightPreference = intPreferencesKey("block_height")
 val supplyPreferences = stringPreferencesKey("supply")
-val blockUntilNextHalvingPreferences = intPreferencesKey("block_until_next_halving")
+val blocksToNextHalvingPreferences = intPreferencesKey("block_until_next_halving")
 val nowPreferences = stringPreferencesKey("now")
 val feeLowPreferences = intPreferencesKey("fee_low")
 val feeMedPreferences = intPreferencesKey("fee_med")

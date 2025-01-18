@@ -60,9 +60,26 @@ interface BitnodesApi {
     }
 }
 
+interface CoinGeckoApi {
+    @GET("simple/price?ids=bitcoin&vs_currencies=thb")
+    suspend fun getTHBPrice(): BitcoinPriceResponse
+
+    companion object {
+        private const val BASE_URL = "https://api.coingecko.com/api/v3/"
+
+        fun create(): CoinGeckoApi {
+            return Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(CoinGeckoApi::class.java)
+        }
+    }
+}
 
 // Data Models
-data class PriceResponse(
+
+class PriceResponse(
     val usd: String,
     val eur: String,
     val gbp: String
@@ -148,4 +165,12 @@ data class Quote(
     val date: String,
     val url: String,
     val quoteIndex: Int
+)
+
+data class BitcoinPrice(
+    val thb: Double
+)
+
+data class BitcoinPriceResponse(
+    val bitcoin: BitcoinPrice
 )

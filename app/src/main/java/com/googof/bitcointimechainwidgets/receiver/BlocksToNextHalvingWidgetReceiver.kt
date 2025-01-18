@@ -9,12 +9,12 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.googof.bitcointimechainwidgets.widget.BlockUntilNextHalvingWidget
-import com.googof.bitcointimechainwidgets.worker.BlockUntilNextHalvingWorker
+import com.googof.bitcointimechainwidgets.widget.BlocksToNextHalvingWidget
+import com.googof.bitcointimechainwidgets.worker.BlocksToNextHalvingWorker
 
 // BlockUntilNextHalvingWidgetReceiver.kt
-class BlockUntilNextHalvingWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = BlockUntilNextHalvingWidget()
+class BlocksToNextHalvingWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = BlocksToNextHalvingWidget()
 
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
@@ -32,7 +32,7 @@ class BlockUntilNextHalvingWidgetReceiver : GlanceAppWidgetReceiver() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val workRequest = PeriodicWorkRequestBuilder<BlockUntilNextHalvingWorker>(
+        val workRequest = PeriodicWorkRequestBuilder<BlocksToNextHalvingWorker>(
             15, TimeUnit.MINUTES,
             5, TimeUnit.MINUTES
         ).setConstraints(constraints).build()

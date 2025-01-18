@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:description="@string/widget_total_nodes"
-    android:minWidth="90dp"
-    android:minHeight="25dp"
-    android:updatePeriodMillis="1800000"
-    android:initialLayout="@layout/glance_default_loading_layout"
-    android:resizeMode="horizontal|vertical"
-    android:widgetCategory="home_screen" />

@@ -2,7 +2,6 @@ package com.googof.bitcointimechainwidgets.widget
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
@@ -73,22 +72,20 @@ class RefreshActionFeePriority : ActionCallback {
     }
 }
 
-private fun calculateFontSize(value: Int): TextUnit {
-    return when {
-        value > 1000 -> 12.sp
-        value > 100 -> 14.sp
-        value > 10 -> 18.sp
-        else -> 20.sp
-    }
-}
+//private fun calculateFontSize(value: Int): TextUnit {
+//    return when {
+//        value > 1000 -> 18.sp
+//        value > 100 -> 20.sp
+//        value > 10 -> 22.sp
+//        else -> 24.sp
+//    }
+//}
 
 // FeePriorityWidget.kt
 class FeePriorityWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val prefs = currentState<Preferences>()
-            val feeLow = prefs[feeLowPreferences] ?: 0
-            val feeMed = prefs[feeMedPreferences] ?: 0
             var feeHigh = prefs[feeHighPreferences] ?: 0
 
             val isLoading = prefs[isLoadingPreference] == true
@@ -127,85 +124,17 @@ class FeePriorityWidget : GlanceAppWidget() {
                                         style = TextStyle(
                                             color = GlanceTheme.colors.primary,
                                             fontWeight = FontWeight.Bold,
-                                            fontSize = calculateFontSize(feeHigh)
-                                        )
-                                    )
-                                }
-                                Box(
-                                    modifier = GlanceModifier.defaultWeight(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = feeMed.toString(),
-                                        style = TextStyle(
-                                            color = GlanceTheme.colors.primary,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = calculateFontSize(feeHigh)
-                                        )
-                                    )
-                                }
-                                Box(
-                                    modifier = GlanceModifier.defaultWeight(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = feeLow.toString(),
-                                        style = TextStyle(
-                                            color = GlanceTheme.colors.primary,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = calculateFontSize(feeHigh)
-                                        )
-                                    )
-                                }
-                            }
-                            Row(
-                                modifier = GlanceModifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.Horizontal.CenterHorizontally
-                            ) {
-                                Box(
-                                    modifier = GlanceModifier.defaultWeight(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "High",
-                                        style = TextStyle(
-                                            color = GlanceTheme.colors.primary,
-                                            fontSize = 12.sp,
-                                        )
-                                    )
-                                }
-                                Box(
-                                    modifier = GlanceModifier.defaultWeight(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "Medium",
-                                        style = TextStyle(
-                                            color = GlanceTheme.colors.primary,
-                                            fontSize = 12.sp,
-                                        ),
-                                        maxLines = 1
-                                    )
-                                }
-                                Box(
-                                    modifier = GlanceModifier.defaultWeight(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "Low",
-                                        style = TextStyle(
-                                            color = GlanceTheme.colors.primary,
-                                            fontSize = 12.sp,
+                                            fontSize = 24.sp,
                                         )
                                     )
                                 }
                             }
                         }
                         Text(
-                            text = "Fee Priority (sat/vB)",
+                            text = "Fee (sat/vB)",
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
-                                fontSize = 12.sp,
+                                fontSize = 16.sp,
                             ),
                         )
                     }
