@@ -46,12 +46,12 @@ class RefreshActionHashRate : ActionCallback {
             HashRateWidget().update(context, glanceId)
 
             val hashRate = BitcoinExplorerApi.create().getHashRate().`1Day`
-            val hashRateString =
-                (hashRate.`val`).toInt().toString() + " ${hashRate.unitAbbreviation}/s"
+            val hashRateValue = String.format("%.2f", hashRate.`val`)
+            val hashRateUnit = "${hashRate.unitAbbreviation}/s"
             Log.d("HashRateWidget", "hashRate: $hashRate")
 
             updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[hashRatePreference] = hashRateString
+                prefs[hashRatePreference] = "$hashRateValue|$hashRateUnit"
             }
         } catch (e: Exception) {
             Log.e("HashRateWidget", "Error during refresh", e)
@@ -69,7 +69,7 @@ class HashRateWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val prefs = currentState<Preferences>()
-            val hashRateString = prefs[hashRatePreference] ?: "..."
+            val hashRateData = prefs[hashRatePreference] ?: "...|"
             val isLoading = prefs[isLoadingPreference] == true
 
             GlanceTheme {
@@ -88,12 +88,23 @@ class HashRateWidget : GlanceAppWidget() {
                             color = GlanceTheme.colors.primary
                         )
                     } else {
+                        val parts = hashRateData.split("|")
+                        val hashRateValue = parts.getOrNull(0) ?: "..."
+                        val hashRateUnit = parts.getOrNull(1) ?: ""
+
                         Text(
-                            text = hashRateString,
+                            text = hashRateValue,
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold
+                            )
+                        )
+                        Text(
+                            text = hashRateUnit,
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
+                                fontSize = 16.sp
                             )
                         )
                         Text(

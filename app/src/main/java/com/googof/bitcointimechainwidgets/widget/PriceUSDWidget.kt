@@ -24,7 +24,7 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.priceUsdPreference
-import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import com.googof.bitcointimechainwidgets.network.CoinGeckoApi
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -43,11 +43,11 @@ class RefreshActionPriceUSD : ActionCallback {
             }
             PriceUSDWidget().update(context, glanceId)
 
-            val prices = BitcoinExplorerApi.create().getPrice()
+            val prices = CoinGeckoApi.create().getUSDPrice()
             Log.d("PriceUSDWidget", "Prices: $prices")
 
             updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[priceUsdPreference] = prices.usd.toDouble()
+                prefs[priceUsdPreference] = prices.bitcoin.usd
             }
         } catch (e: Exception) {
             Log.e("PriceUSDWidget", "Error during refresh", e)

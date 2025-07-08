@@ -7,7 +7,7 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.googof.bitcointimechainwidgets.data.marketCapPreferences
-import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import com.googof.bitcointimechainwidgets.network.CoinGeckoApi
 import com.googof.bitcointimechainwidgets.widget.MarketCapWidget
 
 class MarketCapWorker(
@@ -18,7 +18,7 @@ class MarketCapWorker(
     override suspend fun doWork(): Result {
 
         return try {
-            val marketCap = BitcoinExplorerApi.create().getMarketCap().usd
+            val marketCap = CoinGeckoApi.create().getUSDPriceWithMarketCap().bitcoin.usd_market_cap
 
             Log.d("MarketCapWorker", "$marketCap")
 

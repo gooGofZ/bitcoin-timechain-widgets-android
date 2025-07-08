@@ -68,9 +68,9 @@ class BitcoinDataRepository(private val context: Context) {
         try {
             // Fetch data from APIs (one by one to handle partial failures)
             try {
-                val prices = bitcoinApi.getPrice()
+                val prices = coinGeckoApi.getUSDPrice()
                 context.dataStore.edit { preferences ->
-                    preferences[PRICE_USD_KEY] = prices.usd.toDouble()
+                    preferences[PRICE_USD_KEY] = prices.bitcoin.usd
                 }
             } catch (e: Exception) {
                 // Continue with other APIs
@@ -107,9 +107,9 @@ class BitcoinDataRepository(private val context: Context) {
             }
 
             try {
-                val marketCap = bitcoinApi.getMarketCap()
+                val marketCap = coinGeckoApi.getUSDPriceWithMarketCap()
                 context.dataStore.edit { preferences ->
-                    preferences[MARKET_CAP_KEY] = marketCap.usd
+                    preferences[MARKET_CAP_KEY] = marketCap.bitcoin.usd_market_cap
                 }
             } catch (e: Exception) {
                 // Continue with other APIs
@@ -128,7 +128,10 @@ class BitcoinDataRepository(private val context: Context) {
             try {
                 val hashrate = bitcoinApi.getHashRate()
                 context.dataStore.edit { preferences ->
-                    preferences[HASHRATE_KEY] = hashrate.`1Day`.string1
+                    val hashrateValue = hashrate.`1Day`.`val`
+                    val hashrateUnit = hashrate.`1Day`.unitAbbreviation
+                    val formattedHashrate = String.format("%.2f %s/s", hashrateValue, hashrateUnit)
+                    preferences[HASHRATE_KEY] = formattedHashrate
                 }
             } catch (e: Exception) {
                 // Continue with other APIs

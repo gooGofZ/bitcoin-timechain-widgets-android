@@ -64,6 +64,12 @@ interface CoinGeckoApi {
     @GET("simple/price?ids=bitcoin&vs_currencies=thb")
     suspend fun getTHBPrice(): BitcoinPriceResponse
 
+    @GET("simple/price?ids=bitcoin&vs_currencies=usd")
+    suspend fun getUSDPrice(): BitcoinUSDPriceResponse
+
+    @GET("simple/price?ids=bitcoin&vs_currencies=usd&include_market_cap=true")
+    suspend fun getUSDPriceWithMarketCap(): BitcoinUSDPriceWithMarketCapResponse
+
     companion object {
         private const val BASE_URL = "https://api.coingecko.com/api/v3/"
 
@@ -173,4 +179,21 @@ data class BitcoinPrice(
 
 data class BitcoinPriceResponse(
     val bitcoin: BitcoinPrice
+)
+
+data class BitcoinUSDPrice(
+    val usd: Double
+)
+
+data class BitcoinUSDPriceResponse(
+    val bitcoin: BitcoinUSDPrice
+)
+
+data class BitcoinUSDPriceWithMarketCap(
+    val usd: Double,
+    val usd_market_cap: Double
+)
+
+data class BitcoinUSDPriceWithMarketCapResponse(
+    val bitcoin: BitcoinUSDPriceWithMarketCap
 )

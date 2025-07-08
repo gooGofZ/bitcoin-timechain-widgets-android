@@ -19,8 +19,7 @@ class HashRateWorker(
 
         return try {
             val hashRate = BitcoinExplorerApi.create().getHashRate().`1Day`
-            val hashRateString =
-                (hashRate.`val`).toInt().toString() + " ${hashRate.unitAbbreviation}/s"
+            val hashRateString = String.format("%.2f %s/s", hashRate.`val`, hashRate.unitAbbreviation)
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
                 .getGlanceIds(HashRateWidget::class.java)

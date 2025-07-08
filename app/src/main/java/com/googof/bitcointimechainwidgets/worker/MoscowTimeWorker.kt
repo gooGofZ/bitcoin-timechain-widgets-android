@@ -7,7 +7,7 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.googof.bitcointimechainwidgets.data.priceUsdPreference
-import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import com.googof.bitcointimechainwidgets.network.CoinGeckoApi
 import com.googof.bitcointimechainwidgets.widget.MoscowTimeWidget
 
 class MoscowTimeWorker(
@@ -18,7 +18,7 @@ class MoscowTimeWorker(
     override suspend fun doWork(): Result {
 
         return try {
-            val prices = BitcoinExplorerApi.create().getPrice()
+            val prices = CoinGeckoApi.create().getUSDPrice()
 
             Log.d("MoscowTimeWorker", "$prices")
             
@@ -30,7 +30,7 @@ class MoscowTimeWorker(
                 updateAppWidgetState(
                     applicationContext, it
                 ) { prefs ->
-                    prefs[priceUsdPreference] = prices.usd.toDouble()
+                    prefs[priceUsdPreference] = prices.bitcoin.usd
                 }
 
                 MoscowTimeWidget().update(applicationContext, it)

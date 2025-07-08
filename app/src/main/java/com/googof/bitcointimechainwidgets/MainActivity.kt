@@ -121,7 +121,6 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Column {
-                        Text("Current", style = MaterialTheme.typography.bodySmall)
                         Text(
                             text = if (blockHeight > 0) blockHeight.toString() else "Loading...",
                             style = MaterialTheme.typography.headlineSmall,

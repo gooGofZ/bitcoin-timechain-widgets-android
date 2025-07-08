@@ -97,7 +97,7 @@ class QuoteWidget : GlanceAppWidget() {
                         } else {
                             item {
                                 Text(
-                                    text = prefs[quoteTextPreference].toString(),
+                                    text = prefs[quoteTextPreference] ?: "Tap to load quote",
                                     style = TextStyle(
                                         color = GlanceTheme.colors.primary,
                                     ),
@@ -106,12 +106,26 @@ class QuoteWidget : GlanceAppWidget() {
                                 )
                             }
                             item {
-                                Text(
-                                    text = prefs[quoteSpeakerPreferences].toString() + " : " + prefs[quoteDatePreference].toString(),
-                                    style = TextStyle(
-                                        color = GlanceTheme.colors.primary
+                                val speaker = prefs[quoteSpeakerPreferences] ?: ""
+                                val date = prefs[quoteDatePreference] ?: ""
+                                val attribution = if (speaker.isNotEmpty() && date.isNotEmpty()) {
+                                    "$speaker : $date"
+                                } else if (speaker.isNotEmpty()) {
+                                    speaker
+                                } else if (date.isNotEmpty()) {
+                                    date
+                                } else {
+                                    ""
+                                }
+                                
+                                if (attribution.isNotEmpty()) {
+                                    Text(
+                                        text = attribution,
+                                        style = TextStyle(
+                                            color = GlanceTheme.colors.primary
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
                     }
