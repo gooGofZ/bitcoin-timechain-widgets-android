@@ -12,7 +12,9 @@ import com.googof.bitcointimechainwidgets.network.BitnodesApi
 import com.googof.bitcointimechainwidgets.network.CoinGeckoApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "bitcoin_data")
 
@@ -36,6 +38,9 @@ class BitcoinDataRepository(private val context: Context) {
         val QUOTE_TEXT_KEY = stringPreferencesKey("quote_text")
         val QUOTE_SPEAKER_KEY = stringPreferencesKey("quote_speaker")
         val QUOTE_DATE_KEY = stringPreferencesKey("quote_date")
+        val LAST_REFRESH_TIME_KEY = longPreferencesKey("last_refresh_time")
+        
+        const val REFRESH_COOLDOWN_DURATION = 30000L // 30 seconds in milliseconds
     }
 
     // Network APIs
@@ -62,10 +67,29 @@ class BitcoinDataRepository(private val context: Context) {
     val quoteText: Flow<String> = context.dataStore.data.map { it[QUOTE_TEXT_KEY] ?: "" }
     val quoteSpeaker: Flow<String> = context.dataStore.data.map { it[QUOTE_SPEAKER_KEY] ?: "" }
     val quoteDate: Flow<String> = context.dataStore.data.map { it[QUOTE_DATE_KEY] ?: "" }
+    
+    // Cooldown state
+    val isRefreshOnCooldown: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        val lastRefreshTime = preferences[LAST_REFRESH_TIME_KEY] ?: 0L
+        val currentTime = System.currentTimeMillis()
+        (currentTime - lastRefreshTime) < REFRESH_COOLDOWN_DURATION
+    }
 
     // Refresh all data
     suspend fun refreshAllData() {
+        // Check if refresh is on cooldown
+        val preferences = context.dataStore.data.first()
+        val lastRefreshTime = preferences[LAST_REFRESH_TIME_KEY] ?: 0L
+        val currentTime = System.currentTimeMillis()
+        if ((currentTime - lastRefreshTime) < REFRESH_COOLDOWN_DURATION) {
+            return // Exit early if still on cooldown
+        }
+        
         try {
+            // Update last refresh time at the start
+            context.dataStore.edit { preferences ->
+                preferences[LAST_REFRESH_TIME_KEY] = System.currentTimeMillis()
+            }
             // Fetch data from APIs (one by one to handle partial failures)
             try {
                 val prices = coinGeckoApi.getUSDPrice()

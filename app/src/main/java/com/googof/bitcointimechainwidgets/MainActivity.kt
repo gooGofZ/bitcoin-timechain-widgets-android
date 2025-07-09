@@ -1,10 +1,14 @@
 package com.googof.bitcointimechainwidgets
 
 import android.appwidget.AppWidgetManager
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -25,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,14 +57,28 @@ class MainActivity : ComponentActivity() {
                             actions = {
                                 val repository = BitcoinDataRepository(LocalContext.current)
                                 val scope = rememberCoroutineScope()
+                                val isRefreshOnCooldown by repository.isRefreshOnCooldown.collectAsState(
+                                    initial = false
+                                )
+
                                 IconButton(
                                     onClick = {
-                                        scope.launch {
-                                            repository.refreshAllData()
+                                        if (!isRefreshOnCooldown) {
+                                            scope.launch {
+                                                repository.refreshAllData()
+                                            }
                                         }
-                                    }
+                                    },
+                                    enabled = !isRefreshOnCooldown
                                 ) {
-                                    Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                                    Icon(
+                                        Icons.Default.Refresh,
+                                        contentDescription = if (isRefreshOnCooldown) "Refresh on cooldown" else "Refresh",
+                                        tint = if (isRefreshOnCooldown)
+                                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                        else
+                                            MaterialTheme.colorScheme.onSurface
+                                    )
                                 }
                             }
                         )
@@ -105,28 +124,40 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        // Version
+        item {
+            Text(
+                text = "v2.0.0",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+        }
+        
         // Block Height Section
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Block Height",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Column {
-                        Text(
-                            text = if (blockHeight > 0) blockHeight.toString() else "Loading...",
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                    Text(
+                        text = if (blockHeight > 0) blockHeight.toString() else "Loading...",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
@@ -272,6 +303,69 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
             }
         }
 
+        // Donation Section
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "Support Development",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "If you find this app useful, consider supporting development with Bitcoin Lightning",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = "Lightning Address:",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = "planebeauty04@walletofsatoshi.com",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                        Button(
+                            onClick = {
+                                val lightningAddress = "planebeauty04@walletofsatoshi.com"
+                                val clipboard =
+                                    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                val clip =
+                                    ClipData.newPlainText("Lightning Address", lightningAddress)
+                                clipboard.setPrimaryClip(clip)
+                                Toast.makeText(
+                                    context,
+                                    "Lightning address copied to clipboard",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            modifier = Modifier.height(40.dp)
+                        ) {
+                            Text("Copy")
+                        }
+                    }
+                }
+            }
+        }
+
         // Widget Launcher Section
         item {
             Spacer(modifier = Modifier.height(16.dp))
@@ -289,51 +383,72 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
         }
 
         item {
-            Button(
-                onClick = {
-                    try {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            val appWidgetManager = AppWidgetManager.getInstance(context)
-                            if (appWidgetManager.isRequestPinAppWidgetSupported) {
-                                val myProvider = ComponentName(
-                                    context,
-                                    "com.googof.bitcointimechainwidgets.receiver.PriceUSDWidgetReceiver"
-                                )
-                                appWidgetManager.requestPinAppWidget(myProvider, null, null)
-                            } else {
-                                // Fallback for devices that don't support pinning
-                                val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_PICK)
-                                context.startActivity(intent)
-                            }
-                        } else {
-                            // For older Android versions, use the widget picker
-                            val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_PICK)
-                            context.startActivity(intent)
-                        }
-                    } catch (e: Exception) {
-                        // Handle any crashes gracefully
-                        e.printStackTrace()
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+            Text(
+                text = "Available Widgets",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        // Widget list
+        items(
+            listOf(
+                "Block Height" to "com.googof.bitcointimechainwidgets.receiver.BlockHeightWidgetReceiver",
+                "Price USD" to "com.googof.bitcointimechainwidgets.receiver.PriceUSDWidgetReceiver",
+                "Moscow Time" to "com.googof.bitcointimechainwidgets.receiver.MoscowTimeWidgetReceiver",
+                "Supply" to "com.googof.bitcointimechainwidgets.receiver.SupplyWidgetReceiver",
+                "Blocks to Halving" to "com.googof.bitcointimechainwidgets.receiver.BlocksToNextHalvingWidgetReceiver",
+                "Fee Priority" to "com.googof.bitcointimechainwidgets.receiver.FeePriorityWidgetReceiver",
+                "Market Cap" to "com.googof.bitcointimechainwidgets.receiver.MarketCapWidgetReceiver",
+                "Halving Progress" to "com.googof.bitcointimechainwidgets.receiver.HalvingProgressWidgetReceiver",
+                "Next Halving Date" to "com.googof.bitcointimechainwidgets.receiver.NextHalvingDateWidgetReceiver",
+                "Days Until Halving" to "com.googof.bitcointimechainwidgets.receiver.DayUntilNextHalvingWidgetReceiver",
+                "Hash Rate" to "com.googof.bitcointimechainwidgets.receiver.HashRateWidgetReceiver",
+                "Quote" to "com.googof.bitcointimechainwidgets.receiver.QuoteWidgetReceiver"
+            )
+        ) { (widgetName, receiverClass) ->
+            Card(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = null,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "Add Bitcoin Widgets",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = widgetName,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Button(
+                        onClick = {
+                            try {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    val appWidgetManager = AppWidgetManager.getInstance(context)
+                                    if (appWidgetManager.isRequestPinAppWidgetSupported) {
+                                        val myProvider = ComponentName(context, receiverClass)
+                                        appWidgetManager.requestPinAppWidget(myProvider, null, null)
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        },
+                        modifier = Modifier.height(40.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Add")
+                    }
+                }
             }
         }
+
 
         item {
             Spacer(modifier = Modifier.height(32.dp))
