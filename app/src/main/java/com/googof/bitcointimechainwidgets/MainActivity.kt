@@ -8,7 +8,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -33,6 +37,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import com.googof.bitcointimechainwidgets.repository.BitcoinDataRepository
 import com.googof.bitcointimechainwidgets.ui.theme.BitcoinTimechainWidgetsTheme
 import kotlinx.coroutines.launch
@@ -41,11 +49,26 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            // For Android 15+ (API 35), handle edge-to-edge manually
+            window.statusBarColor = android.graphics.Color.TRANSPARENT
+            window.navigationBarColor = android.graphics.Color.TRANSPARENT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                window.attributes.layoutInDisplayCutoutMode = 
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+            }
+        } else {
+            // Use enableEdgeToEdge for older versions
+            enableEdgeToEdge()
+        }
         setContent {
             BitcoinTimechainWidgetsTheme {
                 Scaffold(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .windowInsetsPadding(WindowInsets.statusBars)
+                        .windowInsetsPadding(WindowInsets.navigationBars),
                     topBar = {
                         TopAppBar(
                             title = {
@@ -89,6 +112,34 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
+        }
+    }
+}
+
+fun formatHalvingDate(dateString: String): String {
+    if (dateString.isEmpty()) return ""
+    
+    return try {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("d MMMM yyyy HH:mm", Locale.getDefault())
+        val date = inputFormat.parse(dateString)
+        if (date != null) {
+            outputFormat.format(date)
+        } else {
+            dateString
+        }
+    } catch (e: Exception) {
+        try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("d MMMM yyyy HH:mm", Locale.getDefault())
+            val date = inputFormat.parse(dateString)
+            if (date != null) {
+                outputFormat.format(date)
+            } else {
+                dateString
+            }
+        } catch (e: Exception) {
+            dateString
         }
     }
 }
@@ -162,67 +213,6 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        // Network Stats
-        items(
-            listOf(
-                "Price" to if (priceUsd > 0) "$${
-                    String.format(
-                        "%,.0f",
-                        priceUsd
-                    )
-                }" else "Loading...",
-                "Supply" to if (supply != "0") supply else "Loading...",
-                "Market Cap" to if (marketCap > 0) "$${
-                    String.format(
-                        "%,.0f",
-                        marketCap
-                    )
-                }" else "Loading...",
-                "Hash Rate" to hashrate,
-                "Total Nodes" to if (totalNodes > 0) totalNodes.toString() else "Loading..."
-            )
-        ) { (title, value) ->
-            DataCard(title = title, value = value)
-        }
-
-        // Halving Info
-        item {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = "Next Halving",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Blocks Remaining: ${if (blocksToHalving > 0) blocksToHalving.toString() else "Loading..."}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = "Progress: ${
-                            if (halvingProgress > 0) String.format(
-                                "%.1f%%",
-                                halvingProgress
-                            ) else "Loading..."
-                        }",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    if (nextHalvingDate.isNotEmpty()) {
-                        Text(
-                            text = "Est. Date: $nextHalvingDate",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
-            }
-        }
-
         // Fee Priority
         item {
             Card(
@@ -268,6 +258,89 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                     }
                 }
             }
+        }
+
+        // Moscow Time
+        item {
+            val satoshisPerUsd = if (priceUsd > 0.0) {
+                (100_000_000.0 / priceUsd).toInt()
+            } else 0
+            
+            val hours = satoshisPerUsd / 100
+            val minutes = satoshisPerUsd % 100
+            val moscowTime = String.format("%02d:%02d", hours, minutes)
+            
+            DataCard(
+                title = "Moscow Time",
+                value = if (priceUsd > 0) moscowTime else "Loading..."
+            )
+        }
+
+        // Halving Info
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "Next Halving",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Blocks Remaining: ${if (blocksToHalving > 0) blocksToHalving.toString() else "Loading..."}",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = "Progress: ${
+                            if (halvingProgress > 0) String.format(
+                                "%.1f%%",
+                                halvingProgress
+                            ) else "Loading..."
+                        }",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    if (nextHalvingDate.isNotEmpty()) {
+                        Text(
+                            text = "Est. Date: ${formatHalvingDate(nextHalvingDate)}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+            }
+        }
+
+        // Network Stats
+        items(
+            listOf(
+                "Supply" to if (supply != "0") supply else "Loading...",
+                "Market Cap" to if (marketCap > 0) "$${
+                    String.format(
+                        "%,.0f",
+                        marketCap
+                    )
+                }" else "Loading...",
+                "Hash Rate" to hashrate,
+                "Total Nodes" to if (totalNodes > 0) String.format("%,d", totalNodes) else "Loading..."
+            )
+        ) { (title, value) ->
+            DataCard(title = title, value = value)
+        }
+
+        // Price
+        item {
+            DataCard(
+                title = "Price",
+                value = if (priceUsd > 0) "$${
+                    String.format(
+                        "%,.0f",
+                        priceUsd
+                    )
+                }" else "Loading..."
+            )
         }
 
         // Quote
@@ -449,6 +522,44 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
             }
         }
 
+        // API Providers Credit
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text(
+                    text = "API Providers",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Data provided by:",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "• BitcoinExplorer.org - Block data, supply, fees, halving info, hashrate, quotes",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "• Bitnodes.io - Network nodes data",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "• CoinGecko - Price and market cap data",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
 
         item {
             Spacer(modifier = Modifier.height(32.dp))
