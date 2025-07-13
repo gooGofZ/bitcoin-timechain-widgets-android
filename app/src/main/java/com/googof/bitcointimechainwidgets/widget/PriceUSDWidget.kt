@@ -24,7 +24,8 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.priceUsdPreference
-import com.googof.bitcointimechainwidgets.network.CoinGeckoApi
+import com.googof.bitcointimechainwidgets.repository.BitcoinDataRepository
+import kotlinx.coroutines.flow.first
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -43,11 +44,13 @@ class RefreshActionPriceUSD : ActionCallback {
             }
             PriceUSDWidget().update(context, glanceId)
 
-            val prices = CoinGeckoApi.create().getUSDPrice()
-            Log.d("PriceUSDWidget", "Prices: $prices")
+            val repository = BitcoinDataRepository(context)
+            repository.refreshAllData()
+            val priceUsd = repository.priceUsd.first()
+            Log.d("PriceUSDWidget", "Price USD: $priceUsd")
 
             updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[priceUsdPreference] = prices.bitcoin.usd
+                prefs[priceUsdPreference] = priceUsd
             }
         } catch (e: Exception) {
             Log.e("PriceUSDWidget", "Error during refresh", e)
@@ -63,6 +66,19 @@ class RefreshActionPriceUSD : ActionCallback {
 // PriceUSDWidget.kt
 class PriceUSDWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
+        try {
+            val repository = BitcoinDataRepository(context)
+            val priceUsd = repository.priceUsd.first()
+            updateAppWidgetState(context, id) { prefs ->
+                prefs[priceUsdPreference] = priceUsd
+                prefs[isLoadingPreference] = false
+            }
+        } catch (_: Exception) {
+            updateAppWidgetState(context, id) { prefs ->
+                prefs[isLoadingPreference] = false
+            }
+        }
+
         provideContent {
             val prefs = currentState<Preferences>()
             val priceUsd = prefs[priceUsdPreference] ?: 0.0

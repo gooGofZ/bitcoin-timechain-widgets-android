@@ -49,13 +49,15 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             // For Android 15+ (API 35), handle edge-to-edge manually
+            @Suppress("DEPRECATION")
             window.statusBarColor = android.graphics.Color.TRANSPARENT
+            @Suppress("DEPRECATION")
             window.navigationBarColor = android.graphics.Color.TRANSPARENT
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                window.attributes.layoutInDisplayCutoutMode = 
+                window.attributes.layoutInDisplayCutoutMode =
                     WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
             }
         } else {
@@ -118,7 +120,7 @@ class MainActivity : ComponentActivity() {
 
 fun formatHalvingDate(dateString: String): String {
     if (dateString.isEmpty()) return ""
-    
+
     return try {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
         val outputFormat = SimpleDateFormat("d MMMM yyyy HH:mm", Locale.getDefault())
@@ -178,14 +180,14 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
         // Version
         item {
             Text(
-                text = "v2.0.0",
+                text = "v2.1.0",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
         }
-        
+
         // Block Height Section
         item {
             Card(
@@ -265,11 +267,11 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
             val satoshisPerUsd = if (priceUsd > 0.0) {
                 (100_000_000.0 / priceUsd).toInt()
             } else 0
-            
+
             val hours = satoshisPerUsd / 100
             val minutes = satoshisPerUsd % 100
             val moscowTime = String.format("%02d:%02d", hours, minutes)
-            
+
             DataCard(
                 title = "Moscow Time",
                 value = if (priceUsd > 0) moscowTime else "Loading..."
@@ -324,7 +326,10 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                     )
                 }" else "Loading...",
                 "Hash Rate" to hashrate,
-                "Total Nodes" to if (totalNodes > 0) String.format("%,d", totalNodes) else "Loading..."
+                "Total Nodes" to if (totalNodes > 0) String.format(
+                    "%,d",
+                    totalNodes
+                ) else "Loading..."
             )
         ) { (title, value) ->
             DataCard(title = title, value = value)
@@ -466,6 +471,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
         // Widget list
         items(
             listOf(
+                "Dashboard" to "com.googof.bitcointimechainwidgets.receiver.DashboardWidgetReceiver",
                 "Block Height" to "com.googof.bitcointimechainwidgets.receiver.BlockHeightWidgetReceiver",
                 "Price USD" to "com.googof.bitcointimechainwidgets.receiver.PriceUSDWidgetReceiver",
                 "Moscow Time" to "com.googof.bitcointimechainwidgets.receiver.MoscowTimeWidgetReceiver",

@@ -32,8 +32,43 @@ import com.googof.bitcointimechainwidgets.data.quoteDatePreference
 import com.googof.bitcointimechainwidgets.data.quoteSpeakerPreferences
 import com.googof.bitcointimechainwidgets.data.quoteTextPreference
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
+
+fun formatQuoteDate(dateString: String): String {
+    if (dateString.isEmpty()) return ""
+    
+    return try {
+        // First try common date formats that might come from the API
+        val possibleFormats = listOf(
+            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+            "yyyy-MM-dd'T'HH:mm:ss'Z'",
+            "yyyy-MM-dd",
+            "dd/MM/yyyy",
+            "MM/dd/yyyy"
+        )
+        
+        for (format in possibleFormats) {
+            try {
+                val inputFormat = SimpleDateFormat(format, Locale.getDefault())
+                val outputFormat = SimpleDateFormat("d MMM yyyy", Locale.getDefault())
+                val date = inputFormat.parse(dateString)
+                if (date != null) {
+                    return outputFormat.format(date)
+                }
+            } catch (e: Exception) {
+                continue
+            }
+        }
+        
+        // If no format works, return the original string
+        dateString
+    } catch (e: Exception) {
+        dateString
+    }
+}
 
 class RefreshActionQuote : ActionCallback {
     override suspend fun onAction(
@@ -107,13 +142,14 @@ class QuoteWidget : GlanceAppWidget() {
                             }
                             item {
                                 val speaker = prefs[quoteSpeakerPreferences] ?: ""
-                                val date = prefs[quoteDatePreference] ?: ""
-                                val attribution = if (speaker.isNotEmpty() && date.isNotEmpty()) {
-                                    "$speaker : $date"
+                                val rawDate = prefs[quoteDatePreference] ?: ""
+                                val formattedDate = formatQuoteDate(rawDate)
+                                val attribution = if (speaker.isNotEmpty() && formattedDate.isNotEmpty()) {
+                                    "$speaker : $formattedDate"
                                 } else if (speaker.isNotEmpty()) {
                                     speaker
-                                } else if (date.isNotEmpty()) {
-                                    date
+                                } else if (formattedDate.isNotEmpty()) {
+                                    formattedDate
                                 } else {
                                     ""
                                 }

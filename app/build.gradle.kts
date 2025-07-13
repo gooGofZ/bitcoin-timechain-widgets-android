@@ -12,8 +12,8 @@ android {
         applicationId = "com.googof.bitcointimechainwidgets"
         minSdk = 26
         targetSdk = 36
-        versionCode = 17
-        versionName = "2.0.0"
+        versionCode = 21
+        versionName = "2.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

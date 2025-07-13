@@ -92,25 +92,43 @@ class HashRateWidget : GlanceAppWidget() {
                         val hashRateValue = parts.getOrNull(0) ?: "..."
                         val hashRateUnit = parts.getOrNull(1) ?: ""
 
-                        Text(
-                            text = hashRateValue,
-                            style = TextStyle(
-                                color = GlanceTheme.colors.primary,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
+                        // Adaptive font size based on value length
+                        val valueFontSize = when {
+                            hashRateValue.length > 7 -> 18.sp
+                            hashRateValue.length > 5 -> 20.sp
+                            else -> 24.sp
+                        }
+
+                        val unitFontSize = when {
+                            hashRateValue.length > 7 -> 14.sp
+                            hashRateValue.length > 5 -> 16.sp
+                            else -> 18.sp
+                        }
+
+                        Column(
+                            horizontalAlignment = Alignment.Horizontal.CenterHorizontally
+                        ) {
+                            Text(
+                                text = hashRateValue,
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.primary,
+                                    fontSize = valueFontSize,
+                                    fontWeight = FontWeight.Bold
+                                )
                             )
-                        )
-                        Text(
-                            text = hashRateUnit,
-                            style = TextStyle(
-                                color = GlanceTheme.colors.primary,
-                                fontSize = 16.sp
+                            Text(
+                                text = hashRateUnit,
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.primary,
+                                    fontSize = unitFontSize
+                                )
                             )
-                        )
+                        }
                         Text(
-                            text = "Hashrate",
+                            text = "Hash Rate",
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
+                                fontSize = 12.sp
                             )
                         )
                     }

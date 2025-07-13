@@ -28,7 +28,8 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.marketCapPreferences
-import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import com.googof.bitcointimechainwidgets.repository.BitcoinDataRepository
+import kotlinx.coroutines.flow.first
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -49,7 +50,9 @@ class RefreshActionMarketCap : ActionCallback {
             }
             MarketCapWidget().update(context, glanceId)
 
-            val marketCap = BitcoinExplorerApi.create().getMarketCap().usd
+            val repository = BitcoinDataRepository(context)
+            repository.refreshAllData()
+            val marketCap = repository.marketCap.first()
             Log.d("MarketCapWidget", "marketCap: $marketCap")
 
             updateAppWidgetState(context, glanceId) { prefs ->
@@ -68,6 +71,19 @@ class RefreshActionMarketCap : ActionCallback {
 
 class MarketCapWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
+        try {
+            val repository = BitcoinDataRepository(context)
+            val marketCap = repository.marketCap.first()
+            updateAppWidgetState(context, id) { prefs ->
+                prefs[marketCapPreferences] = marketCap
+                prefs[isLoadingPreference] = false
+            }
+        } catch (_: Exception) {
+            updateAppWidgetState(context, id) { prefs ->
+                prefs[isLoadingPreference] = false
+            }
+        }
+
         provideContent {
             val prefs = currentState<Preferences>()
             val marketCap = prefs[marketCapPreferences] ?: 0.0

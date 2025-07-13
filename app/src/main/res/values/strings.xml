@@ -12,4 +12,5 @@
     <string name="widget_days_until_next_halving">Day Until Halving</string>
     <string name="widget_hashrate">Hashrate</string>
     <string name="widget_quote">Quote</string>
+    <string name="widget_dashboard">Dashboard</string>
 </resources>

@@ -21,7 +21,8 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.priceUsdPreference
-import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import com.googof.bitcointimechainwidgets.repository.BitcoinDataRepository
+import kotlinx.coroutines.flow.first
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -38,11 +39,13 @@ class RefreshActionMoscowTime : ActionCallback {
             }
             MoscowTimeWidget().update(context, glanceId)
 
-            val prices = BitcoinExplorerApi.create().getPrice()
-            Log.d("MoscowTimeWidget", "Prices: $prices")
+            val repository = BitcoinDataRepository(context)
+            repository.refreshAllData()
+            val priceUsd = repository.priceUsd.first()
+            Log.d("MoscowTimeWidget", "Price USD: $priceUsd")
 
             updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[priceUsdPreference] = prices.usd.toDouble()
+                prefs[priceUsdPreference] = priceUsd
             }
         } catch (e: Exception) {
             Log.e("MoscowTimeWidget", "Error during refresh", e)
@@ -57,15 +60,16 @@ class RefreshActionMoscowTime : ActionCallback {
 
 class MoscowTimeWidget : GlanceAppWidget() {
     @SuppressLint("DefaultLocale")
-    override suspend fun provideGlance(context: Context, glanceId: GlanceId) {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
         try {
-            val prices = BitcoinExplorerApi.create().getPrice()
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[priceUsdPreference] = prices.usd.toDouble()
+            val repository = BitcoinDataRepository(context)
+            val priceUsd = repository.priceUsd.first()
+            updateAppWidgetState(context, id) { prefs ->
+                prefs[priceUsdPreference] = priceUsd
                 prefs[isLoadingPreference] = false
             }
         } catch (_: Exception) {
-            updateAppWidgetState(context, glanceId) { prefs ->
+            updateAppWidgetState(context, id) { prefs ->
                 prefs[isLoadingPreference] = false
             }
         }
