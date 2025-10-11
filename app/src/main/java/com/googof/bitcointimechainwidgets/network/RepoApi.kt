@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import java.math.BigInteger
 
 interface BitcoinExplorerApi {
     @GET("blocks/tip")
@@ -12,12 +11,6 @@ interface BitcoinExplorerApi {
 
     @GET("blockchain/coins")
     suspend fun getSupply(): SupplyResponse
-
-    @GET("price")
-    suspend fun getPrice(): PriceResponse
-
-    @GET("price/marketcap")
-    suspend fun getMarketCap(): MarketCapResponse
 
     @GET("mempool/fees")
     suspend fun getMempoolFees(): MempoolFeesResponse
@@ -35,7 +28,7 @@ interface BitcoinExplorerApi {
     companion object {
         fun create(): BitcoinExplorerApi {
             return Retrofit.Builder()
-                .baseUrl("https://bitcoinexplorer.org/api/")
+                .baseUrl("https://api.frozenfork.cc/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(BitcoinExplorerApi::class.java)
@@ -132,11 +125,11 @@ data class NextHalvingResponse(
 )
 
 data class HashRateStats(
-    val `1Day`: HashRateData,
-    val `7Day`: HashRateData,
-    val `30Day`: HashRateData,
-    val `90day`: HashRateData,
-    val `365Day`: HashRateData
+    @SerializedName("1Day") val oneDay: HashRateData,
+    @SerializedName("7Day") val sevenDay: HashRateData,
+    @SerializedName("30Day") val thirtyDay: HashRateData,
+    @SerializedName("90day") val ninetyDay: HashRateData,
+    @SerializedName("365Day") val threeSixtyFiveDay: HashRateData
 )
 
 data class HashRateData(
@@ -144,8 +137,8 @@ data class HashRateData(
     val unit: String,
     val unitAbbreviation: String,
     val unitExponent: String,
-    val unitMultiplier: BigInteger,
-    val raw: BigInteger,
+    val unitMultiplier: String,
+    val raw: String,
     val string1: String,
     val string2: String,
     val string3: String

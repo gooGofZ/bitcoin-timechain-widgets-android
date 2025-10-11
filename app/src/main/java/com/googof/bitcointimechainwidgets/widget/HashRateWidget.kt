@@ -45,7 +45,7 @@ class RefreshActionHashRate : ActionCallback {
             }
             HashRateWidget().update(context, glanceId)
 
-            val hashRate = BitcoinExplorerApi.create().getHashRate().`1Day`
+            val hashRate = BitcoinExplorerApi.create().getHashRate().oneDay
             val hashRateValue = String.format("%.2f", hashRate.`val`)
             val hashRateUnit = "${hashRate.unitAbbreviation}/s"
             Log.d("HashRateWidget", "hashRate: $hashRate")

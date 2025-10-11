@@ -1,5 +1,6 @@
 package com.googof.bitcointimechainwidgets.worker
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
@@ -15,11 +16,13 @@ class HashRateWorker(
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
+    @SuppressLint("DefaultLocale")
     override suspend fun doWork(): Result {
 
         return try {
-            val hashRate = BitcoinExplorerApi.create().getHashRate().`1Day`
-            val hashRateString = String.format("%.2f %s/s", hashRate.`val`, hashRate.unitAbbreviation)
+            val hashRate = BitcoinExplorerApi.create().getHashRate().oneDay
+            val hashRateString =
+                String.format("%.2f %s/s", hashRate.`val`, hashRate.unitAbbreviation)
 
             val glanceId = GlanceAppWidgetManager(applicationContext)
                 .getGlanceIds(HashRateWidget::class.java)

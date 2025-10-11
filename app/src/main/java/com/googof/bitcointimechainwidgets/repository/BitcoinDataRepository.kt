@@ -152,8 +152,8 @@ class BitcoinDataRepository(private val context: Context) {
             try {
                 val hashrate = bitcoinApi.getHashRate()
                 context.dataStore.edit { preferences ->
-                    val hashrateValue = hashrate.`1Day`.`val`
-                    val hashrateUnit = hashrate.`1Day`.unitAbbreviation
+                    val hashrateValue = hashrate.oneDay.`val`
+                    val hashrateUnit = hashrate.oneDay.unitAbbreviation
                     val formattedHashrate = String.format("%.2f %s/s", hashrateValue, hashrateUnit)
                     preferences[HASHRATE_KEY] = formattedHashrate
                 }
