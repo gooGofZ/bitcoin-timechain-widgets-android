@@ -1,34 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2021 The Android Open Source Project.
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
 <resources>
     <string name="app_name">Bitcoin Timechain Widgets</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-    <string name="mempool_app_widget_description">Mempool Information</string>
-    <string name="bitnodes_app_widget_description">Bitnodes Information</string>
-    <string name="transaction_fees_widget_description">Transaction Fees</string>
-    <string name="block_height_widget_description">Block Height</string>
-    <string name="quotes_app_widget_description">Bitcoin\'s Quotes</string>
-    <string name="satoshi_quote_app_widget_description">Satoshi\'s Quote</string>
-    <string name="quotes_transparent_app_widget_description">Bitcoin\'s Quotes (No background)</string>
-    <string name="text_before_fetch">...</string>
-    <string name="text_lnurl">LNURL1DP68GURN8GHJ7AMPD3KX2AR0VEEKZAR0WD5XJTNRDAKJ7TNHV4KXCTTTDEHHWM30D3H82UNVWQHHQMRPDEJKYETPW468JVP5VHYZW5</string>
-    <string name="text_ln_address">planebeauty04@walletofsatoshi.com</string>
-
-    <string name="mostly_cloudy">Mostly cloudy</string>
-    <string name="lightning_network_widget_description">Lightning Network Statistics</string>
+    <string name="widget_block_height">Block Height</string>
+    <string name="widget_blocks_to_next_halving">Blocks To Halving</string>
+    <string name="widget_fee_priority">Fee Priority</string>
+    <string name="widget_market_cap">Market Cap</string>
+    <string name="widget_moscow_time">Moscow Time</string>
+    <string name="widget_price_usd">Price (USD)</string>
+    <string name="widget_supply">Supply Coins</string>
+    <string name="widget_halving_progress">Halving Progress</string>
+    <string name="widget_next_halving_date">Next Halving Date</string>
+    <string name="widget_days_until_next_halving">Day Until Halving</string>
+    <string name="widget_hashrate">Hashrate</string>
+    <string name="widget_quote">Quote</string>
+    <string name="widget_dashboard">Dashboard</string>
 </resources>
