@@ -5,22 +5,18 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
@@ -28,8 +24,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -56,10 +50,8 @@ class MainActivity : ComponentActivity() {
             window.statusBarColor = android.graphics.Color.TRANSPARENT
             @Suppress("DEPRECATION")
             window.navigationBarColor = android.graphics.Color.TRANSPARENT
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                window.attributes.layoutInDisplayCutoutMode =
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
-            }
+            window.attributes.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
         } else {
             // Use enableEdgeToEdge for older versions
             enableEdgeToEdge()
@@ -130,7 +122,7 @@ fun formatHalvingDate(dateString: String): String {
         } else {
             dateString
         }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         try {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
             val outputFormat = SimpleDateFormat("d MMMM yyyy HH:mm", Locale.getDefault())
@@ -140,7 +132,7 @@ fun formatHalvingDate(dateString: String): String {
             } else {
                 dateString
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             dateString
         }
     }
@@ -180,7 +172,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
         // Version
         item {
             Text(
-                text = "v2.1.0",
+                text = "v2.2.1",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
@@ -270,7 +262,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
 
             val hours = satoshisPerUsd / 100
             val minutes = satoshisPerUsd % 100
-            val moscowTime = String.format("%02d:%02d", hours, minutes)
+            val moscowTime = String.format(Locale.US, "%02d:%02d", hours, minutes)
 
             DataCard(
                 title = "Moscow Time",
@@ -299,6 +291,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                     Text(
                         text = "Progress: ${
                             if (halvingProgress > 0) String.format(
+                                Locale.US,
                                 "%.1f%%",
                                 halvingProgress
                             ) else "Loading..."
@@ -321,12 +314,14 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                 "Supply" to if (supply != "0") supply else "Loading...",
                 "Market Cap" to if (marketCap > 0) "$${
                     String.format(
+                        Locale.US,
                         "%,.0f",
                         marketCap
                     )
                 }" else "Loading...",
                 "Hash Rate" to hashrate,
                 "Total Nodes" to if (totalNodes > 0) String.format(
+                    Locale.US,
                     "%,d",
                     totalNodes
                 ) else "Loading..."
@@ -341,6 +336,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                 title = "Price",
                 value = if (priceUsd > 0) "$${
                     String.format(
+                        Locale.US,
                         "%,.0f",
                         priceUsd
                     )
@@ -503,12 +499,10 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                     Button(
                         onClick = {
                             try {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    val appWidgetManager = AppWidgetManager.getInstance(context)
-                                    if (appWidgetManager.isRequestPinAppWidgetSupported) {
-                                        val myProvider = ComponentName(context, receiverClass)
-                                        appWidgetManager.requestPinAppWidget(myProvider, null, null)
-                                    }
+                                val appWidgetManager = AppWidgetManager.getInstance(context)
+                                if (appWidgetManager.isRequestPinAppWidgetSupported) {
+                                    val myProvider = ComponentName(context, receiverClass)
+                                    appWidgetManager.requestPinAppWidget(myProvider, null, null)
                                 }
                             } catch (e: Exception) {
                                 e.printStackTrace()
