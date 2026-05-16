@@ -7,9 +7,12 @@ import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import android.util.Log
+import com.googof.bitcointimechainwidgets.data.BLOCKS_PER_HALVING
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 import com.googof.bitcointimechainwidgets.network.BitnodesApi
 import com.googof.bitcointimechainwidgets.network.CoinGeckoApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.first
@@ -22,6 +25,7 @@ class BitcoinDataRepository(private val context: Context) {
 
     // DataStore keys
     companion object {
+        private const val TAG = "BitcoinDataRepository"
         val PRICE_USD_KEY = doublePreferencesKey("price_usd")
         val PRICE_THB_KEY = doublePreferencesKey("price_thb")
         val BLOCK_HEIGHT_KEY = intPreferencesKey("block_height")
@@ -44,9 +48,9 @@ class BitcoinDataRepository(private val context: Context) {
     }
 
     // Network APIs
-    private val bitcoinApi = BitcoinExplorerApi.create()
-    private val bitnodesApi = BitnodesApi.create()
-    private val coinGeckoApi = CoinGeckoApi.create()
+    private val bitcoinApi = BitcoinExplorerApi.instance
+    private val bitnodesApi = BitnodesApi.instance
+    private val coinGeckoApi = CoinGeckoApi.instance
 
     // Data flows
     val priceUsd: Flow<Double> = context.dataStore.data.map { it[PRICE_USD_KEY] ?: 0.0 }
@@ -91,115 +95,89 @@ class BitcoinDataRepository(private val context: Context) {
                 preferences[LAST_REFRESH_TIME_KEY] = System.currentTimeMillis()
             }
             // Fetch data from APIs (one by one to handle partial failures)
-            try {
-                val prices = coinGeckoApi.getUSDPrice()
-                context.dataStore.edit { preferences ->
-                    preferences[PRICE_USD_KEY] = prices.bitcoin.usd
-                }
-            } catch (e: Exception) {
-                // Continue with other APIs
+            fetchWithRetry("USD price") { coinGeckoApi.getUSDPrice() }?.let { prices ->
+                context.dataStore.edit { it[PRICE_USD_KEY] = prices.bitcoin.usd }
             }
 
-            try {
-                val blockTip = bitcoinApi.getLatestBlock()
-                context.dataStore.edit { preferences ->
-                    preferences[BLOCK_HEIGHT_KEY] = blockTip.height
-                    preferences[HALVING_PROGRESS_KEY] = calculateHalvingProgress(blockTip.height)
+            fetchWithRetry("latest block") { bitcoinApi.getLatestBlock() }?.let { blockTip ->
+                context.dataStore.edit {
+                    it[BLOCK_HEIGHT_KEY] = blockTip.height
+                    it[HALVING_PROGRESS_KEY] = calculateHalvingProgress(blockTip.height)
                 }
-            } catch (e: Exception) {
-                // Continue with other APIs
             }
 
-            try {
-                val supply = bitcoinApi.getSupply()
-                context.dataStore.edit { preferences ->
-                    preferences[SUPPLY_KEY] = supply.supply
-                }
-            } catch (e: Exception) {
-                // Continue with other APIs
+            fetchWithRetry("supply") { bitcoinApi.getSupply() }?.let { supply ->
+                context.dataStore.edit { it[SUPPLY_KEY] = supply.supply }
             }
 
-            try {
-                val fees = bitcoinApi.getMempoolFees()
-                context.dataStore.edit { preferences ->
-                    preferences[FEE_LOW_KEY] = fees.oneDay
-                    preferences[FEE_MED_KEY] = fees.thirtyMin
-                    preferences[FEE_HIGH_KEY] = fees.nextBlock.smart
+            fetchWithRetry("mempool fees") { bitcoinApi.getMempoolFees() }?.let { fees ->
+                context.dataStore.edit {
+                    it[FEE_LOW_KEY] = fees.oneDay
+                    it[FEE_MED_KEY] = fees.thirtyMin
+                    it[FEE_HIGH_KEY] = fees.nextBlock.smart
                 }
-            } catch (e: Exception) {
-                // Continue with other APIs
             }
 
-            try {
-                val marketCap = coinGeckoApi.getUSDPriceWithMarketCap()
-                context.dataStore.edit { preferences ->
-                    preferences[MARKET_CAP_KEY] = marketCap.bitcoin.usd_market_cap
-                }
-            } catch (e: Exception) {
-                // Continue with other APIs
+            fetchWithRetry("market cap") { coinGeckoApi.getUSDPriceWithMarketCap() }?.let { marketCap ->
+                context.dataStore.edit { it[MARKET_CAP_KEY] = marketCap.bitcoin.usd_market_cap }
             }
 
-            try {
-                val halving = bitcoinApi.getNextHalving()
-                context.dataStore.edit { preferences ->
-                    preferences[BLOCKS_TO_HALVING_KEY] = halving.blocksUntilNextHalving
-                    preferences[NEXT_HALVING_DATE_KEY] = halving.nextHalvingEstimatedDate
+            fetchWithRetry("next halving") { bitcoinApi.getNextHalving() }?.let { halving ->
+                context.dataStore.edit {
+                    it[BLOCKS_TO_HALVING_KEY] = halving.blocksUntilNextHalving
+                    it[NEXT_HALVING_DATE_KEY] = halving.nextHalvingEstimatedDate
                 }
-            } catch (e: Exception) {
-                // Continue with other APIs
             }
 
-            try {
-                val hashrate = bitcoinApi.getHashRate()
-                context.dataStore.edit { preferences ->
-                    val hashrateValue = hashrate.oneDay.`val`
-                    val hashrateUnit = hashrate.oneDay.unitAbbreviation
-                    val formattedHashrate = String.format("%.2f %s/s", hashrateValue, hashrateUnit)
-                    preferences[HASHRATE_KEY] = formattedHashrate
+            fetchWithRetry("hash rate") { bitcoinApi.getHashRate() }?.let { hashrate ->
+                context.dataStore.edit {
+                    it[HASHRATE_KEY] = String.format("%.2f %s/s", hashrate.oneDay.`val`, hashrate.oneDay.unitAbbreviation)
                 }
-            } catch (e: Exception) {
-                // Continue with other APIs
             }
 
-            try {
-                val quote = bitcoinApi.getQuote()
-                context.dataStore.edit { preferences ->
-                    preferences[QUOTE_TEXT_KEY] = quote.text
-                    preferences[QUOTE_SPEAKER_KEY] = quote.speaker
-                    preferences[QUOTE_DATE_KEY] = quote.date
+            fetchWithRetry("quote") { bitcoinApi.getQuote() }?.let { quote ->
+                context.dataStore.edit {
+                    it[QUOTE_TEXT_KEY] = quote.text
+                    it[QUOTE_SPEAKER_KEY] = quote.speaker
+                    it[QUOTE_DATE_KEY] = quote.date
                 }
-            } catch (e: Exception) {
-                // Continue with other APIs
             }
 
-            try {
-                val thbPrice = coinGeckoApi.getTHBPrice()
-                context.dataStore.edit { preferences ->
-                    preferences[PRICE_THB_KEY] = thbPrice.bitcoin.thb
-                }
-            } catch (e: Exception) {
-                // Continue with other APIs
+            fetchWithRetry("THB price") { coinGeckoApi.getTHBPrice() }?.let { thbPrice ->
+                context.dataStore.edit { it[PRICE_THB_KEY] = thbPrice.bitcoin.thb }
             }
 
-            try {
-                val nodes = bitnodesApi.getSnapshots()
-                context.dataStore.edit { preferences ->
-                    preferences[TOTAL_NODES_KEY] = nodes.results.firstOrNull()?.total_nodes ?: 0
-                }
-            } catch (e: Exception) {
-                // Continue with other APIs
+            fetchWithRetry("node count") { bitnodesApi.getSnapshots() }?.let { nodes ->
+                context.dataStore.edit { it[TOTAL_NODES_KEY] = nodes.results.firstOrNull()?.total_nodes ?: 0 }
             }
 
         } catch (e: Exception) {
-            // Overall error handling
+            Log.e(TAG, "Unexpected error during data refresh", e)
         }
     }
 
+    private suspend fun <T> fetchWithRetry(tag: String, block: suspend () -> T): T? {
+        var delayMs = 1000L
+        repeat(3) { attempt ->
+            try {
+                return block()
+            } catch (e: Exception) {
+                if (attempt == 2) {
+                    Log.e(TAG, "Failed to fetch $tag after 3 attempts", e)
+                } else {
+                    Log.w(TAG, "Attempt ${attempt + 1} failed for $tag, retrying in ${delayMs}ms", e)
+                    delay(delayMs)
+                    delayMs *= 2
+                }
+            }
+        }
+        return null
+    }
+
     private fun calculateHalvingProgress(currentHeight: Int): Double {
-        val blocksPerHalving = 210000
-        val currentCycle = currentHeight / blocksPerHalving
-        val cycleStart = currentCycle * blocksPerHalving
+        val currentCycle = currentHeight / BLOCKS_PER_HALVING
+        val cycleStart = currentCycle * BLOCKS_PER_HALVING
         val cycleProgress = currentHeight - cycleStart
-        return (cycleProgress.toDouble() / blocksPerHalving.toDouble()) * 100.0
+        return (cycleProgress.toDouble() / BLOCKS_PER_HALVING.toDouble()) * 100.0
     }
 }

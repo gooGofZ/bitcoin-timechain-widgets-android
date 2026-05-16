@@ -30,6 +30,10 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.supplyPreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.googof.bitcointimechainwidgets.worker.SupplyWorker
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -40,28 +44,11 @@ class RefreshActionSupply : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("SupplyWidget", "RefreshAction triggered")
-        try {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = true
-            }
-            SupplyWidget().update(context, glanceId)
-
-            val supply = BitcoinExplorerApi.create().getSupply().supply
-
-            Log.d("SupplyWidget", "supply: $supply")
-
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[supplyPreferences] = supply
-            }
-        } catch (e: Exception) {
-            Log.e("SupplyWidget", "Error during refresh", e)
-        } finally {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = false
-            }
-            SupplyWidget().update(context, glanceId)
-        }
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "supply_update_manual",
+            ExistingWorkPolicy.KEEP,
+            OneTimeWorkRequestBuilder<SupplyWorker>().build()
+        )
     }
 }
 

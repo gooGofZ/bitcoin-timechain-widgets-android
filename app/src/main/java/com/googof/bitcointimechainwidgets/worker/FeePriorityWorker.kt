@@ -1,48 +1,29 @@
 package com.googof.bitcointimechainwidgets.worker
 
 import android.content.Context
-import android.util.Log
-import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.GlanceId
+import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
-import com.googof.bitcointimechainwidgets.widget.FeePriorityWidget
 import com.googof.bitcointimechainwidgets.data.feeHighPreferences
 import com.googof.bitcointimechainwidgets.data.feeLowPreferences
 import com.googof.bitcointimechainwidgets.data.feeMedPreferences
+import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import com.googof.bitcointimechainwidgets.widget.FeePriorityWidget
+import kotlin.reflect.KClass
 
-class FeePriorityWorker(
-    context: Context,
-    workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
+class FeePriorityWorker(context: Context, workerParams: WorkerParameters) :
+    BaseWidgetWorker(context, workerParams) {
 
-    override suspend fun doWork(): Result {
-        
-        return try {
-            val fees = BitcoinExplorerApi.create().getMempoolFees()
-            Log.d("FeePriorityWorker", fees.toString())
+    override val widgetClass: KClass<out GlanceAppWidget> = FeePriorityWidget::class
+    override val tag = "FeePriorityWorker"
 
-            val glanceId = GlanceAppWidgetManager(applicationContext)
-                .getGlanceIds(FeePriorityWidget::class.java)
-                .firstOrNull()
-
-            glanceId?.let {
-                updateAppWidgetState(
-                    applicationContext, it
-                ) { prefs ->
-                    prefs[feeLowPreferences] = fees.oneDay
-                    prefs[feeMedPreferences] = fees.sixtyMin
-                    prefs[feeHighPreferences] = fees.thirtyMin
-                }
-
-                FeePriorityWidget().update(applicationContext, it)
-            }
-
-            Result.success()
-        } catch (e: Exception) {
-            Log.e("FeePriorityWorker", "Error during doWork", e)
-            Result.retry()
+    override suspend fun fetchAndStore(context: Context, glanceId: GlanceId) {
+        val fees = BitcoinExplorerApi.instance.getMempoolFees()
+        updateAppWidgetState(context, glanceId) {
+            it[feeLowPreferences] = fees.oneDay
+            it[feeMedPreferences] = fees.sixtyMin
+            it[feeHighPreferences] = fees.thirtyMin
         }
     }
 }

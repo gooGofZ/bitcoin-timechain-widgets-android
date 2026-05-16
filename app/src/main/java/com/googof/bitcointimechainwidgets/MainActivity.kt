@@ -9,9 +9,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
-import java.text.SimpleDateFormat
 import java.util.Locale
 import androidx.activity.ComponentActivity
+import com.googof.bitcointimechainwidgets.util.formatIsoDate
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
@@ -110,33 +110,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun formatHalvingDate(dateString: String): String {
-    if (dateString.isEmpty()) return ""
-
-    return try {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("d MMMM yyyy HH:mm", Locale.getDefault())
-        val date = inputFormat.parse(dateString)
-        if (date != null) {
-            outputFormat.format(date)
-        } else {
-            dateString
-        }
-    } catch (_: Exception) {
-        try {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("d MMMM yyyy HH:mm", Locale.getDefault())
-            val date = inputFormat.parse(dateString)
-            if (date != null) {
-                outputFormat.format(date)
-            } else {
-                dateString
-            }
-        } catch (_: Exception) {
-            dateString
-        }
-    }
-}
+fun formatHalvingDate(dateString: String): String =
+    formatIsoDate(dateString, "d MMMM yyyy HH:mm")
 
 @Composable
 fun DashboardScreen(modifier: Modifier = Modifier) {

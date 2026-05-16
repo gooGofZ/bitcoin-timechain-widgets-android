@@ -8,7 +8,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
-var BLOCKS_PER_HALVING = 210_000
+const val BLOCKS_PER_HALVING = 210_000
+const val WIDGET_UPDATE_INTERVAL_MINUTES = 15L
+const val WIDGET_UPDATE_FLEX_MINUTES = 5L
 val priceUsdPreference = doublePreferencesKey("price_usd")
 val priceThbPreference = doublePreferencesKey("price_thb")
 val blockHeightPreference = intPreferencesKey("block_height")

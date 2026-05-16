@@ -28,6 +28,10 @@ import com.googof.bitcointimechainwidgets.repository.BitcoinDataRepository
 import kotlinx.coroutines.flow.first
 import java.text.NumberFormat
 import java.util.Locale
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.googof.bitcointimechainwidgets.worker.PriceUSDWorker
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -37,29 +41,11 @@ class RefreshActionPriceUSD : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("PriceUSDWidget", "RefreshAction triggered")
-        try {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = true
-            }
-            PriceUSDWidget().update(context, glanceId)
-
-            val repository = BitcoinDataRepository(context)
-            repository.refreshAllData()
-            val priceUsd = repository.priceUsd.first()
-            Log.d("PriceUSDWidget", "Price USD: $priceUsd")
-
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[priceUsdPreference] = priceUsd
-            }
-        } catch (e: Exception) {
-            Log.e("PriceUSDWidget", "Error during refresh", e)
-        } finally {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = false
-            }
-            PriceUSDWidget().update(context, glanceId)
-        }
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "price_usd_widget_update_manual",
+            ExistingWorkPolicy.KEEP,
+            OneTimeWorkRequestBuilder<PriceUSDWorker>().build()
+        )
     }
 }
 

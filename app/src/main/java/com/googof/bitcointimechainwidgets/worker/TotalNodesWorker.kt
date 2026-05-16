@@ -1,43 +1,23 @@
 package com.googof.bitcointimechainwidgets.worker
 
 import android.content.Context
-import android.util.Log
-import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.GlanceId
+import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.googof.bitcointimechainwidgets.data.totalNodesPreference
 import com.googof.bitcointimechainwidgets.network.BitnodesApi
 import com.googof.bitcointimechainwidgets.widget.TotalNodesWidget
+import kotlin.reflect.KClass
 
-class TotalNodesWorker(
-    context: Context,
-    workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
+class TotalNodesWorker(context: Context, workerParams: WorkerParameters) :
+    BaseWidgetWorker(context, workerParams) {
 
-    override suspend fun doWork(): Result {
+    override val widgetClass: KClass<out GlanceAppWidget> = TotalNodesWidget::class
+    override val tag = "TotalNodesWorker"
 
-        return try {
-            val totalNodes = BitnodesApi.create().getSnapshots().results[0].total_nodes
-
-            val glanceId = GlanceAppWidgetManager(applicationContext)
-                .getGlanceIds(TotalNodesWidget::class.java)
-                .firstOrNull()
-
-            glanceId?.let {
-                updateAppWidgetState(
-                    applicationContext, it
-                ) { prefs ->
-                    prefs[totalNodesPreference] = totalNodes
-                }
-
-                TotalNodesWidget().update(applicationContext, it)
-            }
-
-            Result.success()
-        } catch (e: Exception) {
-            Log.e("TotalNodesWorker", "Error updating widget", e)
-            Result.retry()
-        }
+    override suspend fun fetchAndStore(context: Context, glanceId: GlanceId) {
+        val totalNodes = BitnodesApi.instance.getSnapshots().results[0].total_nodes
+        updateAppWidgetState(context, glanceId) { it[totalNodesPreference] = totalNodes }
     }
 }

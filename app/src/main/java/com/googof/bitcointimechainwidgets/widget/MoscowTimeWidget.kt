@@ -23,6 +23,10 @@ import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.priceUsdPreference
 import com.googof.bitcointimechainwidgets.repository.BitcoinDataRepository
 import kotlinx.coroutines.flow.first
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.googof.bitcointimechainwidgets.worker.MoscowTimeWorker
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -32,29 +36,11 @@ class RefreshActionMoscowTime : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("MoscowTimeWidget", "RefreshAction triggered")
-        try {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = true
-            }
-            MoscowTimeWidget().update(context, glanceId)
-
-            val repository = BitcoinDataRepository(context)
-            repository.refreshAllData()
-            val priceUsd = repository.priceUsd.first()
-            Log.d("MoscowTimeWidget", "Price USD: $priceUsd")
-
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[priceUsdPreference] = priceUsd
-            }
-        } catch (e: Exception) {
-            Log.e("MoscowTimeWidget", "Error during refresh", e)
-        } finally {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = false
-            }
-            MoscowTimeWidget().update(context, glanceId)
-        }
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "moscow_time_widget_update_manual",
+            ExistingWorkPolicy.KEEP,
+            OneTimeWorkRequestBuilder<MoscowTimeWorker>().build()
+        )
     }
 }
 
