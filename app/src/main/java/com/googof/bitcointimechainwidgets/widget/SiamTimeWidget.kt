@@ -45,15 +45,15 @@ class RefreshActionSiamTime : ActionCallback {
 
 class SiamTimeWidget : GlanceAppWidget() {
     @SuppressLint("DefaultLocale")
-    override suspend fun provideGlance(context: Context, glanceId: GlanceId) {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
         try {
             val priceThb = CoinGeckoApi.instance.getTHBPrice().bitcoin.thb
-            updateAppWidgetState(context, glanceId) { prefs ->
+            updateAppWidgetState(context, id) { prefs ->
                 prefs[priceThbPreference] = priceThb
                 prefs[isLoadingPreference] = false
             }
         } catch (_: Exception) {
-            updateAppWidgetState(context, glanceId) { prefs ->
+            updateAppWidgetState(context, id) { prefs ->
                 prefs[isLoadingPreference] = false
             }
         }
