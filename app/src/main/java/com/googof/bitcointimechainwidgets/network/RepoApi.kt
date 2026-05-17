@@ -1,9 +1,17 @@
 package com.googof.bitcointimechainwidgets.network
 
 import com.google.gson.annotations.SerializedName
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import java.util.concurrent.TimeUnit
+
+private val httpClient = OkHttpClient.Builder()
+    .connectTimeout(10, TimeUnit.SECONDS)
+    .readTimeout(10, TimeUnit.SECONDS)
+    .writeTimeout(10, TimeUnit.SECONDS)
+    .build()
 
 interface BitcoinExplorerApi {
     @GET("blocks/tip")
@@ -26,9 +34,10 @@ interface BitcoinExplorerApi {
 
 
     companion object {
-        fun create(): BitcoinExplorerApi {
-            return Retrofit.Builder()
+        val instance: BitcoinExplorerApi by lazy {
+            Retrofit.Builder()
                 .baseUrl("https://api.frozenfork.cc/")
+                .client(httpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(BitcoinExplorerApi::class.java)
@@ -36,22 +45,6 @@ interface BitcoinExplorerApi {
     }
 }
 
-interface BitnodesApi {
-    @GET("snapshots/")
-    suspend fun getSnapshots(): SnapshotResponse
-
-    companion object {
-        private const val BASE_URL = "https://bitnodes.io/api/v1/"
-
-        fun create(): BitnodesApi {
-            return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(BitnodesApi::class.java)
-        }
-    }
-}
 
 interface CoinGeckoApi {
     @GET("simple/price?ids=bitcoin&vs_currencies=thb")
@@ -66,9 +59,10 @@ interface CoinGeckoApi {
     companion object {
         private const val BASE_URL = "https://api.coingecko.com/api/v3/"
 
-        fun create(): CoinGeckoApi {
-            return Retrofit.Builder()
+        val instance: CoinGeckoApi by lazy {
+            Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .client(httpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(CoinGeckoApi::class.java)
@@ -144,26 +138,10 @@ data class HashRateData(
     val string3: String
 )
 
-data class SnapshotResponse(
-    val count: Int,
-    val next: String?,
-    val previous: String?,
-    val results: List<Snapshot>
-)
-
-data class Snapshot(
-    val url: String,
-    val timestamp: Long,
-    val total_nodes: Int,
-    val latest_height: Int
-)
 
 data class Quote(
-    val text: String,
-    val speaker: String,
-    val date: String,
-    val url: String,
-    val quoteIndex: Int
+    val quote: String,
+    val timestamp: Long
 )
 
 data class BitcoinPrice(

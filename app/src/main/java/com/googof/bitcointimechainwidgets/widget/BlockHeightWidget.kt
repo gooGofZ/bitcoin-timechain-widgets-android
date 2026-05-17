@@ -29,6 +29,10 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.blockHeightPreference
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.googof.bitcointimechainwidgets.worker.BlockHeightWorker
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -38,27 +42,11 @@ class RefreshActionBlockHeight : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("BlockHeightWidget", "RefreshAction triggered")
-        try {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = true
-            }
-            BlockHeightWidget().update(context, glanceId)
-
-            val blockHeight = BitcoinExplorerApi.create().getLatestBlock().height
-            Log.d("BlockHeightWidget", "blockHeight: $blockHeight")
-
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[blockHeightPreference] = blockHeight
-            }
-        } catch (e: Exception) {
-            Log.e("BlockHeightWidget", "Error during refresh", e)
-        } finally {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = false
-            }
-            BlockHeightWidget().update(context, glanceId)
-        }
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "block_height_update_manual",
+            ExistingWorkPolicy.KEEP,
+            OneTimeWorkRequestBuilder<BlockHeightWorker>().build()
+        )
     }
 }
 

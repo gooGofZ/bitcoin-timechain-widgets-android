@@ -1,45 +1,23 @@
 package com.googof.bitcointimechainwidgets.worker
 
 import android.content.Context
-import android.util.Log
-import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.GlanceId
+import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.googof.bitcointimechainwidgets.data.priceUsdPreference
 import com.googof.bitcointimechainwidgets.network.CoinGeckoApi
 import com.googof.bitcointimechainwidgets.widget.PriceUSDWidget
+import kotlin.reflect.KClass
 
-class PriceUSDWorker(
-    context: Context,
-    workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
+class PriceUSDWorker(context: Context, workerParams: WorkerParameters) :
+    BaseWidgetWorker(context, workerParams) {
 
-    override suspend fun doWork(): Result {
-        return try {
+    override val widgetClass: KClass<out GlanceAppWidget> = PriceUSDWidget::class
+    override val tag = "PriceUSDWorker"
 
-            val prices = CoinGeckoApi.create().getUSDPrice()
-
-            Log.d("PriceUSDWorker", "$prices")
-
-            val glanceId = GlanceAppWidgetManager(applicationContext)
-                .getGlanceIds(PriceUSDWidget::class.java)
-                .firstOrNull()
-
-            glanceId?.let {
-                updateAppWidgetState(
-                    applicationContext, it
-                ) { prefs ->
-                    prefs[priceUsdPreference] = prices.bitcoin.usd
-                }
-
-                PriceUSDWidget().update(applicationContext, it)
-            }
-
-            Result.success()
-        } catch (e: Exception) {
-            Log.e("PriceUSDWorker", "Error during doWork", e)
-            Result.retry()
-        }
+    override suspend fun fetchAndStore(context: Context, glanceId: GlanceId) {
+        val price = CoinGeckoApi.instance.getUSDPrice().bitcoin.usd
+        updateAppWidgetState(context, glanceId) { it[priceUsdPreference] = price }
     }
 }

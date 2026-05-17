@@ -22,6 +22,10 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.priceThbPreference
 import com.googof.bitcointimechainwidgets.network.CoinGeckoApi
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.googof.bitcointimechainwidgets.worker.SiamTimeWorker
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -31,42 +35,25 @@ class RefreshActionSiamTime : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("SiamTimeWidget", "RefreshAction triggered")
-        try {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = true
-            }
-            MoscowTimeWidget().update(context, glanceId)
-
-            val priceThb = CoinGeckoApi.create().getTHBPrice().bitcoin.thb
-
-            Log.d("SiamTimeWidget", "THB Price: $priceThb")
-
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[priceThbPreference] = priceThb
-            }
-        } catch (e: Exception) {
-            Log.e("SiamTimeWidget", "Error during refresh", e)
-        } finally {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = false
-            }
-            MoscowTimeWidget().update(context, glanceId)
-        }
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "siam_time_widget_update_manual",
+            ExistingWorkPolicy.KEEP,
+            OneTimeWorkRequestBuilder<SiamTimeWorker>().build()
+        )
     }
 }
 
 class SiamTimeWidget : GlanceAppWidget() {
     @SuppressLint("DefaultLocale")
-    override suspend fun provideGlance(context: Context, glanceId: GlanceId) {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
         try {
-            val priceThb = CoinGeckoApi.create().getTHBPrice().bitcoin.thb
-            updateAppWidgetState(context, glanceId) { prefs ->
+            val priceThb = CoinGeckoApi.instance.getTHBPrice().bitcoin.thb
+            updateAppWidgetState(context, id) { prefs ->
                 prefs[priceThbPreference] = priceThb
                 prefs[isLoadingPreference] = false
             }
         } catch (_: Exception) {
-            updateAppWidgetState(context, glanceId) { prefs ->
+            updateAppWidgetState(context, id) { prefs ->
                 prefs[isLoadingPreference] = false
             }
         }

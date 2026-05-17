@@ -44,7 +44,12 @@ import com.googof.bitcointimechainwidgets.data.blocksToNextHalvingPreferences
 import com.googof.bitcointimechainwidgets.data.nextHalvingDatePreferences
 import com.googof.bitcointimechainwidgets.data.calculateDaysUntilHalving
 import com.googof.bitcointimechainwidgets.repository.BitcoinDataRepository
+import com.googof.bitcointimechainwidgets.util.formatIsoDate
 import kotlinx.coroutines.flow.first
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.googof.bitcointimechainwidgets.worker.DashboardWorker
 
 private val isLoadingPreference = booleanPreferencesKey("dashboard_is_loading")
 
@@ -54,27 +59,11 @@ class RefreshActionDashboard : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("DashboardWidget", "RefreshAction triggered")
-        try {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = true
-            }
-            DashboardWidget().update(context, glanceId)
-
-            val repository = BitcoinDataRepository(context)
-            repository.refreshAllData()
-
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = false
-            }
-        } catch (e: Exception) {
-            Log.e("DashboardWidget", "Error during refresh", e)
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = false
-            }
-        } finally {
-            DashboardWidget().update(context, glanceId)
-        }
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "dashboard_update_manual",
+            ExistingWorkPolicy.KEEP,
+            OneTimeWorkRequestBuilder<DashboardWorker>().build()
+        )
     }
 }
 
@@ -470,35 +459,7 @@ class DashboardWidget : GlanceAppWidget() {
                                         modifier = GlanceModifier.defaultWeight()
                                     )
                                     Text(
-                                        text = if (nextHalvingDate.isNotEmpty()) {
-                                            try {
-                                                val inputFormat = java.text.SimpleDateFormat(
-                                                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-                                                    java.util.Locale.getDefault()
-                                                )
-                                                val outputFormat = java.text.SimpleDateFormat(
-                                                    "d MMM yyyy",
-                                                    java.util.Locale.getDefault()
-                                                )
-                                                val date = inputFormat.parse(nextHalvingDate)
-                                                if (date != null) outputFormat.format(date) else "..."
-                                            } catch (_: Exception) {
-                                                try {
-                                                    val inputFormat = java.text.SimpleDateFormat(
-                                                        "yyyy-MM-dd'T'HH:mm:ss'Z'",
-                                                        java.util.Locale.getDefault()
-                                                    )
-                                                    val outputFormat = java.text.SimpleDateFormat(
-                                                        "d MMM yyyy",
-                                                        java.util.Locale.getDefault()
-                                                    )
-                                                    val date = inputFormat.parse(nextHalvingDate)
-                                                    if (date != null) outputFormat.format(date) else "..."
-                                                } catch (_: Exception) {
-                                                    "..."
-                                                }
-                                            }
-                                        } else "...",
+                                        text = formatIsoDate(nextHalvingDate, "d MMM yyyy").ifEmpty { "..." },
                                         style = TextStyle(
                                             color = GlanceTheme.colors.primary,
                                             fontWeight = FontWeight.Bold,

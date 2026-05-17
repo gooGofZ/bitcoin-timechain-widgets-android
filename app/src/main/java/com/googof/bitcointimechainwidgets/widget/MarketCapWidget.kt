@@ -30,6 +30,10 @@ import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.marketCapPreferences
 import com.googof.bitcointimechainwidgets.repository.BitcoinDataRepository
 import kotlinx.coroutines.flow.first
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.googof.bitcointimechainwidgets.worker.MarketCapWorker
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -43,29 +47,11 @@ class RefreshActionMarketCap : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("MarketCapWidget", "RefreshAction triggered")
-        try {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = true
-            }
-            MarketCapWidget().update(context, glanceId)
-
-            val repository = BitcoinDataRepository(context)
-            repository.refreshAllData()
-            val marketCap = repository.marketCap.first()
-            Log.d("MarketCapWidget", "marketCap: $marketCap")
-
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[marketCapPreferences] = marketCap
-            }
-        } catch (e: Exception) {
-            Log.e("MarketCapWidget", "Error during refresh", e)
-        } finally {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = false
-            }
-            MarketCapWidget().update(context, glanceId)
-        }
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "market_cap_update_manual",
+            ExistingWorkPolicy.KEEP,
+            OneTimeWorkRequestBuilder<MarketCapWorker>().build()
+        )
     }
 }
 

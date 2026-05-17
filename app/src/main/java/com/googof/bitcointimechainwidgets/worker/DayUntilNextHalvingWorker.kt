@@ -1,46 +1,23 @@
 package com.googof.bitcointimechainwidgets.worker
 
 import android.content.Context
-import android.util.Log
-import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.GlanceId
+import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.googof.bitcointimechainwidgets.data.nextHalvingDatePreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 import com.googof.bitcointimechainwidgets.widget.DayUntilNextHalvingWidget
+import kotlin.reflect.KClass
 
-class DayUntilNextHalvingWorker(
-    context: Context,
-    workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
+class DayUntilNextHalvingWorker(context: Context, workerParams: WorkerParameters) :
+    BaseWidgetWorker(context, workerParams) {
 
-    override suspend fun doWork(): Result {
+    override val widgetClass: KClass<out GlanceAppWidget> = DayUntilNextHalvingWidget::class
+    override val tag = "DayUntilNextHalvingWorker"
 
-        return try {
-            val nextHalvingEstimatedDate =
-                BitcoinExplorerApi.create().getNextHalving().nextHalvingEstimatedDate
-
-            Log.d("DayUntilNextHalvingWorker", nextHalvingEstimatedDate)
-
-            val glanceId = GlanceAppWidgetManager(applicationContext)
-                .getGlanceIds(DayUntilNextHalvingWidget::class.java)
-                .firstOrNull()
-
-            glanceId?.let {
-                updateAppWidgetState(
-                    applicationContext, it
-                ) { prefs ->
-                    prefs[nextHalvingDatePreferences] = nextHalvingEstimatedDate
-                }
-
-                DayUntilNextHalvingWidget().update(applicationContext, it)
-            }
-
-            Result.success()
-        } catch (e: Exception) {
-            Log.e("DayUntilNextHalvingWorker", "Error updating widget", e)
-            Result.retry()
-        }
+    override suspend fun fetchAndStore(context: Context, glanceId: GlanceId) {
+        val date = BitcoinExplorerApi.instance.getNextHalving().nextHalvingEstimatedDate
+        updateAppWidgetState(context, glanceId) { it[nextHalvingDatePreferences] = date }
     }
 }

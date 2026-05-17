@@ -1,45 +1,13 @@
 package com.googof.bitcointimechainwidgets.receiver
 
-import android.content.Context
-import java.util.concurrent.TimeUnit
 import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.googof.bitcointimechainwidgets.widget.DashboardWidget
 import com.googof.bitcointimechainwidgets.worker.DashboardWorker
+import kotlin.reflect.KClass
 
-class DashboardWidgetReceiver : GlanceAppWidgetReceiver() {
+class DashboardWidgetReceiver : BaseWidgetReceiver<DashboardWorker>() {
     override val glanceAppWidget: GlanceAppWidget = DashboardWidget()
-
-    override fun onEnabled(context: Context) {
-        super.onEnabled(context)
-        setupPeriodicUpdate(context)
-    }
-
-    override fun onDisabled(context: Context) {
-        super.onDisabled(context)
-        WorkManager.getInstance(context).cancelUniqueWork("dashboard_update")
-    }
-
-    private fun setupPeriodicUpdate(context: Context) {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val workRequest = PeriodicWorkRequestBuilder<DashboardWorker>(
-            15, TimeUnit.MINUTES,
-            5, TimeUnit.MINUTES
-        ).setConstraints(constraints).build()
-
-        WorkManager.getInstance(context)
-            .enqueueUniquePeriodicWork(
-                "dashboard_update",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
-    }
+    override val workerClass: KClass<DashboardWorker> = DashboardWorker::class
+    override val workName = "dashboard_update"
 }

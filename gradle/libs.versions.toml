@@ -12,7 +12,7 @@ lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
 composeBom = "2025.06.01"
 retrofit = "3.0.0"
-workRuntimeKtx = "2.10.2"
+workRuntimeKtx = "2.7.1"
 datastorePreferences = "1.1.7"
 
 [libraries]

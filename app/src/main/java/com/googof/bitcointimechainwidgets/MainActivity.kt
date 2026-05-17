@@ -9,9 +9,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
-import java.text.SimpleDateFormat
 import java.util.Locale
 import androidx.activity.ComponentActivity
+import com.googof.bitcointimechainwidgets.util.formatIsoDate
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
@@ -110,33 +110,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun formatHalvingDate(dateString: String): String {
-    if (dateString.isEmpty()) return ""
-
-    return try {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("d MMMM yyyy HH:mm", Locale.getDefault())
-        val date = inputFormat.parse(dateString)
-        if (date != null) {
-            outputFormat.format(date)
-        } else {
-            dateString
-        }
-    } catch (_: Exception) {
-        try {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("d MMMM yyyy HH:mm", Locale.getDefault())
-            val date = inputFormat.parse(dateString)
-            if (date != null) {
-                outputFormat.format(date)
-            } else {
-                dateString
-            }
-        } catch (_: Exception) {
-            dateString
-        }
-    }
-}
+fun formatHalvingDate(dateString: String): String =
+    formatIsoDate(dateString, "d MMMM yyyy HH:mm")
 
 @Composable
 fun DashboardScreen(modifier: Modifier = Modifier) {
@@ -154,7 +129,6 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
     val halvingProgress by repository.halvingProgress.collectAsState(initial = 0.0)
     val nextHalvingDate by repository.nextHalvingDate.collectAsState(initial = "")
     val hashrate by repository.hashrate.collectAsState(initial = "0 EH/s")
-    val totalNodes by repository.totalNodes.collectAsState(initial = 0)
     val quoteText by repository.quoteText.collectAsState(initial = "")
     val quoteSpeaker by repository.quoteSpeaker.collectAsState(initial = "")
 
@@ -172,7 +146,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
         // Version
         item {
             Text(
-                text = "v2.2.1",
+                text = "v${context.packageManager.getPackageInfo(context.packageName, 0).versionName}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
@@ -319,12 +293,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                         marketCap
                     )
                 }" else "Loading...",
-                "Hash Rate" to hashrate,
-                "Total Nodes" to if (totalNodes > 0) String.format(
-                    Locale.US,
-                    "%,d",
-                    totalNodes
-                ) else "Loading..."
+                "Hash Rate" to hashrate
             )
         ) { (title, value) ->
             DataCard(title = title, value = value)
