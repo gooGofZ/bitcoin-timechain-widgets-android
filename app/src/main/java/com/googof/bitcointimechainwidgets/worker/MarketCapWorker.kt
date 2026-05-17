@@ -1,45 +1,23 @@
 package com.googof.bitcointimechainwidgets.worker
 
 import android.content.Context
-import android.util.Log
-import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.GlanceId
+import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.googof.bitcointimechainwidgets.data.marketCapPreferences
 import com.googof.bitcointimechainwidgets.network.CoinGeckoApi
 import com.googof.bitcointimechainwidgets.widget.MarketCapWidget
+import kotlin.reflect.KClass
 
-class MarketCapWorker(
-    context: Context,
-    workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
+class MarketCapWorker(context: Context, workerParams: WorkerParameters) :
+    BaseWidgetWorker(context, workerParams) {
 
-    override suspend fun doWork(): Result {
+    override val widgetClass: KClass<out GlanceAppWidget> = MarketCapWidget::class
+    override val tag = "MarketCapWorker"
 
-        return try {
-            val marketCap = CoinGeckoApi.create().getUSDPriceWithMarketCap().bitcoin.usd_market_cap
-
-            Log.d("MarketCapWorker", "$marketCap")
-
-            val glanceId = GlanceAppWidgetManager(applicationContext)
-                .getGlanceIds(MarketCapWidget::class.java)
-                .firstOrNull()
-
-            glanceId?.let {
-                updateAppWidgetState(
-                    applicationContext, it
-                ) { prefs ->
-                    prefs[marketCapPreferences] = marketCap
-                }
-
-                MarketCapWidget().update(applicationContext, it)
-            }
-
-            Result.success()
-        } catch (e: Exception) {
-            Log.e("MarketCapWorker", "Error during doWork", e)
-            Result.retry()
-        }
+    override suspend fun fetchAndStore(context: Context, glanceId: GlanceId) {
+        val marketCap = CoinGeckoApi.instance.getUSDPriceWithMarketCap().bitcoin.usd_market_cap
+        updateAppWidgetState(context, glanceId) { it[marketCapPreferences] = marketCap }
     }
 }

@@ -34,6 +34,10 @@ import com.googof.bitcointimechainwidgets.data.feeHighPreferences
 import com.googof.bitcointimechainwidgets.data.feeLowPreferences
 import com.googof.bitcointimechainwidgets.data.feeMedPreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.googof.bitcointimechainwidgets.worker.FeePriorityWorker
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -43,32 +47,11 @@ class RefreshActionFeePriority : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("FeePriorityWidget", "RefreshAction triggered")
-        try {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = true
-            }
-            FeePriorityWidget().update(context, glanceId)
-
-            val fees = BitcoinExplorerApi.create().getMempoolFees()
-
-            Log.d("FeesPriorityWidget", "High fees: ${fees.thirtyMin}")
-            Log.d("FeesPriorityWidget", "Med fees: ${fees.sixtyMin}")
-            Log.d("FeesPriorityWidget", "Low fees: ${fees.oneDay}")
-
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[feeLowPreferences] = fees.oneDay
-                prefs[feeMedPreferences] = fees.sixtyMin
-                prefs[feeHighPreferences] = fees.thirtyMin
-            }
-        } catch (e: Exception) {
-            Log.e("FeesPriorityWidget", "Error during refresh", e)
-        } finally {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = false
-            }
-            FeePriorityWidget().update(context, glanceId)
-        }
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "fee_priority_update_manual",
+            ExistingWorkPolicy.KEEP,
+            OneTimeWorkRequestBuilder<FeePriorityWorker>().build()
+        )
     }
 }
 

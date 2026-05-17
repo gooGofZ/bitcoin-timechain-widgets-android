@@ -30,6 +30,10 @@ import androidx.glance.text.TextStyle
 import com.googof.bitcointimechainwidgets.data.calculateHalvingProgress
 import com.googof.bitcointimechainwidgets.data.halvingProgressPreferences
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.googof.bitcointimechainwidgets.worker.HalvingProgressWorker
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
@@ -39,32 +43,11 @@ class RefreshActionNextHalvingDate : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("HalvingProgressWidget", "RefreshAction triggered")
-        try {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = true
-            }
-            HalvingProgressWidget().update(context, glanceId)
-
-            val blocksUntilNextHalving =
-                BitcoinExplorerApi.create().getNextHalving().blocksUntilNextHalving
-
-            Log.d(
-                "HalvingProgressWidget",
-                calculateHalvingProgress(blocksUntilNextHalving).toString()
-            )
-
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[halvingProgressPreferences] = calculateHalvingProgress(blocksUntilNextHalving)
-            }
-        } catch (e: Exception) {
-            Log.e("HalvingProgressWidget", "Error during refresh", e)
-        } finally {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = false
-            }
-            HalvingProgressWidget().update(context, glanceId)
-        }
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "halving_progress_manual",
+            ExistingWorkPolicy.KEEP,
+            OneTimeWorkRequestBuilder<HalvingProgressWorker>().build()
+        )
     }
 }
 

@@ -32,43 +32,16 @@ import com.googof.bitcointimechainwidgets.data.quoteDatePreference
 import com.googof.bitcointimechainwidgets.data.quoteSpeakerPreferences
 import com.googof.bitcointimechainwidgets.data.quoteTextPreference
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.googof.bitcointimechainwidgets.util.formatIsoDate
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.googof.bitcointimechainwidgets.worker.QuoteWorker
 
 private val isLoadingPreference = booleanPreferencesKey("is_loading")
 
-fun formatQuoteDate(dateString: String): String {
-    if (dateString.isEmpty()) return ""
-    
-    return try {
-        // First try common date formats that might come from the API
-        val possibleFormats = listOf(
-            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss'Z'",
-            "yyyy-MM-dd",
-            "dd/MM/yyyy",
-            "MM/dd/yyyy"
-        )
-        
-        for (format in possibleFormats) {
-            try {
-                val inputFormat = SimpleDateFormat(format, Locale.getDefault())
-                val outputFormat = SimpleDateFormat("d MMM yyyy", Locale.getDefault())
-                val date = inputFormat.parse(dateString)
-                if (date != null) {
-                    return outputFormat.format(date)
-                }
-            } catch (e: Exception) {
-                continue
-            }
-        }
-        
-        // If no format works, return the original string
-        dateString
-    } catch (e: Exception) {
-        dateString
-    }
-}
+fun formatQuoteDate(dateString: String): String =
+    formatIsoDate(dateString, "d MMM yyyy")
 
 class RefreshActionQuote : ActionCallback {
     override suspend fun onAction(
@@ -76,28 +49,11 @@ class RefreshActionQuote : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        Log.d("QuoteWidget", "RefreshAction triggered")
-        try {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = true
-            }
-            QuoteWidget().update(context, glanceId)
-
-            val quote = BitcoinExplorerApi.create().getQuote()
-
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[quoteTextPreference] = quote.text
-                prefs[quoteSpeakerPreferences] = quote.speaker
-                prefs[quoteDatePreference] = quote.date
-            }
-        } catch (e: Exception) {
-            Log.e("QuoteWidget", "Error during refresh", e)
-        } finally {
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[isLoadingPreference] = false
-            }
-            QuoteWidget().update(context, glanceId)
-        }
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "quote_update_manual",
+            ExistingWorkPolicy.KEEP,
+            OneTimeWorkRequestBuilder<QuoteWorker>().build()
+        )
     }
 }
 
