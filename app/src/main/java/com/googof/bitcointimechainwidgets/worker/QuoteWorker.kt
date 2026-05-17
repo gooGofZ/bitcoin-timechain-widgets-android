@@ -5,8 +5,6 @@ import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.work.WorkerParameters
-import com.googof.bitcointimechainwidgets.data.quoteDatePreference
-import com.googof.bitcointimechainwidgets.data.quoteSpeakerPreferences
 import com.googof.bitcointimechainwidgets.data.quoteTextPreference
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
 import com.googof.bitcointimechainwidgets.widget.QuoteWidget
@@ -21,9 +19,7 @@ class QuoteWorker(context: Context, workerParams: WorkerParameters) :
     override suspend fun fetchAndStore(context: Context, glanceId: GlanceId) {
         val quote = BitcoinExplorerApi.instance.getQuote()
         updateAppWidgetState(context, glanceId) {
-            it[quoteTextPreference] = quote.text
-            it[quoteSpeakerPreferences] = quote.speaker
-            it[quoteDatePreference] = quote.date
+            it[quoteTextPreference] = quote.quote
         }
     }
 }

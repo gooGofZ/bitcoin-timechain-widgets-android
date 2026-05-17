@@ -10,7 +10,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import android.util.Log
 import com.googof.bitcointimechainwidgets.data.BLOCKS_PER_HALVING
 import com.googof.bitcointimechainwidgets.network.BitcoinExplorerApi
-import com.googof.bitcointimechainwidgets.network.BitnodesApi
 import com.googof.bitcointimechainwidgets.network.CoinGeckoApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +37,6 @@ class BitcoinDataRepository(private val context: Context) {
         val HALVING_PROGRESS_KEY = doublePreferencesKey("halving_progress")
         val NEXT_HALVING_DATE_KEY = stringPreferencesKey("next_halving_date")
         val HASHRATE_KEY = stringPreferencesKey("hashrate")
-        val TOTAL_NODES_KEY = intPreferencesKey("total_nodes")
         val QUOTE_TEXT_KEY = stringPreferencesKey("quote_text")
         val QUOTE_SPEAKER_KEY = stringPreferencesKey("quote_speaker")
         val QUOTE_DATE_KEY = stringPreferencesKey("quote_date")
@@ -49,7 +47,6 @@ class BitcoinDataRepository(private val context: Context) {
 
     // Network APIs
     private val bitcoinApi = BitcoinExplorerApi.instance
-    private val bitnodesApi = BitnodesApi.instance
     private val coinGeckoApi = CoinGeckoApi.instance
 
     // Data flows
@@ -67,7 +64,6 @@ class BitcoinDataRepository(private val context: Context) {
     val nextHalvingDate: Flow<String> =
         context.dataStore.data.map { it[NEXT_HALVING_DATE_KEY] ?: "" }
     val hashrate: Flow<String> = context.dataStore.data.map { it[HASHRATE_KEY] ?: "0 EH/s" }
-    val totalNodes: Flow<Int> = context.dataStore.data.map { it[TOTAL_NODES_KEY] ?: 0 }
     val quoteText: Flow<String> = context.dataStore.data.map { it[QUOTE_TEXT_KEY] ?: "" }
     val quoteSpeaker: Flow<String> = context.dataStore.data.map { it[QUOTE_SPEAKER_KEY] ?: "" }
     val quoteDate: Flow<String> = context.dataStore.data.map { it[QUOTE_DATE_KEY] ?: "" }
@@ -137,18 +133,12 @@ class BitcoinDataRepository(private val context: Context) {
 
             fetchWithRetry("quote") { bitcoinApi.getQuote() }?.let { quote ->
                 context.dataStore.edit {
-                    it[QUOTE_TEXT_KEY] = quote.text
-                    it[QUOTE_SPEAKER_KEY] = quote.speaker
-                    it[QUOTE_DATE_KEY] = quote.date
+                    it[QUOTE_TEXT_KEY] = quote.quote
                 }
             }
 
             fetchWithRetry("THB price") { coinGeckoApi.getTHBPrice() }?.let { thbPrice ->
                 context.dataStore.edit { it[PRICE_THB_KEY] = thbPrice.bitcoin.thb }
-            }
-
-            fetchWithRetry("node count") { bitnodesApi.getSnapshots() }?.let { nodes ->
-                context.dataStore.edit { it[TOTAL_NODES_KEY] = nodes.results.firstOrNull()?.total_nodes ?: 0 }
             }
 
         } catch (e: Exception) {

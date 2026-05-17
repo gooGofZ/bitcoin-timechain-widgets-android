@@ -129,7 +129,6 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
     val halvingProgress by repository.halvingProgress.collectAsState(initial = 0.0)
     val nextHalvingDate by repository.nextHalvingDate.collectAsState(initial = "")
     val hashrate by repository.hashrate.collectAsState(initial = "0 EH/s")
-    val totalNodes by repository.totalNodes.collectAsState(initial = 0)
     val quoteText by repository.quoteText.collectAsState(initial = "")
     val quoteSpeaker by repository.quoteSpeaker.collectAsState(initial = "")
 
@@ -147,7 +146,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
         // Version
         item {
             Text(
-                text = "v2.2.1",
+                text = "v${context.packageManager.getPackageInfo(context.packageName, 0).versionName}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
@@ -294,12 +293,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                         marketCap
                     )
                 }" else "Loading...",
-                "Hash Rate" to hashrate,
-                "Total Nodes" to if (totalNodes > 0) String.format(
-                    Locale.US,
-                    "%,d",
-                    totalNodes
-                ) else "Loading..."
+                "Hash Rate" to hashrate
             )
         ) { (title, value) ->
             DataCard(title = title, value = value)

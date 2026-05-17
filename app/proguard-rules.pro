@@ -21,7 +21,18 @@
 # Glance / AppWidget
 -keep class androidx.glance.** { *; }
 
-# WorkManager
+# WorkManager / Room — WorkDatabase_Impl constructor looked up via reflection at runtime
+-keep class androidx.work.impl.WorkDatabase_Impl {
+    *;
+    public <init>();
+    <init>();
+}
+-keep class * extends androidx.room.RoomDatabase {
+    *;
+    public <init>();
+    <init>();
+}
+-optimizations !class/merging/*,!method/inlining/*
 -keep class * extends androidx.work.Worker
 -keep class * extends androidx.work.CoroutineWorker
 -keepclassmembers class * extends androidx.work.CoroutineWorker {

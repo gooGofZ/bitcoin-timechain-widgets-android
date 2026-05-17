@@ -45,23 +45,6 @@ interface BitcoinExplorerApi {
     }
 }
 
-interface BitnodesApi {
-    @GET("snapshots/")
-    suspend fun getSnapshots(): SnapshotResponse
-
-    companion object {
-        private const val BASE_URL = "https://bitnodes.io/api/v1/"
-
-        val instance: BitnodesApi by lazy {
-            Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(httpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(BitnodesApi::class.java)
-        }
-    }
-}
 
 interface CoinGeckoApi {
     @GET("simple/price?ids=bitcoin&vs_currencies=thb")
@@ -155,26 +138,10 @@ data class HashRateData(
     val string3: String
 )
 
-data class SnapshotResponse(
-    val count: Int,
-    val next: String?,
-    val previous: String?,
-    val results: List<Snapshot>
-)
-
-data class Snapshot(
-    val url: String,
-    val timestamp: Long,
-    val total_nodes: Int,
-    val latest_height: Int
-)
 
 data class Quote(
-    val text: String,
-    val speaker: String,
-    val date: String,
-    val url: String,
-    val quoteIndex: Int
+    val quote: String,
+    val timestamp: Long
 )
 
 data class BitcoinPrice(
